@@ -132,28 +132,28 @@ export const organizers = [
 export const judgesAndMentors = [
   {
     name: "Divya",
-    role: "Faculty Advisor",
+    role: "HOD",
     organization: "VISAT Engineering College",
     expertise: "Computer Science & Engineering",
     bio: "Guiding the technical direction and academic excellence of HackMe'26 with years of industry and teaching experience."
   },
   {
     name: "Veena",
-    role: "Faculty Coordinator",
+    role: "Faculty Member",
     organization: "VISAT Engineering College",
     expertise: "Department of CSE",
     bio: "Coordinating faculty support and ensuring alignment with academic objectives and institutional goals."
   },
   {
     name: "Manju",
-    role: "Faculty Mentor",
+    role: "Faculty Member",
     organization: "VISAT Engineering College",
     expertise: "Technical Guidance & Research",
     bio: "Providing mentorship to student teams and offering expertise in cutting-edge technology domains."
   },
   {
     name: "Parvathy",
-    role: "Faculty Advisor",
+    role: "Faculty Member",
     organization: "VISAT Engineering College",
     expertise: "Innovation & Development",
     bio: "Supporting innovative project development and fostering a culture of technical excellence among participants."
