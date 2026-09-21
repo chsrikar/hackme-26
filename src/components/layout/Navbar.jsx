@@ -86,30 +86,40 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="overmind-mobile-menu clip-pixel-corners">
-          <Link to="/" onClick={closeMenu} className="nav-pixel-link">Home Terminal</Link>
-          <Link to="/schedule" onClick={closeMenu} className="nav-pixel-link">
-            Schedule
+        <div className="overmind-mobile-menu">
+          <Link to="/" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>🏠</span> Home
           </Link>
-          <Link to="/vectors" onClick={closeMenu} className="nav-pixel-link">Tracks / Vectors</Link>
-          <Link to="/prizes" onClick={closeMenu} className="nav-pixel-link">Prizes</Link>
-          <Link to="/rules" onClick={closeMenu} className="nav-pixel-link">Rules</Link>
-          <Link to="/mentors" onClick={closeMenu} className="nav-pixel-link">Mentors & Jury</Link>
-          <Link to="/rubric" onClick={closeMenu} className="nav-pixel-link">Judging Rubric</Link>
-          <Link to="/terminal" onClick={closeMenu} className="nav-pixel-link">Terminal</Link>
-          <Link to="/faq" onClick={closeMenu} className="nav-pixel-link">FAQ</Link>
-          <Link to="/contact" onClick={closeMenu} className="nav-pixel-link">Contact</Link>
-          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Link to="/schedule" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>📅</span> Schedule
+          </Link>
+          <Link to="/vectors" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>🎯</span> Tracks
+          </Link>
+          <Link to="/prizes" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>🏆</span> Prizes
+          </Link>
+          <Link to="/team" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>👥</span> Team
+          </Link>
+          <Link to="/faq" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>❓</span> FAQ
+          </Link>
+          <Link to="/contact" onClick={closeMenu} className="nav-pixel-link">
+            <span style={{ marginRight: '8px' }}>📞</span> Contact
+          </Link>
+          
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <PixelButton 
               href="https://forms.gle/Z1KZCfkG4Jqq4eqj9" 
               variant="orange" 
-              size="sm" 
+              size="md" 
               onClick={closeMenu} 
-              style={{ width: '100%' }}
+              style={{ width: '100%', justifyContent: 'center' }}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Register (₹50/person)
+              Register Now (₹50/person)
             </PixelButton>
           </div>
         </div>
