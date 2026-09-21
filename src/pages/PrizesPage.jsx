@@ -112,7 +112,7 @@ export default function PrizesPage() {
                 margin: '0 auto 28px auto'
               }}
             >
-              Prize pool details and rewards will be announced soon. Stay tuned for exciting prizes, fellowships, and bounties!
+              Prize pool details and rewards will be announced soon. Stay tuned for exciting prizes!
             </p>
 
             {/* Event Date Info */}
