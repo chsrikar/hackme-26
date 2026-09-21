@@ -138,7 +138,7 @@ export default function AboutHack26() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '22px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
           {pillars.map((item, idx) => (
             <div
               key={idx}
@@ -146,7 +146,7 @@ export default function AboutHack26() {
               style={{
                 background: '#0e0e13',
                 border: '1px solid #22222c',
-                padding: '28px',
+                padding: 'clamp(18px, 4vw, 28px)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -205,14 +205,14 @@ export default function AboutHack26() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '16px' }}>
             {infrastructure.map((infra, idx) => (
               <div
                 key={idx}
                 style={{
                   background: '#0b0b0e',
                   border: '1px solid #1f1f28',
-                  padding: '20px',
+                  padding: 'clamp(14px, 3.5vw, 20px)',
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '14px'

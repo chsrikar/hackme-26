@@ -72,7 +72,7 @@ export default function MentorsPage() {
             // 01. INDUSTRY JURY & RESEARCH MENTORS
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '20px' }}>
             {judgesAndMentors.map((mentor, idx) => (
               <div
                 key={idx}
@@ -80,7 +80,7 @@ export default function MentorsPage() {
                 style={{
                   background: '#0f0f13',
                   border: '1px solid #23232c',
-                  padding: '28px',
+                  padding: 'clamp(18px, 4vw, 28px)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -96,7 +96,7 @@ export default function MentorsPage() {
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
                       <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '4px' }}>
                         {mentor.name}
@@ -151,7 +151,7 @@ export default function MentorsPage() {
             // 02. CSE DEPARTMENT ORGANIZING CREW
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
             {organizers.map((org, oIdx) => (
               <div
                 key={oIdx}
@@ -159,7 +159,7 @@ export default function MentorsPage() {
                 style={{
                   background: '#0d0d11',
                   border: '1px solid #202028',
-                  padding: '22px'
+                  padding: 'clamp(16px, 3.5vw, 22px)'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
@@ -175,7 +175,8 @@ export default function MentorsPage() {
                       justifyContent: 'center',
                       fontFamily: 'var(--font-pixel)',
                       color: 'var(--color-overmind-orange)',
-                      fontSize: '0.9rem'
+                      fontSize: '0.9rem',
+                      flexShrink: 0
                     }}
                   >
                     {org.avatarText}
@@ -218,7 +219,7 @@ export default function MentorsPage() {
 
         {/* Bottom Banner */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners bottom-cta-bar"
           style={{
             background: '#111116',
             border: '1px solid #282836',

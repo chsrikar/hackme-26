@@ -1,0 +1,1103 @@
+/* ==========================================================================
+   Comprehensive Mobile Responsiveness - HACKME'26
+   Every page, every component, every breakpoint.
+   ========================================================================== */
+
+/* ==========================================================================
+   0. VIEWPORT META & GLOBAL OVERFLOW PREVENTION
+   ========================================================================== */
+@media (max-width: 1024px) {
+  * {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* ==========================================================================
+   1. NAVIGATION - MOBILE (≤860px)
+   ========================================================================== */
+@media (max-width: 860px) {
+  .overmind-nav-left,
+  .overmind-nav-center {
+    display: none !important;
+  }
+
+  .overmind-mobile-toggle {
+    display: block !important;
+  }
+
+  .overmind-nav-container {
+    padding: 6px 12px !important;
+  }
+
+  .overmind-nav-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .overmind-nav-right .hidden {
+    display: none !important;
+  }
+
+  /* Mobile menu - full width links */
+  .overmind-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px !important;
+    padding: 14px !important;
+    background: #141417 !important;
+    border: 1px solid #292524 !important;
+    margin-top: 8px !important;
+  }
+
+  .overmind-mobile-menu .nav-pixel-link {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    padding: 12px 16px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .overmind-mobile-menu .pixel-btn-wrap {
+    width: 100% !important;
+  }
+
+  .overmind-mobile-menu .pixel-btn-wrap .clip-pixel-corners {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Denmu Nav mobile */
+  .denmu-nav-links {
+    display: none !important;
+  }
+
+  .denmu-mobile-toggle {
+    display: block !important;
+  }
+}
+
+/* ==========================================================================
+   2. HERO SECTION - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .overmind-hero {
+    padding-top: 80px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .overmind-hero-title {
+    font-size: clamp(2rem, 10vw, 2.8rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  .overmind-hero-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .overmind-hero-cta-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .overmind-hero-cta-row > * {
+    width: 100% !important;
+  }
+
+  .overmind-hero-cta-row > button,
+  .overmind-hero-cta-row > a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ==========================================================================
+   3. CRT MONITOR - MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* CRT Monitor app grid - 2 columns on small screens */
+  .crt-monitor-apps {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .crt-monitor-wrapper {
+    padding: 12px !important;
+  }
+
+  .crt-screen {
+    min-height: 320px !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* CRT apps even tighter on very small screens */
+  .crt-monitor-apps {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+
+/* ==========================================================================
+   4. TYPOGRAPHY - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 2.4rem) !important;
+    word-break: break-word;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem) !important;
+    word-break: break-word;
+  }
+
+  h3 {
+    font-size: clamp(1.1rem, 5vw, 1.4rem) !important;
+  }
+
+  h4 {
+    font-size: clamp(1rem, 4vw, 1.2rem) !important;
+  }
+
+  p {
+    font-size: 0.95rem;
+    word-break: break-word;
+  }
+}
+
+/* ==========================================================================
+   5. PAGE CONTAINERS & LAYOUT - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .page-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  section {
+    padding: 40px 0 !important;
+  }
+
+  .section-header {
+    margin-bottom: 24px !important;
+  }
+
+  .section-title {
+    font-size: 1.8rem !important;
+  }
+
+  /* Overmind header fixed positioning */
+  .overmind-header {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .page-container {
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .page-container {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+/* ==========================================================================
+   6. SCHEDULE PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Schedule controls bar - stack vertically */
+  [role="tablist"] {
+    width: 100%;
+  }
+
+  [role="tablist"] button {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center !important;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Schedule table - make horizontally scrollable */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .schedule-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Schedule table cells */
+  table {
+    font-size: 0.8rem !important;
+  }
+
+  table th,
+  table td {
+    padding: 10px 12px !important;
+  }
+
+  /* Schedule title banner */
+  .clip-pixel-corners {
+    padding: 16px !important;
+  }
+
+  /* Schedule cards view */
+  .schedule-card {
+    padding: 16px !important;
+  }
+
+  /* View mode toggle - smaller */
+  .view-toggle-bar {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   7. PRIZES PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .prize-card {
+    padding: 24px 16px !important;
+  }
+
+  .prize-amount {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* ==========================================================================
+   8. RULES PAGE - MOBILE
+   ========================================================================== */
+/* Rules grid - single column on mobile */
+@media (max-width: 640px) {
+  .rules-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   9. MENTORS PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .mentor-card {
+    padding: 20px !important;
+  }
+}
+
+/* ==========================================================================
+   10. RUBRIC PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Rubric pillar cards - stack flex items */
+  .rubric-pillar {
+    flex-direction: column !important;
+  }
+}
+
+/* ==========================================================================
+   11. CONTACT PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .contact-card {
+    padding: 20px 16px !important;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
+   12. FAQ PAGE & FAQ SECTION - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .faq-item {
+    padding: 16px !important;
+  }
+
+  .faq-question {
+    font-size: 1rem !important;
+  }
+}
+
+/* ==========================================================================
+   13. TRACK CARDS & GRIDS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .track-card {
+    padding: 20px !important;
+  }
+
+  .track-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   14. TEAM CARDS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .team-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .team-card {
+    padding: 20px !important;
+  }
+}
+
+/* ==========================================================================
+   15. STATS COUNTERS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .stat-value {
+    font-size: 2rem !important;
+  }
+
+  .stat-item {
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   16. FORM ELEMENTS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    padding: 12px !important;
+  }
+
+  .form-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Denmu form inputs */
+  .denmu-input,
+  .denmu-select,
+  .denmu-textarea {
+    font-size: 16px !important;
+    padding: 12px 14px !important;
+  }
+}
+
+/* ==========================================================================
+   17. MODALS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 10px auto !important;
+    padding: 20px !important;
+  }
+
+  .modal-header {
+    font-size: 1.3rem !important;
+  }
+
+  .denmu-modal-dialog {
+    padding: 20px !important;
+    max-height: 95vh !important;
+  }
+}
+
+/* ==========================================================================
+   18. FOOTER - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .overmind-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Footer bottom row - stack */
+  .denmu-footer-top {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .denmu-footer-hubs {
+    grid-template-columns: 1fr !important;
+  }
+
+  .denmu-footer-links-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+  }
+
+  .denmu-footer-nav {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+}
+
+/* ==========================================================================
+   19. GRIDS (auto-fit minmax) — FORCE SINGLE COLUMN ON SMALL SCREENS
+   These override inline grid styles that use auto-fit with large minmax values
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Force any grid with large minmax to go single-column */
+  [style*="grid-template-columns: repeat(auto-fit, minmax(3"],
+  [style*="grid-template-columns: repeat(auto-fit, minmax(2"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
+   20. BOTTOM BANNERS / CTA BARS - MOBILE
+   (These appear at the bottom of most pages with flex space-between layout)
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Override clip-pixel-corners padding for bottom CTA banners */
+  .clip-pixel-corners[style*="justify-content: space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center !important;
+    gap: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   21. PIXEL BUTTONS - MOBILE
+   ========================================================================== */
+@media (max-width: 480px) {
+  .pixel-btn-wrap {
+    width: 100% !important;
+  }
+
+  .pixel-btn-wrap .clip-pixel-corners {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+}
+
+/* ==========================================================================
+   22. PIXEL TAGS - MOBILE
+   ========================================================================== */
+@media (max-width: 375px) {
+  .pixel-tag {
+    font-size: 0.68rem !important;
+    padding: 3px 8px !important;
+    word-break: break-word !important;
+  }
+
+  .font-pixel {
+    font-size: 0.75rem !important;
+  }
+
+  .overmind-nav-container {
+    padding: 4px 8px !important;
+  }
+}
+
+/* ==========================================================================
+   23. TERMINAL PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Terminal command pills */
+  .terminal-commands {
+    gap: 6px !important;
+  }
+
+  /* Terminal window */
+  .terminal-window {
+    min-height: 300px !important;
+    max-height: 60vh !important;
+    padding: 16px !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Terminal input - prevent zoom */
+  .terminal-input input {
+    font-size: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   24. DENMU SECTION HEADERS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .denmu-section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .denmu-section-title {
+    font-size: clamp(1.8rem, 7vw, 2.5rem) !important;
+  }
+
+  .denmu-hero-title {
+    font-size: clamp(2.5rem, 12vw, 4rem) !important;
+  }
+
+  .denmu-hero {
+    padding-top: calc(var(--nav-height) + 20px) !important;
+    padding-bottom: 40px !important;
+    min-height: auto !important;
+  }
+
+  .denmu-hero-meta-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   25. DENMU CARDS & PORTFOLIO GRID - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .denmu-portfolio-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .denmu-manifesto-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .denmu-card-title {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* ==========================================================================
+   26. DENMU NEWS FEED - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .denmu-news-row {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+    padding: 12px 0 !important;
+  }
+
+  .denmu-news-date {
+    font-size: 0.72rem !important;
+  }
+
+  .denmu-news-source {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   27. VECTORS PAGE (Coming Soon) - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Coming Soon card - reduce padding */
+  .coming-soon-card {
+    padding: 32px 20px !important;
+  }
+}
+
+/* ==========================================================================
+   28. SPEC TABLE / COMPARISON - MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Comparison table header */
+  .spec-table-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+}
+
+/* ==========================================================================
+   29. REGISTER PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   30. LANDSCAPE MOBILE OPTIMIZATIONS
+   ========================================================================== */
+@media (max-width: 900px) and (orientation: landscape) {
+  .overmind-hero {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  .overmind-hero-title {
+    font-size: 2.5rem !important;
+  }
+
+  .denmu-hero {
+    min-height: auto !important;
+    padding-bottom: 30px !important;
+  }
+}
+
+/* ==========================================================================
+   31. TOUCH DEVICE OPTIMIZATIONS
+   ========================================================================== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button,
+  a,
+  .nav-pixel-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Disable hover transform effects on touch devices */
+  .clip-pixel-corners,
+  .glass-card-hover,
+  .denmu-card,
+  .denmu-team-card {
+    transform: none !important;
+  }
+
+  /* Better spacing for touch */
+  .clip-pixel-corners {
+    margin: 2px;
+  }
+}
+
+/* ==========================================================================
+   32. SAFE AREA INSETS (Notched Devices)
+   ========================================================================== */
+@supports (padding: max(0px)) {
+  @media (max-width: 640px) {
+    .page-container {
+      padding-left: max(16px, env(safe-area-inset-left)) !important;
+      padding-right: max(16px, env(safe-area-inset-right)) !important;
+    }
+
+    .overmind-header {
+      padding-left: max(12px, env(safe-area-inset-left)) !important;
+      padding-right: max(12px, env(safe-area-inset-right)) !important;
+    }
+
+    /* Safe area bottom for footer */
+    footer {
+      padding-bottom: max(50px, env(safe-area-inset-bottom)) !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   33. SMOOTH SCROLLING & TAP HIGHLIGHTS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  a {
+    -webkit-tap-highlight-color: rgba(242, 98, 7, 0.3);
+  }
+
+  button,
+  .nav-pixel-link,
+  .pixel-tag {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+}
+
+/* ==========================================================================
+   34. GLOBAL IMAGE & MEDIA - MOBILE
+   ========================================================================== */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+iframe,
+video {
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   35. PREVENT HORIZONTAL OVERFLOW
+   ========================================================================== */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ==========================================================================
+   36. CRT SCANLINES - REDUCE ON MOBILE (Performance)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .crt-scanlines {
+    opacity: 0.35 !important;
+  }
+
+  .crt-scanlines::after {
+    animation-duration: 12s !important;
+  }
+
+  .crt-vignette {
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* ==========================================================================
+   37. TABLET BREAKPOINT (641px - 1024px)
+   ========================================================================== */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .overmind-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .overmind-footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .denmu-team-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ==========================================================================
+   38. SCHEDULE PAGE SPECIFIC - MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .schedule-controls {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .schedule-title-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 18px 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Schedule page table - ensure proper wrapping */
+  table td,
+  table th {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+}
+
+/* ==========================================================================
+   39. BOTTOM CTA BARS - MOBILE (used on most pages)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .bottom-cta-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center !important;
+    padding: 20px !important;
+    gap: 16px !important;
+  }
+
+  .bottom-cta-bar > div:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+}
+
+/* ==========================================================================
+   40. INLINE GRID OVERRIDES - MOBILE
+   These override inline grid styles from JSX components that
+   prevent proper mobile stacking
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Any container with display: grid should go single column */
+  div[style*="grid-template-columns"][style*="minmax(3"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  div[style*="grid-template-columns"][style*="minmax(2"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Fix flex containers with space-between that should stack on mobile */
+  div[style*="justify-content: space-between"][style*="flex-wrap: wrap"] {
+    gap: 12px !important;
+  }
+}
+
+/* ==========================================================================
+   41. TERMINAL PAGE - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Terminal prompt line */
+  form[style*="display: flex"] input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+}
+
+/* ==========================================================================
+   42. CRT MONITOR COMPONENT - MOBILE
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* CRT monitor screen min-height */
+  div[style*="min-height: 440px"] {
+    min-height: 320px !important;
+    padding: 14px !important;
+  }
+
+  /* CRT app icon labels */
+  .font-pixel {
+    font-size: 0.72rem !important;
+  }
+}
+
+/* ==========================================================================
+   43. MOBILE MENU ENHANCEMENTS
+   ========================================================================== */
+@media (max-width: 860px) {
+  .overmind-mobile-menu {
+    max-height: calc(100vh - 80px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .overmind-mobile-menu .nav-pixel-link {
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .overmind-mobile-menu .nav-pixel-link:last-of-type {
+    border-bottom: none !important;
+  }
+}
+
+/* ==========================================================================
+   44. FAQ ACCORDION ON MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* FAQ question text wrapping */
+  div[style*="cursor: pointer"] h3 {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* FAQ answer text padding */
+  div[style*="padding: 16px 0 8px 40px"] {
+    padding-left: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   45. RUBRIC PILLAR CARDS - MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Override flex layout that puts weight label on the side */
+  div[style*="flex: 1 1 500px"] {
+    flex: 1 1 100% !important;
+  }
+}
+
+/* ==========================================================================
+   46. PIXEL BUTTON FULL WIDTH ON MOBILE
+   ========================================================================== */
+@media (max-width: 480px) {
+  .pixel-btn-wrap {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .pixel-btn-wrap > .clip-pixel-corners {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ==========================================================================
+   47. PAGE PADDING TOP (accounting for fixed navbar)
+   ========================================================================== */
+@media (max-width: 640px) {
+  div[style*="paddingTop: '40px'"] {
+    padding-top: 24px !important;
+  }
+}
+
+/* ==========================================================================
+   48. GLOBAL FORM INPUTS - PREVENT IOS SAFARI ZOOM
+   ========================================================================== */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   49. RUBRIC PILLAR CARDS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .rubric-pillar-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+
+  .rubric-content-col {
+    width: 100% !important;
+  }
+
+  .rubric-weight-col {
+    align-items: flex-start !important;
+    border-top: 1px dashed #282834 !important;
+    padding-top: 12px !important;
+    margin-top: 4px !important;
+    width: 100% !important;
+  }
+}
+
+/* ==========================================================================
+   50. REGISTRATION FORM MEMBER ROWS - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .registration-member-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    background: #0f0f14 !important;
+    padding: 12px !important;
+    border: 1px solid #23232c !important;
+  }
+
+  .registration-member-row input {
+    width: 100% !important;
+  }
+}
+
+/* ==========================================================================
+   51. CRT DESKTOP ICONS GRID - MOBILE
+   ========================================================================== */
+@media (max-width: 540px) {
+  .crt-app-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin: 16px auto !important;
+    padding: 0 4px !important;
+  }
+
+  .crt-app-grid a,
+  .crt-app-grid button,
+  .crt-app-grid div {
+    padding: 12px 8px !important;
+  }
+}
+
+@media (min-width: 541px) and (max-width: 768px) {
+  .crt-app-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+/* ==========================================================================
+   52. HERO META BAR - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .hero-meta-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px 16px !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .hero-meta-bar > span {
+    font-size: 0.8rem !important;
+  }
+
+  /* Hide bullet separators on mobile when stacked */
+  .hero-meta-bar span[style*="color: rgb(75, 85, 99)"],
+  .hero-meta-bar span[style*="color: #4b5563"] {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   53. TERMINAL PROMPT FORM - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .terminal-prompt-form {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  .terminal-prompt-label {
+    font-size: 0.8rem !important;
+  }
+
+  .terminal-prompt-form input {
+    font-size: 16px !important;
+    width: 100% !important;
+  }
+}
+
+/* ==========================================================================
+   54. WEBPET COMPANION - MOBILE
+   ========================================================================== */
+@media (max-width: 640px) {
+  .web-pet-companion,
+  .overmind-header div[style*="zIndex: 1005"] {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   55. TOUCH TARGETS & ACCESSIBILITY
+   ========================================================================== */
+@media (max-width: 640px) {
+  button,
+  .pixel-tag,
+  a {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+

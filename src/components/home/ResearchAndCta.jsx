@@ -43,13 +43,13 @@ export default function ResearchAndCta() {
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '18px' }}>
           {dispatches.map((card, idx) => (
             <article
               key={idx}
               className="clip-pixel-corners glass-card glass-card-hover"
               style={{
-                padding: '24px',
+                padding: 'clamp(18px, 4vw, 24px)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between'

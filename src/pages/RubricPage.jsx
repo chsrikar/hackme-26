@@ -152,11 +152,11 @@ export default function RubricPage() {
           {criteria.map((crit, idx) => (
             <div
               key={idx}
-              className="clip-pixel-corners"
+              className="clip-pixel-corners rubric-pillar-card"
               style={{
                 background: '#0f0f13',
                 border: '1px solid #23232c',
-                padding: '28px',
+                padding: 'clamp(18px, 4vw, 28px)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
@@ -167,8 +167,8 @@ export default function RubricPage() {
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = crit.color; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#23232c'; }}
             >
-              <div style={{ flex: '1 1 500px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+              <div className="rubric-content-col" style={{ flex: '1 1 min(100%, 400px)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px', flexWrap: 'wrap' }}>
                   <span
                     className="font-pixel"
                     style={{
@@ -205,7 +205,7 @@ export default function RubricPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+              <div className="rubric-weight-col" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
                 <span className="font-mono" style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                   SLOT WEIGHT
                 </span>
@@ -219,7 +219,7 @@ export default function RubricPage() {
 
         {/* Bottom Banner */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners bottom-cta-bar"
           style={{
             background: '#111116',
             border: '1px solid #282836',

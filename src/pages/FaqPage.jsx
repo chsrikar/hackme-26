@@ -10,13 +10,13 @@ export default function FaqPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: 'var(--space-3xl)', paddingBottom: 'var(--space-4xl)' }}>
+    <div className="page-container container" style={{ paddingTop: 'var(--space-3xl)', paddingBottom: 'var(--space-4xl)' }}>
       <div className="denmu-section-header">
         <div>
           <span className="mono-tag" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: '8px' }}>
             // PROTOCOL RULES & INFORMATION
           </span>
-          <h1 className="denmu-section-title" style={{ fontSize: 'clamp(2.4rem, 6vw, 4.5rem)' }}>
+          <h1 className="denmu-section-title" style={{ fontSize: 'clamp(2rem, 5vw, 4.5rem)' }}>
             FREQUENTLY ASKED QUESTIONS
           </h1>
         </div>
@@ -31,26 +31,26 @@ export default function FaqPage() {
               key={item.id}
               style={{
                 borderBottom: '1px solid var(--border-subtle)',
-                padding: '24px 0',
+                padding: 'clamp(16px, 3.5vw, 24px) 0',
                 cursor: 'pointer'
               }}
               onClick={() => toggle(item.id)}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <span className="mono-tag" style={{ color: 'var(--text-muted)' }}>0{idx + 1}.</span>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, textTransform: 'uppercase' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <span className="mono-tag" style={{ color: 'var(--text-muted)', flexShrink: 0 }}>0{idx + 1}.</span>
+                  <h3 style={{ fontSize: 'clamp(1rem, 2.2vw, 1.25rem)', fontWeight: 700, margin: 0, textTransform: 'uppercase', lineHeight: 1.4 }}>
                     {item.question}
                   </h3>
                 </div>
-                <div style={{ color: 'var(--text-muted)' }}>
+                <div style={{ color: 'var(--text-muted)', flexShrink: 0 }}>
                   {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                 </div>
               </div>
 
               {isOpen && (
-                <div style={{ padding: '16px 0 8px 40px' }}>
-                  <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                <div className="faq-answer-wrap" style={{ padding: '14px 0 8px 32px' }}>
+                  <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
                     {item.answer}
                   </p>
                 </div>

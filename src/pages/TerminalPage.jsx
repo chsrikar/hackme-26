@@ -217,8 +217,8 @@ export default function TerminalPage() {
           {/* Terminal Screen Body */}
           <div
             style={{
-              padding: '24px',
-              minHeight: '440px',
+              padding: 'clamp(14px, 3.5vw, 24px)',
+              minHeight: '360px',
               maxHeight: '600px',
               overflowY: 'auto',
               fontFamily: 'var(--font-mono)',
@@ -247,8 +247,8 @@ export default function TerminalPage() {
             ))}
 
             {/* Live prompt input line */}
-            <form onSubmit={onSubmit} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
-              <span style={{ color: 'var(--color-overmind-orange)', fontWeight: 700 }}>hackme26@cluster:~$</span>
+            <form onSubmit={onSubmit} className="terminal-prompt-form" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+              <span className="terminal-prompt-label" style={{ color: 'var(--color-overmind-orange)', fontWeight: 700, flexShrink: 0 }}>hackme26@cluster:~$</span>
               <input
                 ref={inputRef}
                 type="text"
@@ -256,13 +256,14 @@ export default function TerminalPage() {
                 onChange={(e) => setInput(e.target.value)}
                 autoFocus
                 style={{
-                  flex: 1,
+                  flex: '1 1 180px',
                   background: 'transparent',
                   border: 'none',
                   color: '#ffffff',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.9rem',
-                  outline: 'none'
+                  outline: 'none',
+                  minWidth: '120px'
                 }}
                 placeholder="type command..."
               />

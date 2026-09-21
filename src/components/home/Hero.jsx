@@ -102,20 +102,22 @@ export default function Hero() {
 
         {/* Meta line */}
         <div
+          className="hero-meta-bar"
           style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: '12px',
+            gap: '8px',
             flexWrap: 'wrap',
             justifyContent: 'center',
             background: 'rgba(18, 18, 24, 0.85)',
             border: '1px solid #282834',
-            padding: '8px 18px',
+            padding: '8px 12px',
             borderRadius: '4px',
             margin: '0 auto 22px auto',
             fontFamily: 'var(--font-mono)',
-            fontSize: 'clamp(0.75rem, 1.2vw, 0.88rem)',
-            color: '#cbd5e1'
+            fontSize: 'clamp(0.7rem, 1.2vw, 0.88rem)',
+            color: '#cbd5e1',
+            maxWidth: '95%'
           }}
         >
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

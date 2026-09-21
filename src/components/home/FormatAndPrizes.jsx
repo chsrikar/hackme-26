@@ -41,7 +41,7 @@ export default function FormatAndPrizes() {
           </h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '16px' }}>
           {formatStats.map((stat, idx) => (
             <div
               key={idx}
@@ -166,10 +166,11 @@ export default function FormatAndPrizes() {
           style={{
             background: '#0d0d12',
             border: '1px solid #23232e',
-            overflow: 'hidden'
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+          <table style={{ width: '100%', minWidth: '480px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ background: '#15151c', borderBottom: '2px solid #282834' }}>
                 <th style={{ padding: '14px 20px', fontFamily: 'var(--font-mono)', color: 'var(--color-overmind-orange)', width: '32%' }}>TIME</th>

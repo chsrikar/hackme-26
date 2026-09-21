@@ -49,7 +49,7 @@ export default function ContactPage() {
         </div>
 
         {/* Contact Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '60px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '60px' }}>
           {contacts.map((contact, idx) => (
             <div
               key={idx}

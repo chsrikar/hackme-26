@@ -549,3 +549,194 @@ a:hover {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+/* ==========================================================================
+   Mobile Responsive Styles
+   ========================================================================== */
+
+/* Mobile: Up to 640px */
+@media (max-width: 640px) {
+  /* Typography adjustments */
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 2.4rem) !important;
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem) !important;
+  }
+  
+  h3 {
+    font-size: clamp(1.2rem, 5vw, 1.5rem) !important;
+  }
+  
+  p {
+    font-size: 0.95rem;
+  }
+
+  /* Navigation fixes */
+  .overmind-header {
+    top: 8px;
+  }
+
+  .overmind-nav-container {
+    padding: 6px 12px;
+  }
+
+  /* Hero section mobile */
+  .overmind-hero-title {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    line-height: 1.15;
+  }
+
+  /* Button groups */
+  .overmind-hero-cta-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .overmind-hero-cta-row > * {
+    width: 100%;
+  }
+
+  /* Grid layouts */
+  .overmind-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  /* Cards and containers */
+  .overmind-feature-box,
+  .glass-card {
+    padding: 16px !important;
+  }
+
+  /* Page container padding */
+  .page-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Stats and counters */
+  .stat-item {
+    font-size: 0.85rem;
+  }
+
+  /* Footer adjustments */
+  .overmind-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
+  /* Form elements */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    padding: 20px !important;
+    margin: 10px !important;
+  }
+
+  /* Table overflow */
+  table {
+    font-size: 0.8rem;
+  }
+
+  table th,
+  table td {
+    padding: 8px 10px !important;
+  }
+}
+
+/* Tablet: 641px to 1024px */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .page-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .overmind-grid-2col {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .overmind-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button,
+  a,
+  .nav-pixel-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Disable hover effects on touch */
+  *:hover {
+    transition: none !important;
+  }
+
+  /* Better spacing for touch */
+  .clip-pixel-corners {
+    margin: 2px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 900px) and (orientation: landscape) {
+  .overmind-hero {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  .overmind-hero-title {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 375px) {
+  .pixel-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+
+  .font-pixel {
+    font-size: 0.75rem !important;
+  }
+
+  .overmind-nav-container {
+    padding: 4px 8px;
+  }
+}
+
+/* Prevent horizontal scroll */
+* {
+  max-width: 100%;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive iframe/video */
+iframe {
+  max-width: 100%;
+}

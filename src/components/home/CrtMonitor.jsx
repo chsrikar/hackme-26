@@ -91,15 +91,17 @@ export default function CrtMonitor() {
 
           {/* 8 Desktop Application Icons Grid (Clicking any redirects to that particular page!) */}
           <div
+            className="crt-app-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 'clamp(14px, 3vw, 28px)',
-              maxWidth: '680px',
-              margin: '30px auto',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
+              gap: 'clamp(10px, 2.5vw, 24px)',
+              maxWidth: '100%',
+              margin: '24px auto',
               width: '100%',
               position: 'relative',
-              zIndex: 5
+              zIndex: 5,
+              padding: '0 8px'
             }}
           >
             {apps.map((app) => {

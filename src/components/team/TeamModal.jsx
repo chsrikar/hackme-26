@@ -47,7 +47,7 @@ export default function TeamModal({ member, onClose }) {
           )}
         </div>
 
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '16px', display: 'flex', gap: '20px' }}>
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="denmu-footer-social-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>↗ LINKEDIN</span>
           </a>

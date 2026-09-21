@@ -139,7 +139,7 @@ export default function RulesPage() {
         </div>
 
         {/* Rules Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px', marginBottom: '60px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '20px', marginBottom: '60px' }}>
           {rulesList.map((rule, idx) => (
             <div
               key={idx}
@@ -147,7 +147,7 @@ export default function RulesPage() {
               style={{
                 background: '#0f0f13',
                 border: '1px solid #23232c',
-                padding: '28px',
+                padding: 'clamp(18px, 4vw, 28px)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between'
@@ -210,12 +210,12 @@ export default function RulesPage() {
                   style={{
                     background: '#0d0d12',
                     border: '1px solid #202028',
-                    padding: '16px 20px',
+                    padding: 'clamp(14px, 3.5vw, 20px)',
                     cursor: 'pointer'
                   }}
                   onClick={() => setOpenFaq(isOpen ? null : fIdx)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
                     <span style={{ fontWeight: 600, color: '#ffffff', fontSize: '0.98rem' }}>
                       {faq.question}
                     </span>
@@ -224,7 +224,8 @@ export default function RulesPage() {
                       color="#9ca3af"
                       style={{
                         transform: isOpen ? 'rotate(180deg)' : 'none',
-                        transition: 'transform 150ms ease'
+                        transition: 'transform 150ms ease',
+                        flexShrink: 0
                       }}
                     />
                   </div>
@@ -241,7 +242,7 @@ export default function RulesPage() {
 
         {/* Bottom Banner */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners bottom-cta-bar"
           style={{
             background: '#111116',
             border: '1px solid #282836',

@@ -43,7 +43,7 @@ export default function WhyParticipate() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '22px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
         {reasons.map((r, idx) => (
           <div
             key={idx}
@@ -51,7 +51,7 @@ export default function WhyParticipate() {
             style={{
               background: '#0d0d12',
               border: '1px solid #22222c',
-              padding: '28px',
+              padding: 'clamp(18px, 4vw, 28px)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',

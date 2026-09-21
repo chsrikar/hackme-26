@@ -210,7 +210,7 @@ export default function PrizesPage() {
 
         {/* Bottom Banner */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners bottom-cta-bar"
           style={{
             background: '#121216',
             border: '1px solid #282836',

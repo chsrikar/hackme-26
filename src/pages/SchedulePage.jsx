@@ -63,6 +63,7 @@ export default function SchedulePage() {
             marginBottom: '32px',
             flexWrap: 'wrap'
           }}
+          className="schedule-controls"
         >
           {/* Day Selector Tabs (Overmind Stepped Pixel Style) */}
           <div
@@ -171,7 +172,7 @@ export default function SchedulePage() {
 
         {/* Schedule Title Banner (Matches Document Header) */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners schedule-title-banner"
           style={{
             background: 'linear-gradient(180deg, #16161d 0%, #101014 100%)',
             border: '1px solid #292934',
@@ -584,7 +585,7 @@ export default function SchedulePage() {
 
         {/* Bottom Helper / Registration CTA */}
         <div
-          className="clip-pixel-corners"
+          className="clip-pixel-corners bottom-cta-bar"
           style={{
             marginTop: '48px',
             background: '#111115',

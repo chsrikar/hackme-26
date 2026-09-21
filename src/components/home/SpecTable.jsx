@@ -50,8 +50,8 @@ export default function SpecTable() {
         </div>
 
         {/* Table Rows */}
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '0.86rem' }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', minWidth: '520px', borderCollapse: 'collapse', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '0.86rem' }}>
             <thead>
               <tr style={{ background: '#111116', color: '#6b7280', borderBottom: '1px solid #1f1f28' }}>
                 <th style={{ padding: '14px 20px', width: '28%' }}>PARAMETER</th>

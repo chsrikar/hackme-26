@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/variables.css';
 import './styles/global.css';
 import './styles/components.css';
+import './styles/mobile.css';
 import App from './App.jsx';
 
 // Global Error Catching for debugging

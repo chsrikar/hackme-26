@@ -21,6 +21,7 @@ export default function Navbar() {
           color="red"
           speed={3.4}
           scale={0.5}
+          className="web-pet-companion"
         />
 
         {/* Left Navigation Items (Exact Overmind Navbar) */}
@@ -90,18 +91,15 @@ export default function Navbar() {
           <Link to="/schedule" onClick={closeMenu} className="nav-pixel-link">
             Schedule
           </Link>
-          <Link to="/team" onClick={closeMenu} className="nav-pixel-link">Team</Link>
+          <Link to="/vectors" onClick={closeMenu} className="nav-pixel-link">Tracks / Vectors</Link>
+          <Link to="/prizes" onClick={closeMenu} className="nav-pixel-link">Prizes</Link>
+          <Link to="/rules" onClick={closeMenu} className="nav-pixel-link">Rules</Link>
+          <Link to="/mentors" onClick={closeMenu} className="nav-pixel-link">Mentors & Jury</Link>
+          <Link to="/rubric" onClick={closeMenu} className="nav-pixel-link">Judging Rubric</Link>
+          <Link to="/terminal" onClick={closeMenu} className="nav-pixel-link">Terminal</Link>
           <Link to="/faq" onClick={closeMenu} className="nav-pixel-link">FAQ</Link>
+          <Link to="/contact" onClick={closeMenu} className="nav-pixel-link">Contact</Link>
           <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <PixelButton 
-              to="/contact"
-              variant="stone" 
-              size="sm" 
-              onClick={closeMenu}
-              style={{ width: '100%' }}
-            >
-              Talk to the team
-            </PixelButton>
             <PixelButton 
               href="https://forms.gle/Z1KZCfkG4Jqq4eqj9" 
               variant="orange" 

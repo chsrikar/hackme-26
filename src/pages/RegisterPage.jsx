@@ -2,13 +2,13 @@ import RegistrationForm from '../components/register/RegistrationForm';
 
 export default function RegisterPage() {
   return (
-    <div className="container" style={{ paddingTop: 'var(--space-3xl)', paddingBottom: 'var(--space-4xl)' }}>
+    <div className="page-container container" style={{ paddingTop: 'var(--space-3xl)', paddingBottom: 'var(--space-4xl)' }}>
       <div className="denmu-section-header">
         <div>
           <span className="mono-tag" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: '8px' }}>
             // HACKME26 REGISTRATION PORTAL
           </span>
-          <h1 className="denmu-section-title" style={{ fontSize: 'clamp(2.4rem, 6vw, 4.5rem)' }}>
+          <h1 className="denmu-section-title" style={{ fontSize: 'clamp(2rem, 5vw, 4.5rem)' }}>
             APPLICATION FOR COHORT 2026
           </h1>
         </div>

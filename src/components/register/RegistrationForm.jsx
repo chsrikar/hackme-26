@@ -140,7 +140,7 @@ export default function RegistrationForm() {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* Team Leader: Full Name & Email */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '18px' }}>
           <div>
             <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#e5e7eb', marginBottom: '6px' }}>
               Full Name (Team Leader) *
@@ -193,7 +193,7 @@ export default function RegistrationForm() {
         </div>
 
         {/* College / Institution & Team Name */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '18px' }}>
           <div>
             <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#e5e7eb', marginBottom: '6px' }}>
               College / Institution *
@@ -313,6 +313,7 @@ export default function RegistrationForm() {
             {formData.teamMembers.map((member, idx) => (
               <div
                 key={idx}
+                className="registration-member-row"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr auto',

@@ -7,26 +7,24 @@ export default function VectorsPage() {
 
   if (isLocked) {
     return (
-      <div style={{ backgroundColor: '#070708', minHeight: '100vh', color: '#f5f5f4', paddingTop: '40px', paddingBottom: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ backgroundColor: '#070708', minHeight: '100vh', color: '#f5f5f4', paddingTop: '40px', paddingBottom: '90px' }}>
         <div className="page-container">
           {/* Back breadcrumb */}
-          <div style={{ position: 'absolute', top: '40px', left: '0', right: '0' }}>
-            <div className="page-container">
-              <Link
-                to="/"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.8rem',
-                  color: '#9ca3af',
-                  textDecoration: 'none'
-                }}
-              >
-                <ArrowLeft size={14} /> // HOME TERMINAL
-              </Link>
-            </div>
+          <div style={{ marginBottom: '24px' }}>
+            <Link
+              to="/"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.8rem',
+                color: '#9ca3af',
+                textDecoration: 'none'
+              }}
+            >
+              <ArrowLeft size={14} /> // HOME TERMINAL
+            </Link>
           </div>
 
           {/* Coming Soon Card */}
@@ -34,8 +32,8 @@ export default function VectorsPage() {
             className="clip-pixel-corners glass-card"
             style={{
               maxWidth: '680px',
-              margin: '0 auto',
-              padding: 'clamp(40px, 6vw, 64px)',
+              margin: '20px auto 0 auto',
+              padding: 'clamp(28px, 5vw, 64px)',
               textAlign: 'center',
               border: '2px solid rgba(242, 98, 7, 0.4)',
               boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(242, 98, 7, 0.2)'

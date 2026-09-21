@@ -11,7 +11,7 @@ export default function TeamSection() {
   ];
 
   return (
-    <section className="container" style={{ paddingBottom: 'var(--space-4xl)' }} id="team-section">
+    <section className="page-container container" style={{ paddingBottom: 'var(--space-4xl)' }} id="team-section">
       <div className="denmu-section-header">
         <h2 className="denmu-section-title">THE COMMITTEE & PARTNERS</h2>
         <span className="mono-tag">// OPERATORS & FELLOWS</span>

@@ -24,7 +24,7 @@ export default function TracksSection() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
         {tracks.map((track) => (
           <div
             key={track.id}
@@ -32,7 +32,7 @@ export default function TracksSection() {
             style={{
               background: '#0d0d12',
               border: '1px solid #22222d',
-              padding: '28px',
+              padding: 'clamp(18px, 4vw, 28px)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
