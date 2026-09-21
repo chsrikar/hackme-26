@@ -316,13 +316,16 @@ a:hover {
     right: 0;
     padding: 0;
     z-index: 1000;
+    background: transparent;
   }
   
   .overmind-nav-container {
     padding: 10px 16px;
-    background: rgba(10, 10, 12, 0.98);
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: none;
-    border-bottom: 1px solid rgba(242, 98, 7, 0.3);
+    border-bottom: 1px solid rgba(242, 98, 7, 0.2);
     border-radius: 0;
     clip-path: none;
     display: flex;
@@ -384,7 +387,9 @@ a:hover {
     left: 0;
     right: 0;
     margin-top: 0;
-    background: rgba(10, 10, 12, 0.98);
+    background: rgba(10, 10, 12, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: none;
     border-bottom: 2px solid rgba(242, 98, 7, 0.4);
     padding: 16px;
@@ -396,7 +401,7 @@ a:hover {
   
   .overmind-mobile-menu .nav-pixel-link {
     background: rgba(255, 255, 255, 0.05);
-    padding: 12px 16px;
+    padding: 14px 16px;
     margin-bottom: 8px;
     border-radius: 6px;
     display: flex;
@@ -406,10 +411,13 @@ a:hover {
     color: #fff;
     text-decoration: none;
     transition: all 0.2s;
+    border: 1px solid transparent;
   }
   
-  .overmind-mobile-menu .nav-pixel-link:hover {
+  .overmind-mobile-menu .nav-pixel-link:hover,
+  .overmind-mobile-menu .nav-pixel-link.active {
     background: rgba(242, 98, 7, 0.2);
+    border-color: rgba(242, 98, 7, 0.4);
     transform: translateX(4px);
   }
   

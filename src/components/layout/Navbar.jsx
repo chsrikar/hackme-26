@@ -87,27 +87,27 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="overmind-mobile-menu">
-          <Link to="/" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>🏠</span> Home
-          </Link>
-          <Link to="/schedule" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>📅</span> Schedule
-          </Link>
-          <Link to="/vectors" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>🎯</span> Tracks
-          </Link>
-          <Link to="/prizes" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>🏆</span> Prizes
-          </Link>
-          <Link to="/team" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>👥</span> Team
-          </Link>
-          <Link to="/faq" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>❓</span> FAQ
-          </Link>
-          <Link to="/contact" onClick={closeMenu} className="nav-pixel-link">
-            <span style={{ marginRight: '8px' }}>📞</span> Contact
-          </Link>
+          <NavLink to="/" onClick={closeMenu} className="nav-pixel-link">
+            Home
+          </NavLink>
+          <NavLink to="/schedule" onClick={closeMenu} className="nav-pixel-link">
+            Schedule
+          </NavLink>
+          <NavLink to="/vectors" onClick={closeMenu} className="nav-pixel-link">
+            Tracks
+          </NavLink>
+          <NavLink to="/prizes" onClick={closeMenu} className="nav-pixel-link">
+            Prizes
+          </NavLink>
+          <NavLink to="/team" onClick={closeMenu} className="nav-pixel-link">
+            Team
+          </NavLink>
+          <NavLink to="/faq" onClick={closeMenu} className="nav-pixel-link">
+            FAQ
+          </NavLink>
+          <NavLink to="/contact" onClick={closeMenu} className="nav-pixel-link">
+            Contact
+          </NavLink>
           
           <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <PixelButton 
