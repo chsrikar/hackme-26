@@ -305,57 +305,34 @@ a:hover {
 }
 
 @media (max-width: 860px) {
-  .overmind-nav-left {
-    display: none;
+  .overmind-nav-left,
+  .overmind-nav-center {
+    display: none !important;
   }
   
   .overmind-header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 16px;
+    right: 16px;
+    left: auto;
+    width: auto;
     padding: 0;
     z-index: 1000;
     background: transparent;
   }
   
   .overmind-nav-container {
-    padding: 10px 16px;
-    background: rgba(10, 10, 12, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 0;
+    background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(242, 98, 7, 0.2);
     border-radius: 0;
     clip-path: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    justify-content: flex-end;
   }
   
-  .overmind-nav-center {
-    position: static;
-    transform: none;
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-  }
-  
-  .overmind-nav-center a {
-    gap: 6px !important;
-  }
-  
-  .overmind-nav-center svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-  
-  .overmind-nav-center span {
-    font-size: 0.85rem !important;
-  }
-  
-  /* Hide Register button on mobile - will show in menu */
+  /* Hide Register button on mobile */
   .overmind-nav-right > a,
   .overmind-nav-right > .pixel-btn-wrap {
     display: none !important;
@@ -363,51 +340,52 @@ a:hover {
   
   .overmind-mobile-toggle {
     display: flex !important;
-    background: transparent;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(242, 98, 7, 0.4);
-    padding: 8px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   
   .overmind-mobile-toggle:hover {
-    background: rgba(242, 98, 7, 0.2);
+    background: rgba(242, 98, 7, 0.3);
     border-color: rgba(242, 98, 7, 0.6);
   }
   
   .overmind-nav-right {
     display: flex;
     gap: 0;
-    order: 2;
   }
   
   .overmind-mobile-menu {
     position: fixed;
-    top: 50px;
+    top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     margin-top: 0;
-    background: rgba(10, 10, 12, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(10, 10, 12, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: none;
-    border-bottom: 2px solid rgba(242, 98, 7, 0.4);
-    padding: 16px;
+    padding: 60px 24px 24px;
     clip-path: none;
-    max-height: calc(100vh - 50px);
     overflow-y: auto;
-    z-index: 999;
+    z-index: 998;
   }
   
   .overmind-mobile-menu .nav-pixel-link {
     background: rgba(255, 255, 255, 0.05);
-    padding: 14px 16px;
-    margin-bottom: 8px;
-    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     text-align: left;
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: #fff;
     text-decoration: none;
     transition: all 0.2s;
@@ -418,12 +396,12 @@ a:hover {
   .overmind-mobile-menu .nav-pixel-link.active {
     background: rgba(242, 98, 7, 0.2);
     border-color: rgba(242, 98, 7, 0.4);
-    transform: translateX(4px);
+    transform: translateX(6px);
   }
   
-  /* Adjust body padding for fixed header */
+  /* No body padding needed */
   body {
-    padding-top: 50px;
+    padding-top: 0;
   }
   
   /* Hide WebPet on mobile */
