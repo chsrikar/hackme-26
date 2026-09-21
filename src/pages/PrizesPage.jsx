@@ -1,9 +1,190 @@
 import { mainPrizes, trackPrizes, statsSummary } from '../data/prizes';
-import { Trophy, Award, Gift, ArrowLeft, Sparkles, CheckCircle2, DollarSign } from 'lucide-react';
+import { Trophy, Award, Gift, ArrowLeft, Sparkles, CheckCircle2, DollarSign, Lock, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PixelButton from '../components/common/PixelButton';
 
 export default function PrizesPage() {
+  // Lock the page - Announced Soon
+  const isLocked = true;
+
+  if (isLocked) {
+    return (
+      <div style={{ backgroundColor: '#070708', minHeight: '100vh', color: '#f5f5f4', paddingTop: '40px', paddingBottom: '90px' }}>
+        <div className="page-container">
+          {/* Back breadcrumb */}
+          <div style={{ marginBottom: '24px' }}>
+            <Link
+              to="/"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.8rem',
+                color: '#9ca3af',
+                textDecoration: 'none'
+              }}
+            >
+              <ArrowLeft size={14} /> // HOME TERMINAL
+            </Link>
+          </div>
+
+          {/* Announced Soon Card */}
+          <div
+            className="clip-pixel-corners glass-card"
+            style={{
+              maxWidth: '680px',
+              margin: '20px auto 0 auto',
+              padding: 'clamp(28px, 5vw, 64px)',
+              textAlign: 'center',
+              border: '2px solid rgba(251, 191, 36, 0.4)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(251, 191, 36, 0.2)'
+            }}
+          >
+            {/* Trophy Icon */}
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                margin: '0 auto 24px auto',
+                background: 'rgba(251, 191, 36, 0.15)',
+                border: '2px solid rgba(251, 191, 36, 0.4)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                animation: 'pulse 2s ease-in-out infinite'
+              }}
+            >
+              <Trophy size={40} color="#fbbf24" />
+            </div>
+
+            <style>
+              {`
+                @keyframes pulse {
+                  0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+                  }
+                  50% {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 20px 10px rgba(251, 191, 36, 0);
+                  }
+                }
+              `}
+            </style>
+
+            {/* Badge */}
+            <span
+              className="pixel-tag"
+              style={{
+                color: '#fbbf24',
+                borderColor: 'rgba(251, 191, 36, 0.4)',
+                background: 'rgba(251, 191, 36, 0.1)',
+                marginBottom: '16px',
+                display: 'inline-block'
+              }}
+            >
+              PRIZE POOL // ANNOUNCED SOON
+            </span>
+
+            {/* Title */}
+            <h1
+              style={{
+                fontSize: 'clamp(2rem, 5vw, 3rem)',
+                fontWeight: 800,
+                color: '#ffffff',
+                marginBottom: '16px',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Prizes & Rewards
+            </h1>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+                color: '#d1d5db',
+                lineHeight: 1.6,
+                marginBottom: '28px',
+                maxWidth: '500px',
+                margin: '0 auto 28px auto'
+              }}
+            >
+              Prize pool details and rewards will be announced soon. Stay tuned for exciting prizes, fellowships, and bounties!
+            </p>
+
+            {/* Event Date Info */}
+            <div
+              className="clip-pixel-corners"
+              style={{
+                background: 'rgba(242, 98, 7, 0.05)',
+                border: '1px solid rgba(242, 98, 7, 0.2)',
+                padding: '20px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '24px'
+              }}
+            >
+              <Calendar size={24} color="var(--color-overmind-orange)" />
+              <div style={{ textAlign: 'left' }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-pixel)',
+                    fontSize: '0.75rem',
+                    color: 'var(--color-overmind-orange)',
+                    letterSpacing: '0.05em',
+                    marginBottom: '4px'
+                  }}
+                >
+                  HACKATHON EVENT
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '1.1rem',
+                    fontWeight: 700,
+                    color: '#ffffff'
+                  }}
+                >
+                  September 25 - 28, 2026
+                </div>
+              </div>
+            </div>
+
+            {/* Register Button */}
+            <div style={{ marginTop: '32px' }}>
+              <PixelButton 
+                href="https://forms.gle/Z1KZCfkG4Jqq4eqj9" 
+                variant="orange" 
+                size="lg" 
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Register Now (₹50/person)
+              </PixelButton>
+            </div>
+
+            {/* Additional Info */}
+            <p
+              className="font-mono"
+              style={{
+                fontSize: '0.85rem',
+                color: '#9ca3af',
+                marginTop: '28px'
+              }}
+            >
+              Follow our updates for prize announcements
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original prizes page content (will show when isLocked = false)
   return (
     <div style={{ backgroundColor: '#070708', minHeight: '100vh', color: '#f5f5f4', paddingTop: '40px', paddingBottom: '90px' }}>
       <div className="page-container">
