@@ -8,7 +8,7 @@ export default function SpecTable() {
     { parameter: 'Eligibility', typical: 'Host college only', hack26: 'Open to all colleges' },
     { parameter: 'Judging', typical: 'Subjective pitch only', hack26: 'Fixed rubric, live demo + code review' },
     { parameter: 'Beyond the Build', typical: 'None', hack26: 'Games, music, and a closing campfire' },
-    { parameter: 'Prize', typical: 'Certificates', hack26: 'Cash prize for 1st place' }
+    { parameter: 'Prize', typical: 'Certificates', hack26: 'Cash prizes (Announced Soon)' }
   ];
 
   return (

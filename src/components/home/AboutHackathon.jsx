@@ -13,7 +13,7 @@ export default function AboutHackathon() {
     {
       num: "03",
       title: "PRIZES & RECOGNITION",
-      desc: "We bring ₹1,45,000+ in total prizes across multiple categories, recognizing innovation, technical excellence, and creative problem-solving."
+      desc: "Prize pool details coming soon! We'll be recognizing innovation, technical excellence, and creative problem-solving across multiple categories."
     },
     {
       num: "04",

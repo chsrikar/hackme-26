@@ -589,7 +589,7 @@ export default function OvermindFeatures() {
       </section>
 
       {/* =========================================================================
-          SECTION 04: ₹1,45,000+ PRIZE POOL & REWARDS
+          SECTION 04: PRIZE POOL & REWARDS
           ========================================================================= */}
       <section id="section-model-training" className="page-container">
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
@@ -597,7 +597,7 @@ export default function OvermindFeatures() {
             // 04
           </span>
           <span className="pixel-tag" style={{ color: 'var(--color-overmind-orange)', borderColor: 'rgba(242, 98, 7, 0.4)', background: '#141210' }}>
-            ₹1,45,000+ PRIZE POOL & REWARDS
+            PRIZE POOL & REWARDS // ANNOUNCED SOON
           </span>
         </div>
 
@@ -639,7 +639,7 @@ export default function OvermindFeatures() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Cpu size={16} color="var(--color-overmind-orange)" />
                 <span className="font-mono" style={{ fontSize: '0.78rem', color: '#ffffff', fontWeight: 600 }}>
-                  HackMe'26 Rewards: ₹1,45,000+ Prize Pool
+                  HackMe'26 Rewards: Announced Soon
                 </span>
               </div>
               <span className="pixel-tag pixel-tag-green" style={{ fontSize: '0.68rem' }}>

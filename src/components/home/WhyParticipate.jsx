@@ -16,8 +16,8 @@ export default function WhyParticipate() {
       color: "#38bdf8"
     },
     {
-      title: "Win a cash prize and get your work in front of judges who matter",
-      desc: "Showcase your codebase and live demo directly to experienced technical evaluators and claim the 1st place cash award.",
+      title: "Win prizes and get your work in front of judges who matter",
+      desc: "Showcase your codebase and live demo directly to experienced technical evaluators. Prize details announced soon.",
       icon: <Trophy size={24} color="#fbbf24" />,
       color: "#fbbf24"
     },
