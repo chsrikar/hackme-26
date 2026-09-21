@@ -305,11 +305,39 @@ a:hover {
 }
 
 @media (max-width: 860px) {
-  .overmind-nav-left, .overmind-nav-center {
+  .overmind-nav-left {
     display: none;
   }
+  
+  .overmind-nav-center {
+    position: static;
+    transform: none;
+    margin-right: auto;
+  }
+  
+  .overmind-nav-center a {
+    gap: 6px !important;
+  }
+  
+  .overmind-nav-center svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .overmind-nav-center span {
+    font-size: 0.85rem !important;
+  }
+  
   .overmind-mobile-toggle {
     display: block;
+  }
+  
+  .overmind-nav-right {
+    gap: 8px;
+  }
+  
+  .overmind-nav-container {
+    padding: 8px 12px;
   }
 }
 
