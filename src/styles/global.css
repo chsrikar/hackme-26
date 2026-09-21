@@ -1,0 +1,551 @@
+/* ==========================================================================
+   Global Styles & CRT Retro-Futuristic Layer - Overmind Lab Recreation
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* --- CRT Scanlines & Cathode Ray Overlay (Exact Overmind signature) --- */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  opacity: 0.75;
+}
+
+/* CRT Light Sweep Beam */
+.crt-scanlines::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(18, 16, 16, 0) 100%);
+  opacity: 0.15;
+  animation: crtSweep 8s linear infinite;
+}
+
+@keyframes crtSweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* CRT Screen Vignette */
+.crt-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9991;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Pixelated Stepped Borders (Overmind .clip-pixel-corners) --- */
+.clip-pixel-corners {
+  clip-path: polygon(
+    0 4px,
+    4px 4px,
+    4px 0,
+    calc(100% - 4px) 0,
+    calc(100% - 4px) 4px,
+    100% 4px,
+    100% calc(100% - 4px),
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 4px) 100%,
+    4px 100%,
+    4px calc(100% - 4px),
+    0 calc(100% - 4px)
+  );
+}
+
+.pixel-border-box {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-stone);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.pixel-border-box:hover {
+  border-color: var(--color-copper-500);
+}
+
+/* --- Overmind Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display, var(--font-sans));
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.font-pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 150ms ease, color 150ms ease;
+}
+
+a:hover {
+  color: var(--color-copper-400);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-copper-500);
+  color: #000;
+}
+
+/* Layout Utilities */
+.page-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 3vw, 36px);
+  padding-right: clamp(16px, 3vw, 36px);
+}
+
+.section-spacer {
+  padding-top: clamp(60px, 8vw, 110px);
+  padding-bottom: clamp(60px, 8vw, 110px);
+}
+
+/* Pixel Badge */
+.pixel-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  background: var(--bg-stone-800);
+  color: var(--color-copper-400);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  text-transform: uppercase;
+}
+
+.pixel-tag-green {
+  color: var(--color-phosphor);
+  border-color: var(--border-phosphor);
+  background: rgba(0, 255, 128, 0.08);
+}
+
+.pixel-tag-stone {
+  color: var(--text-secondary);
+  border-color: var(--border-stone);
+  background: var(--bg-stone-900);
+}
+
+/* ==========================================================================
+   Overmind Floating Pixel Navigation Bar
+   ========================================================================== */
+.overmind-header {
+  position: fixed;
+  top: 12px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.overmind-nav-container {
+  pointer-events: auto;
+  background: rgba(18, 18, 20, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-stone);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  position: relative;
+}
+
+.overmind-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overmind-nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overmind-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-pixel-link {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--bg-stone-800);
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 150ms ease;
+  user-select: none;
+}
+
+.nav-pixel-link:hover, .nav-pixel-link.active {
+  background: #383330;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown Menu */
+.overmind-dropdown {
+  position: relative;
+}
+
+.overmind-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #141417;
+  border: 1px solid var(--border-stone);
+  padding: 8px 0;
+  min-width: 200px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  z-index: 1010;
+}
+
+.overmind-dropdown-item {
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 120ms ease;
+}
+
+.overmind-dropdown-item:hover {
+  background: var(--bg-stone-800);
+  color: var(--color-phosphor);
+}
+
+/* Mobile Toggle & Menu */
+.overmind-mobile-toggle {
+  display: none;
+  background: var(--bg-stone-800);
+  border: 1px solid var(--border-stone);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.overmind-mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: #141417;
+  border: 1px solid var(--border-stone);
+  margin-top: 10px;
+}
+
+@media (max-width: 860px) {
+  .overmind-nav-left, .overmind-nav-center {
+    display: none;
+  }
+  .overmind-mobile-toggle {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   Overmind Hero Section
+   ========================================================================== */
+.overmind-hero {
+  position: relative;
+  padding-top: 140px;
+  padding-bottom: 60px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.overmind-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(ellipse at 50% 15%, rgba(217, 119, 6, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 255, 128, 0.04) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0a0a 0%, #101012 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.overmind-hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.overmind-hero-title {
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.overmind-hero-subtitle {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+
+.overmind-hero-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+}
+
+/* ==========================================================================
+   Overmind Deep Feature Cards (4 Major Sections)
+   ========================================================================== */
+.overmind-section-header {
+  margin-bottom: 36px;
+  text-align: left;
+}
+
+.overmind-section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.overmind-section-desc {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 780px;
+}
+
+.overmind-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 900px) {
+  .overmind-grid-2col {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+}
+
+.overmind-feature-box {
+  background: #121214;
+  border: 1px solid var(--border-stone);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 40px rgba(0, 0, 0, 0.6);
+  padding: clamp(20px, 3vw, 36px);
+  position: relative;
+}
+
+.overmind-feature-box:hover {
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+.overmind-feature-box.phosphor-accent:hover {
+  border-color: rgba(0, 255, 128, 0.4);
+}
+
+/* Code & Diff Visualizer */
+.overmind-code-block {
+  background: #08080a;
+  border: 1px solid #201f1e;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.diff-add {
+  color: #00ff80;
+  background: rgba(0, 255, 128, 0.07);
+  display: block;
+  padding: 2px 6px;
+  border-left: 2px solid #00ff80;
+}
+
+.diff-del {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.07);
+  display: block;
+  padding: 2px 6px;
+  border-left: 2px solid #ef4444;
+}
+
+.diff-info {
+  color: #38bdf8;
+  display: block;
+  padding: 2px 6px;
+}
+
+/* ==========================================================================
+   Overmind Call To Action Container (Bottom Banner)
+   ========================================================================== */
+.overmind-cta-banner {
+  background: linear-gradient(180deg, #151413 0%, #0d0d0e 100%);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  box-shadow: 0 0 50px rgba(217, 119, 6, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: clamp(32px, 6vw, 64px) clamp(20px, 4vw, 48px);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin: 60px 0;
+}
+
+/* ==========================================================================
+   Overmind Footer
+   ========================================================================== */
+.overmind-footer {
+  background: #080809;
+  border-top: 1px solid var(--border-stone);
+  padding: 60px 0 36px 0;
+  font-family: var(--font-mono);
+  position: relative;
+  z-index: 20;
+}
+
+.overmind-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 36px;
+  margin-bottom: 48px;
+}
+
+.overmind-footer-col-title {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.overmind-footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.overmind-footer-links a:hover {
+  color: var(--color-phosphor);
+}
+
+
+/* ==========================================================================
+   Glassmorphism Utilities
+   ========================================================================== */
+.glass-card {
+  background: rgba(18, 18, 24, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-hover {
+  transition: all 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  background: rgba(18, 18, 24, 0.85);
+  border-color: rgba(242, 98, 7, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(242, 98, 7, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-dark {
+  background: rgba(10, 10, 14, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}

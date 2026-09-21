@@ -1,0 +1,55 @@
+/* ==========================================================================
+   CSS Custom Properties & Design Tokens
+   Recreated from Overmind Lab (https://www.overmindlab.ai/) for HACKME26
+   ========================================================================== */
+
+:root {
+  /* Overmind Retro-Dark CRT Color Palette */
+  --bg-page: #0a0a0a;
+  --bg-surface: #141416;
+  --bg-surface-secondary: #1c1c1f;
+  --bg-stone-800: #292524;
+  --bg-stone-900: #1c1917;
+  --bg-input: #141416;
+
+  /* Overmind Signature Accents */
+  --color-overmind-orange: #f26207;   /* Exact Overmind Lab footer and button orange */
+  --color-overmind-orange-hover: #ff7518;
+  --color-overmind-orange-glow: rgba(242, 98, 7, 0.4);
+  --color-copper-500: #f26207;        /* Map copper to exact Overmind Orange */
+  --color-copper-400: #fb923c;
+  --color-copper-glow: rgba(242, 98, 7, 0.35);
+  --color-phosphor: #00ff80;          /* Retro CRT Terminal Green */
+  --color-phosphor-glow: rgba(0, 255, 128, 0.3);
+  --color-cyan-glow: rgba(56, 189, 248, 0.25);
+  --color-core-white: #ffffff;
+  --color-core-black: #000000;
+
+  /* Typography Colors */
+  --text-primary: #f5f5f4;
+  --text-secondary: #a8a29e;
+  --text-muted: #78716c;
+  --text-dim: #57534e;
+
+  /* Pixel Borders & CRT Grid */
+  --border-pixel: rgba(255, 255, 255, 0.12);
+  --border-stone: #292524;
+  --border-copper: rgba(242, 98, 7, 0.45);
+  --border-phosphor: rgba(0, 255, 128, 0.4);
+
+  /* CRT Scanline Settings */
+  --sweep-duration: 10s;
+  --scanline-opacity: 0.07;
+  --glow-color: rgba(0, 255, 128, 0.25);
+  --edge-glow-color: rgba(0, 255, 128, 0.15);
+
+  /* Fonts */
+  --font-serif: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+  --font-pixel: 'Pixelify Sans', 'Silkscreen', 'VT323', monospace;
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Layout */
+  --max-width: 1280px;
+  --nav-height: 68px;
+}

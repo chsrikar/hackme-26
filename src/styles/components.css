@@ -1,0 +1,683 @@
+/* ==========================================================================
+   Denmu-Inspired Component Styling for HACKME26
+   ========================================================================== */
+
+/* --- Top Navigation (Denmu style) --- */
+.denmu-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.denmu-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.denmu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.denmu-logo-kanji {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+}
+
+.denmu-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.denmu-nav-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+  padding: 4px 0;
+  position: relative;
+}
+
+.denmu-nav-link:hover, .denmu-nav-link.active {
+  color: var(--text-primary);
+}
+
+.denmu-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--text-primary);
+}
+
+.denmu-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border: 1px solid var(--border-medium);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  border-radius: 2px;
+  transition: all var(--transition-fast);
+}
+
+.denmu-nav-cta:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
+.denmu-mobile-toggle {
+  display: none;
+  color: var(--text-primary);
+  padding: 8px;
+}
+
+@media (max-width: 900px) {
+  .denmu-nav-links {
+    display: none;
+  }
+  .denmu-mobile-toggle {
+    display: block;
+  }
+}
+
+.denmu-mobile-menu {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  z-index: 999;
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+.denmu-mobile-menu a {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Hero Section (Denmu style) --- */
+.denmu-hero {
+  padding-top: calc(var(--nav-height) + var(--space-3xl));
+  padding-bottom: var(--space-4xl);
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.denmu-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+}
+
+.denmu-hero-title {
+  font-size: clamp(3.2rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-xl);
+  max-width: 1200px;
+}
+
+.denmu-hero-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-lg);
+  margin-top: var(--space-2xl);
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.denmu-meta-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.denmu-meta-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.denmu-meta-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.denmu-scroll-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+/* --- Featured Showcase / Portfolio Cards (Denmu Style) --- */
+.denmu-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-2xl);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-md);
+}
+
+.denmu-section-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.denmu-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2xl) var(--space-xl);
+}
+
+@media (max-width: 860px) {
+  .denmu-portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.denmu-card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  group: card;
+  text-decoration: none;
+}
+
+.denmu-card-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #141b24;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+  border-radius: 2px;
+}
+
+.denmu-card-media img, .denmu-card-media .card-graphic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0.9;
+}
+
+.denmu-card:hover .denmu-card-media img,
+.denmu-card:hover .denmu-card-media .card-graphic {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+.denmu-card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.denmu-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.denmu-card-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  transition: color var(--transition-fast);
+}
+
+.denmu-card:hover .denmu-card-title {
+  color: var(--color-accent);
+}
+
+.denmu-card-quote {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* --- Denmu Manifesto / Editorial Section (01 - 06) --- */
+.denmu-manifesto-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3xl) var(--space-2xl);
+  margin-top: var(--space-2xl);
+}
+
+@media (max-width: 860px) {
+  .denmu-manifesto-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.denmu-manifesto-item {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.denmu-manifesto-num {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+}
+
+.denmu-manifesto-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.denmu-manifesto-desc {
+  font-size: 0.98rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* --- Team Section (Denmu style) --- */
+.denmu-team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+}
+
+@media (max-width: 960px) {
+  .denmu-team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 580px) {
+  .denmu-team-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.denmu-team-card {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.denmu-team-card:hover {
+  border-top-color: var(--text-primary);
+}
+
+.denmu-team-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.denmu-team-role {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* --- News / Press Feed (Denmu style) --- */
+.denmu-news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.denmu-news-row {
+  display: grid;
+  grid-template-columns: 140px 180px 1fr 40px;
+  align-items: center;
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  gap: var(--space-md);
+}
+
+.denmu-news-row:hover {
+  border-bottom-color: var(--text-primary);
+}
+
+.denmu-news-row:hover .denmu-news-headline {
+  color: var(--color-accent);
+}
+
+.denmu-news-date {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.denmu-news-source {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.denmu-news-headline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--transition-fast);
+}
+
+@media (max-width: 768px) {
+  .denmu-news-row {
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+  }
+  .denmu-news-source {
+    display: none;
+  }
+}
+
+/* --- Detail Modal / Drawer (Denmu portfolio & team inspector) --- */
+.denmu-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.denmu-modal-dialog {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  width: 100%;
+  max-width: 840px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: clamp(24px, 5vw, 48px);
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  border-radius: 2px;
+}
+
+.denmu-modal-close {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+  transition: color var(--transition-fast);
+}
+
+.denmu-modal-close:hover {
+  color: var(--text-primary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Registration Form (Denmu contact / investor form) --- */
+.denmu-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.denmu-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.denmu-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.denmu-input, .denmu-select, .denmu-textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast);
+}
+
+.denmu-input:focus, .denmu-select:focus, .denmu-textarea:focus {
+  border-color: var(--text-primary);
+  outline: none;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.denmu-submit-btn {
+  padding: 16px 28px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 2px;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.denmu-submit-btn:hover {
+  background: var(--color-accent);
+  color: #000;
+}
+
+/* --- Denmu Iconic Multi-City Footer --- */
+.denmu-footer {
+  background: var(--bg-darker);
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-4xl) 0 var(--space-2xl) 0;
+}
+
+.denmu-footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3xl);
+  flex-wrap: wrap;
+  gap: var(--space-2xl);
+}
+
+.denmu-footer-subscribe-box {
+  max-width: 480px;
+}
+
+.denmu-footer-subscribe-title {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.denmu-subscribe-row {
+  display: flex;
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 4px;
+}
+
+.denmu-subscribe-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.denmu-subscribe-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+}
+
+.denmu-footer-hubs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-xl) 0;
+  margin-bottom: var(--space-2xl);
+}
+
+@media (max-width: 768px) {
+  .denmu-footer-hubs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.denmu-hub-name {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.denmu-hub-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.denmu-footer-links-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.denmu-footer-nav {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.denmu-footer-socials {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.denmu-footer-social-link {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.denmu-footer-social-link:hover {
+  color: var(--color-accent);
+}
