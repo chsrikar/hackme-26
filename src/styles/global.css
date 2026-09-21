@@ -305,98 +305,16 @@ a:hover {
 }
 
 @media (max-width: 860px) {
-  .overmind-nav-left,
-  .overmind-nav-center {
-    display: none !important;
-  }
-  
+  /* Hide entire navbar on mobile */
   .overmind-header {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    left: auto;
-    width: auto;
-    padding: 0;
-    z-index: 1000;
-    background: transparent;
-  }
-  
-  .overmind-nav-container {
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    clip-path: none;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
-  /* Hide Register button on mobile */
-  .overmind-nav-right > a,
-  .overmind-nav-right > .pixel-btn-wrap {
     display: none !important;
   }
   
+  .overmind-nav-left,
+  .overmind-nav-center,
+  .overmind-nav-right,
   .overmind-mobile-toggle {
-    display: flex !important;
-    background: rgba(10, 10, 12, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(242, 98, 7, 0.4);
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .overmind-mobile-toggle:hover {
-    background: rgba(242, 98, 7, 0.3);
-    border-color: rgba(242, 98, 7, 0.6);
-  }
-  
-  .overmind-nav-right {
-    display: flex;
-    gap: 0;
-  }
-  
-  .overmind-mobile-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin-top: 0;
-    background: rgba(10, 10, 12, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: none;
-    padding: 60px 24px 24px;
-    clip-path: none;
-    overflow-y: auto;
-    z-index: 998;
-  }
-  
-  .overmind-mobile-menu .nav-pixel-link {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    text-align: left;
-    font-size: 1rem;
-    color: #fff;
-    text-decoration: none;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-  }
-  
-  .overmind-mobile-menu .nav-pixel-link:hover,
-  .overmind-mobile-menu .nav-pixel-link.active {
-    background: rgba(242, 98, 7, 0.2);
-    border-color: rgba(242, 98, 7, 0.4);
-    transform: translateX(6px);
+    display: none !important;
   }
   
   /* No body padding needed */
