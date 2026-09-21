@@ -137,7 +137,7 @@ export default function Hero() {
           <span style={{ color: '#4b5563' }}>•</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24' }}>
             <Award size={14} color="#fbbf24" />
-            <strong>₹1.45L+ Prize Pool</strong>
+            <strong>Prizes Announced Soon</strong>
           </span>
         </div>
 

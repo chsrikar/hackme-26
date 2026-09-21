@@ -10,7 +10,7 @@ export default function QuickNavStrip() {
     { num: '1', title: 'INNOVATION VECTORS & TRACKS', target: 'section-context-graph' },
     { num: '2', title: 'HACKER GPU & LAB SANDBOX', target: 'section-traces-datasets' },
     { num: '3', title: 'AUTOMATED EVALS & SCORING', target: 'section-automated-evals' },
-    { num: '4', title: '₹1.45L+ PRIZES & REWARDS', target: 'section-model-training' }
+    { num: '4', title: 'PRIZES & REWARDS', target: 'section-model-training' }
   ];
 
   return (
