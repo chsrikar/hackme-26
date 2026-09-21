@@ -36,7 +36,7 @@ export default function PrizesPage() {
                 background: '#1a160d'
               }}
             >
-              PRIZE POOL // ₹1,45,000+
+              PRIZE POOL // ANNOUNCED SOON
             </span>
           </div>
 
