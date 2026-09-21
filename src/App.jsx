@@ -8,7 +8,6 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import HomePage from './pages/HomePage';
 import FaqPage from './pages/FaqPage';
 import TeamPage from './pages/TeamPage';
-import AboutPage from './pages/AboutPage';
 import NewsPage from './pages/NewsPage';
 import RegisterPage from './pages/RegisterPage';
 import SchedulePage from './pages/SchedulePage';
@@ -70,7 +69,6 @@ export default function App() {
           <Route path="/terminal" element={<TerminalPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/about" element={<AboutPage />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="*" element={<NotFoundPage />} />
