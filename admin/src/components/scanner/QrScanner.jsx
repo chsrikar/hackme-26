@@ -37,18 +37,28 @@ export default function QrScanner({ onOpenManualModal }) {
   const html5QrCodeRef = useRef(null);
   const isScanningActiveRef = useRef(false);
   const lastScannedRef = useRef({ text: null, time: 0 });
+  const handleQrScanRef = useRef(handleQrScan);
+
+  // Keep handleQrScanRef synchronized with latest function on every render
+  useEffect(() => {
+    handleQrScanRef.current = handleQrScan;
+  });
 
   const onScanSuccess = useCallback((decodedText) => {
     const now = Date.now();
-    // Debounce duplicate scans of the exact same code within 3 seconds
-    if (lastScannedRef.current.text === decodedText && (now - lastScannedRef.current.time < 3000)) {
+    // Debounce duplicate scans of the exact same code within 2 seconds
+    if (lastScannedRef.current.text === decodedText && (now - lastScannedRef.current.time < 2000)) {
       return;
     }
     lastScannedRef.current = { text: decodedText, time: now };
     setLastScanned(decodedText);
-    setTimeout(() => setLastScanned(null), 3000);
-    handleQrScan(decodedText);
-  }, [handleQrScan]);
+    setTimeout(() => setLastScanned(null), 2500);
+
+    // Call through mutable ref to guarantee zero stale closure over scanMode/activePasses/participants
+    if (handleQrScanRef.current) {
+      handleQrScanRef.current(decodedText);
+    }
+  }, []);
 
   const startCamera = useCallback(async () => {
     if (html5QrCodeRef.current && isScanningActiveRef.current) return;
@@ -104,49 +114,59 @@ export default function QrScanner({ onOpenManualModal }) {
     return () => { stopCamera(); };
   }, []);
 
-  // Quick simulation triggers for evaluator demoing
-  const triggerCheckIn = () => {
-    const candidate = participants.find((p) => p.status === 'not_scanned') || {
-      id: `p_${Date.now().toString().slice(-4)}`,
-      name: 'Alex Rivera',
-      rollNo: `HACK-${Math.floor(10 + Math.random() * 89)}A`,
-      team: 'Team ByteCraft'
-    };
-    handleQrScan(generateTestPayload('CHECKIN', candidate));
+  // Quick simulation triggers for evaluator testing
+  const triggerCheckIn = (code = 'HM26-003') => {
+    if (handleQrScanRef.current) {
+      handleQrScanRef.current(code, 'checkin');
+    }
   };
 
-  const triggerPassCheckout = (typeKey) => {
-    const candidate = participants.find(
-      (p) => p.status === 'present' && !activePasses.some((pass) => pass.rollNo === p.rollNo)
-    ) || participants[0] || {
-      id: 'p_demo',
-      name: 'Sarah Chen',
-      rollNo: 'HACK-02B',
-      team: 'Team NeuralPulse'
-    };
-
-    handleQrScan(generateTestPayload(typeKey, candidate));
+  const triggerPassCheckout = (typeKey, preferredCode = null) => {
+    let code = preferredCode;
+    if (!code) {
+      // Find a checked-in participant without an active pass, or default to Parthiv das HM26-003
+      const candidate = participants.find(
+        (p) => p.status === 'present' && !activePasses.some((pass) => pass.rollNo === p.rollNo || pass.passId === p.rollNo)
+      );
+      code = candidate?.passId || candidate?.rollNo || 'HM26-003';
+    }
+    if (handleQrScanRef.current) {
+      handleQrScanRef.current(code, typeKey);
+    }
   };
 
-  const triggerReturn = () => {
-    if (activePasses.length > 0) {
-      const pass = activePasses[0];
-      handleQrScan(generateTestPayload('RETURN', {
-        id: pass.studentId,
-        rollNo: pass.rollNo,
-        name: pass.participantName,
-        team: pass.team
-      }));
-    } else {
-      handleQrScan(JSON.stringify({ type: 'RETURN', rollNo: 'HACK-01A' }));
+  const triggerReturn = (preferredCode = null) => {
+    let code = preferredCode;
+    if (!code) {
+      if (activePasses && activePasses.length > 0) {
+        code = activePasses[0].rollNo || activePasses[0].passId;
+      } else {
+        code = 'HM26-003';
+      }
+    }
+    if (handleQrScanRef.current) {
+      handleQrScanRef.current(code, 'return');
     }
   };
 
   const handleManualCodeSubmit = (e) => {
     e.preventDefault();
     if (!manualCodeInput.trim()) return;
-    handleQrScan(manualCodeInput.trim());
+    if (handleQrScanRef.current) {
+      handleQrScanRef.current(manualCodeInput.trim());
+    }
     setManualCodeInput('');
+  };
+
+  const getActionLabel = (name, code) => {
+    if (scanMode === 'auto') return `⚡ Auto: ${name} (${code})`;
+    if (scanMode === 'checkin') return `✅ Check-in: ${name} (${code})`;
+    if (scanMode === 'return') return `↩ Return: ${name} (${code})`;
+    if (scanMode === 'FOOD_PICKUP') return `🍔 Food Pickup: ${name} (${code})`;
+    if (scanMode === 'WASHROOM') return `🚻 Washroom: ${name} (${code})`;
+    if (scanMode === 'REST_BREAK') return `😴 Rest Break: ${name} (${code})`;
+    if (scanMode === 'LEFT_VENUE') return `🚪 Left Venue: ${name} (${code})`;
+    return `Scan ${name} (${code})`;
   };
 
   return (
@@ -280,7 +300,7 @@ export default function QrScanner({ onOpenManualModal }) {
                 fontWeight: 700
               }}
             >
-              ⚡ Scan Anto Jerom T (HM26-001)
+              {getActionLabel('Anto Jerom T', 'HM26-001')}
             </button>
 
             <button
@@ -288,7 +308,7 @@ export default function QrScanner({ onOpenManualModal }) {
               onClick={() => handleQrScan('HM26-002')}
               className="demo-btn checkin"
             >
-              ✅ Scan Nimisha S A (HM26-002)
+              {getActionLabel('Nimisha S A', 'HM26-002')}
             </button>
 
             <button
@@ -296,7 +316,7 @@ export default function QrScanner({ onOpenManualModal }) {
               onClick={() => handleQrScan('HM26-003')}
               className="demo-btn checkin"
             >
-              ✅ Scan Parthiv das (HM26-003)
+              {getActionLabel('Parthiv das', 'HM26-003')}
             </button>
 
             <button
@@ -304,12 +324,12 @@ export default function QrScanner({ onOpenManualModal }) {
               onClick={() => handleQrScan('HM26-999')}
               className="demo-btn checkin"
             >
-              ✅ Scan Adithyan Rajesh (HM26-999)
+              {getActionLabel('Adithyan Rajesh', 'HM26-999')}
             </button>
 
             <button
               type="button"
-              onClick={triggerReturn}
+              onClick={() => triggerReturn()}
               className="demo-btn return"
             >
               ↩ Return Open Pass

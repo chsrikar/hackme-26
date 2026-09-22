@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import {
   MOCK_DAYS,
   INITIAL_PARTICIPANTS,
@@ -106,8 +106,15 @@ export function OpsSessionProvider({ children }) {
     return [];
   });
 
-  // Active Movement Passes
+  // Active Movement Passes - rehydrates from localStorage
   const [activePasses, setActivePasses] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ops_active_passes');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
     return [];
   });
 
@@ -127,6 +134,27 @@ export function OpsSessionProvider({ children }) {
   // Scanner controls
   const [isScannerPaused, setIsScannerPaused] = useState(false);
   const [scanMode, setScanMode] = useState('auto'); // 'auto' | 'checkin' | 'WASHROOM' | etc.
+
+  // Mutable refs to prevent stale closure issues in camera callbacks and asynchronous handlers
+  const scanModeRef = useRef(scanMode);
+  scanModeRef.current = scanMode;
+
+  const activePassesRef = useRef(activePasses);
+  activePassesRef.current = activePasses;
+
+  const participantsRef = useRef(participants);
+  participantsRef.current = participants;
+
+  // Persist activePasses to localStorage
+  useEffect(() => {
+    try {
+      if (activePasses && activePasses.length > 0) {
+        localStorage.setItem('ops_active_passes', JSON.stringify(activePasses));
+      } else {
+        localStorage.removeItem('ops_active_passes');
+      }
+    } catch {}
+  }, [activePasses]);
 
   // Live Recent Scans Activity Stream
   const [recentScans, setRecentScans] = useState([]);
@@ -324,7 +352,7 @@ export function OpsSessionProvider({ children }) {
   }, [addToast]);
 
   // Handle QR Scan (Supports Check-in, Any Movement Pass checkout, or Pass Return)
-  const handleQrScan = useCallback(async (rawPayload) => {
+  const handleQrScan = useCallback(async (rawPayload, explicitIntent = null) => {
     const result = validateAndParseQrPayload(rawPayload);
 
     if (!result.isValid) {
@@ -332,13 +360,23 @@ export function OpsSessionProvider({ children }) {
       return { success: false, error: result.error };
     }
 
+    const currentScanMode = explicitIntent || scanModeRef.current || 'auto';
+    const currentPasses = activePassesRef.current || [];
+    const currentParticipants = participantsRef.current || [];
+
     // Check if participant currently holds an active pass
-    const currentPass = activePasses.find(
-      (p) => p.rollNo === result.rollNo || p.studentId === result.participantId
+    const currentPass = currentPasses.find(
+      (p) => p.rollNo === result.rollNo ||
+             p.passId === result.rollNo ||
+             (result.passId && (p.passId === result.passId || p.rollNo === result.passId)) ||
+             p.studentId === result.participantId ||
+             p.id === result.participantId
     );
 
     // If scanning a RETURN (or auto-detecting return when pass is already open)
-    const isReturnScan = result.type === 'RETURN' || (scanMode === 'return') || (scanMode === 'auto' && currentPass && result.type === 'CHECKIN');
+    const isExplicitReturn = currentScanMode === 'return' || result.type === 'RETURN';
+    const isAutoReturn = (currentScanMode === 'auto' && Boolean(currentPass));
+    const isReturnScan = isExplicitReturn || isAutoReturn;
 
     if (isReturnScan) {
       if (!currentPass) {
@@ -350,7 +388,7 @@ export function OpsSessionProvider({ children }) {
       const durationStr = formatDuration(elapsedMs);
       const cfg = getPassConfig(currentPass.passType);
 
-      setActivePasses((prev) => prev.filter((p) => p.id !== currentPass.id));
+      setActivePasses((prev) => prev.filter((p) => p.id !== currentPass.id && p.rollNo !== currentPass.rollNo));
       passesApi.returnPass(currentPass.id).catch(console.error);
 
       addRecentScan({
@@ -366,13 +404,15 @@ export function OpsSessionProvider({ children }) {
       return { success: true, mode: 'return', duration: durationStr };
     }
 
-    // If scan payload is a specific movement pass checkout
-    if (['WASHROOM', 'FOOD_PICKUP', 'REST_BREAK', 'LEFT_VENUE'].includes(result.type) || (['WASHROOM', 'FOOD_PICKUP', 'REST_BREAK', 'LEFT_VENUE'].includes(scanMode))) {
-      const passTypeToUse = scanMode !== 'auto' && scanMode !== 'checkin' ? scanMode : result.type;
+    // If scan intent or payload is a specific movement pass checkout
+    const MOVEMENT_TYPES = ['WASHROOM', 'FOOD_PICKUP', 'REST_BREAK', 'LEFT_VENUE'];
+    if (MOVEMENT_TYPES.includes(currentScanMode) || MOVEMENT_TYPES.includes(result.type)) {
+      const passTypeToUse = MOVEMENT_TYPES.includes(currentScanMode) ? currentScanMode : result.type;
       const cfg = getPassConfig(passTypeToUse);
 
-      const target = participants.find((p) =>
+      const target = currentParticipants.find((p) =>
         p.rollNo === result.rollNo ||
+        p.passId === result.rollNo ||
         (result.passId && p.passId === result.passId) ||
         (result.passId && p.rollNo === result.passId) ||
         p.id === result.participantId
@@ -383,7 +423,7 @@ export function OpsSessionProvider({ children }) {
 
       const newPass = {
         id: `pass-${Date.now().toString().slice(-5)}`,
-        studentId: target?.id || result.participantId || 'p_ext',
+        studentId: target?.id || result.participantId || `p_${finalPassId}`,
         participantName: name,
         rollNo: finalPassId,
         passId: finalPassId,
@@ -395,7 +435,7 @@ export function OpsSessionProvider({ children }) {
         status: 'active'
       };
 
-      setActivePasses((prev) => [newPass, ...prev.filter((p) => p.rollNo !== finalPassId)]);
+      setActivePasses((prev) => [newPass, ...prev.filter((p) => p.rollNo !== finalPassId && p.passId !== finalPassId)]);
       passesApi.issuePass(newPass).catch(console.error);
 
       // Ensure participant is also in attendance roster
@@ -436,12 +476,16 @@ export function OpsSessionProvider({ children }) {
     }
 
     // Standard Check-in scan (auto-creates participant in database on the fly if not yet registered)
-    const existing = participants.find(
-      (p) => p.rollNo === result.rollNo || p.id === result.participantId
+    const existing = currentParticipants.find((p) =>
+      p.rollNo === result.rollNo ||
+      p.passId === result.rollNo ||
+      (result.passId && p.passId === result.passId) ||
+      (result.passId && p.rollNo === result.passId) ||
+      p.id === result.participantId
     );
 
     if (existing && existing.status === 'present') {
-      addToast('error', `⚠️ ${existing.name} is already checked in (at ${existing.scannedAt || 'earlier'})`);
+      addToast('error', `⚠️ ${existing.name} (${existing.passId || existing.rollNo}) is already checked in (at ${existing.scannedAt || 'earlier'})`);
       return { success: false, error: 'Already checked in' };
     }
 
@@ -565,14 +609,16 @@ export function OpsSessionProvider({ children }) {
       addToast('success', `✅ ${pName} (${finalPassId}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
     }
-  }, [scanMode, activePasses, participants, addToast]);
+  }, [addToast, addRecentScan]);
 
   // Clear roster records
   const clearRoster = useCallback(() => {
     setParticipants([]);
+    setActivePasses([]);
     setRecentScans([]);
     localStorage.removeItem('ops_roster');
-    addToast('info', 'Participant roster cleared');
+    localStorage.removeItem('ops_active_passes');
+    addToast('info', 'Participant roster & active passes cleared');
   }, [addToast]);
 
   // Start new day session
