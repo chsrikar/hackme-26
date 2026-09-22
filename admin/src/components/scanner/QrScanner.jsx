@@ -7,11 +7,13 @@ import {
   Zap,
   Sparkles,
   Keyboard,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight
 } from 'lucide-react';
 import { useOpsSession } from '../../context/OpsSessionContext';
 import { generateTestPayload } from '../../utils/qrValidation';
-import { PASS_TYPES } from '../../utils/passTypeConfig';
 import ScanModeToggle from './ScanModeToggle';
 import Button from '../common/Button';
 
@@ -30,6 +32,7 @@ export default function QrScanner({ onOpenManualModal }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [manualCodeInput, setManualCodeInput] = useState('');
   const [lastScanned, setLastScanned] = useState(null);
+  const [isDemoDrawerOpen, setIsDemoDrawerOpen] = useState(false);
 
   const html5QrCodeRef = useRef(null);
   const isScanningActiveRef = useRef(false);
@@ -53,7 +56,7 @@ export default function QrScanner({ onOpenManualModal }) {
 
       await html5QrCodeRef.current.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1.0 },
+        { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
         onScanSuccess,
         () => {}
       );
@@ -63,8 +66,8 @@ export default function QrScanner({ onOpenManualModal }) {
       setHasCameraError(true);
       setErrorMessage(
         err?.message?.includes('Permission')
-          ? 'Camera permission denied. Allow browser webcam access or use manual badge code below.'
-          : 'No camera hardware found or in use. Use test triggers or manual code entry below.'
+          ? 'Camera permission denied. Allow webcam in browser settings or use manual badge code below.'
+          : 'No webcam detected. Use the quick manual badge input or test triggers below.'
       );
     }
   }, [onScanSuccess, setIsScannerPaused]);
@@ -97,15 +100,24 @@ export default function QrScanner({ onOpenManualModal }) {
 
   // Quick simulation triggers for evaluator demoing
   const triggerCheckIn = () => {
-    const candidate = participants.find((p) => p.status === 'not_scanned') || participants[0];
+    const candidate = participants.find((p) => p.status === 'not_scanned') || {
+      id: `p_${Date.now().toString().slice(-4)}`,
+      name: 'Alex Rivera',
+      rollNo: `HACK-${Math.floor(10 + Math.random() * 89)}A`,
+      team: 'Team ByteCraft'
+    };
     handleQrScan(generateTestPayload('CHECKIN', candidate));
   };
 
   const triggerPassCheckout = (typeKey) => {
-    // Pick an active checked-in participant who doesn't already have an open pass
     const candidate = participants.find(
       (p) => p.status === 'present' && !activePasses.some((pass) => pass.rollNo === p.rollNo)
-    ) || participants[0];
+    ) || participants[0] || {
+      id: 'p_demo',
+      name: 'Sarah Chen',
+      rollNo: 'HACK-02B',
+      team: 'Team NeuralPulse'
+    };
 
     handleQrScan(generateTestPayload(typeKey, candidate));
   };
@@ -120,7 +132,7 @@ export default function QrScanner({ onOpenManualModal }) {
         team: pass.team
       }));
     } else {
-      handleQrScan(JSON.stringify({ type: 'RETURN', rollNo: 'HACK-99X' }));
+      handleQrScan(JSON.stringify({ type: 'RETURN', rollNo: 'HACK-01A' }));
     }
   };
 
@@ -133,24 +145,39 @@ export default function QrScanner({ onOpenManualModal }) {
 
   return (
     <div className="admin-card panel-scanner">
-      <div className="admin-card-header">
-        <h3 className="admin-card-title">
-          <Camera size={18} style={{ color: 'var(--color-primary)' }} />
-          <span>Badge QR Scanner</span>
-        </h3>
-        <span
-          style={{
-            fontSize: '0.72rem',
-            fontWeight: 800,
-            padding: '2px 8px',
-            borderRadius: 'var(--radius-full)',
-            background: isScannerPaused ? 'var(--status-warning-bg)' : 'var(--status-present-bg)',
-            color: isScannerPaused ? 'var(--status-warning-text)' : 'var(--status-present-text)',
-            border: `1px solid ${isScannerPaused ? 'var(--status-warning-border)' : 'var(--status-present-border)'}`
-          }}
-        >
-          {isScannerPaused ? 'PAUSED' : 'LIVE'}
-        </span>
+      {/* Scanner Header */}
+      <div className="admin-card-header" style={{ marginBottom: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="scanner-header-icon">
+            <Camera size={18} />
+          </div>
+          <div>
+            <h3 className="admin-card-title" style={{ margin: 0, fontSize: '1rem' }}>
+              Badge Scanner Station
+            </h3>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              Optical QR & Manual Verification
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span
+            className={`scanner-status-pill ${isScannerPaused ? 'paused' : 'live'}`}
+          >
+            <span className="pulse-indicator"></span>
+            {isScannerPaused ? 'PAUSED' : 'LIVE'}
+          </span>
+
+          <button
+            type="button"
+            className="btn-icon-subtle"
+            onClick={togglePause}
+            title={isScannerPaused ? 'Resume Camera' : 'Pause Camera'}
+          >
+            {isScannerPaused ? <Camera size={15} /> : <CameraOff size={15} />}
+          </button>
+        </div>
       </div>
 
       {/* Mode Switcher */}
@@ -160,213 +187,130 @@ export default function QrScanner({ onOpenManualModal }) {
       <div className="scanner-viewport-box">
         <div id="reader-viewport"></div>
 
-        {!isScannerPaused && !hasCameraError && <div className="scanner-laser"></div>}
+        {!isScannerPaused && !hasCameraError && (
+          <div className="scanner-laser-container">
+            <div className="scanner-laser"></div>
+            <div className="scanner-corner top-left"></div>
+            <div className="scanner-corner top-right"></div>
+            <div className="scanner-corner bottom-left"></div>
+            <div className="scanner-corner bottom-right"></div>
+          </div>
+        )}
 
         {isScannerPaused && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(15, 23, 42, 0.85)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              gap: '8px'
-            }}
-          >
+          <div className="scanner-paused-overlay">
             <CameraOff size={28} style={{ color: 'var(--status-warning-solid)' }} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Camera Paused</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Camera View Paused</span>
             <Button variant="primary" size="sm" onClick={togglePause}>
-              Resume
+              Resume Viewfinder
             </Button>
           </div>
         )}
 
         {hasCameraError && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: '#090d16',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#f8fafc',
-              padding: '16px',
-              textAlign: 'center',
-              gap: '8px'
-            }}
-          >
-            <AlertCircle size={28} style={{ color: 'var(--status-warning-solid)' }} />
-            <span style={{ fontSize: '0.78rem', lineHeight: 1.3, color: 'var(--text-dim)' }}>
+          <div className="scanner-error-overlay">
+            <AlertCircle size={26} style={{ color: 'var(--status-warning-solid)' }} />
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Webcam Standby
+            </div>
+            <span style={{ fontSize: '0.74rem', lineHeight: 1.3, color: 'var(--text-dim)', maxWidth: '220px' }}>
               {errorMessage}
             </span>
-            <Button variant="secondary" size="sm" icon={RefreshCw} onClick={startCamera}>
-              Retry Camera
-            </Button>
+            <button
+              type="button"
+              className="btn-retry-cam"
+              onClick={startCamera}
+            >
+              <RefreshCw size={13} />
+              <span>Retry Webcam</span>
+            </button>
           </div>
         )}
       </div>
 
-      {/* Action Controls */}
-      <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-        <Button
-          variant={isScannerPaused ? 'primary' : 'secondary'}
-          size="sm"
-          icon={isScannerPaused ? Camera : CameraOff}
-          onClick={togglePause}
-          style={{ flex: 1 }}
-        >
-          {isScannerPaused ? 'Resume Camera' : 'Pause Camera'}
-        </Button>
-
-        <Button
-          variant="secondary"
-          size="sm"
-          icon={Keyboard}
-          onClick={() => onOpenManualModal(null)}
-          title="Manual Roll Override"
-        >
-          Manual
-        </Button>
-      </div>
-
-      {/* Manual Quick Entry */}
-      <form onSubmit={handleManualCodeSubmit} style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
-        <input
-          type="text"
-          className="form-input"
-          style={{ flex: 1, fontSize: '0.82rem', minHeight: '34px', padding: '4px 10px' }}
-          placeholder="Badge Code (e.g. HACK-01A)"
-          value={manualCodeInput}
-          onChange={(e) => setManualCodeInput(e.target.value)}
-        />
-        <Button type="submit" variant="primary" size="sm">
-          Submit
-        </Button>
+      {/* Manual Code Input Bar */}
+      <form onSubmit={handleManualCodeSubmit} className="manual-scan-form">
+        <div className="manual-input-wrapper">
+          <Keyboard size={15} className="input-leading-icon" />
+          <input
+            type="text"
+            className="manual-code-input"
+            placeholder="Scan or enter badge (e.g. HACK-01A)"
+            value={manualCodeInput}
+            onChange={(e) => setManualCodeInput(e.target.value)}
+          />
+        </div>
+        <button type="submit" className="manual-submit-btn" disabled={!manualCodeInput.trim()}>
+          <span>Scan</span>
+          <ArrowRight size={14} />
+        </button>
       </form>
 
-      {/* Instant Demo QR Trigger Panel */}
-      <div
-        style={{
-          marginTop: '12px',
-          padding: '10px',
-          background: 'var(--bg-surface-secondary)',
-          borderRadius: 'var(--radius-md)',
-          border: '1px solid var(--border-subtle)'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase' }}>
-          <Sparkles size={13} style={{ color: 'var(--color-primary)' }} />
-          <span>Demo Scan Simulation Triggers</span>
-        </div>
+      {/* Demo Simulation Drawer (Collapsible) */}
+      <div className="demo-triggers-drawer">
+        <button
+          type="button"
+          className="demo-drawer-toggle"
+          onClick={() => setIsDemoDrawerOpen(!isDemoDrawerOpen)}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Sparkles size={13} style={{ color: 'var(--color-primary)' }} />
+            <span>Quick Badge Simulation Triggers</span>
+          </div>
+          {isDemoDrawerOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        </button>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
-          <button
-            type="button"
-            onClick={triggerCheckIn}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--status-present-solid)',
-              textAlign: 'center'
-            }}
-          >
-            ✅ Check-In Next
-          </button>
+        {isDemoDrawerOpen && (
+          <div className="demo-triggers-grid animate-fade-in">
+            <button
+              type="button"
+              onClick={triggerCheckIn}
+              className="demo-btn checkin"
+            >
+              ✅ Check-In Sample Badge
+            </button>
 
-          <button
-            type="button"
-            onClick={triggerReturn}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--color-primary)',
-              textAlign: 'center'
-            }}
-          >
-            ↩ Return Pass
-          </button>
+            <button
+              type="button"
+              onClick={triggerReturn}
+              className="demo-btn return"
+            >
+              ↩ Return Open Pass
+            </button>
 
-          <button
-            type="button"
-            onClick={() => triggerPassCheckout('WASHROOM')}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: '#3b82f6',
-              textAlign: 'center'
-            }}
-          >
-            🚻 Out: Washroom
-          </button>
+            <button
+              type="button"
+              onClick={() => triggerPassCheckout('WASHROOM')}
+              className="demo-btn washroom"
+            >
+              🚻 Out: Washroom
+            </button>
 
-          <button
-            type="button"
-            onClick={() => triggerPassCheckout('FOOD_PICKUP')}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: '#f59e0b',
-              textAlign: 'center'
-            }}
-          >
-            🍔 Out: Food
-          </button>
+            <button
+              type="button"
+              onClick={() => triggerPassCheckout('FOOD_PICKUP')}
+              className="demo-btn food"
+            >
+              🍔 Out: Food Pickup
+            </button>
 
-          <button
-            type="button"
-            onClick={() => triggerPassCheckout('REST_BREAK')}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: '#8b5cf6',
-              textAlign: 'center'
-            }}
-          >
-            😴 Out: Rest Break
-          </button>
+            <button
+              type="button"
+              onClick={() => triggerPassCheckout('REST_BREAK')}
+              className="demo-btn rest"
+            >
+              😴 Out: Rest Break
+            </button>
 
-          <button
-            type="button"
-            onClick={() => triggerPassCheckout('LEFT_VENUE')}
-            style={{
-              padding: '5px 8px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-strong)',
-              color: '#ef4444',
-              textAlign: 'center'
-            }}
-          >
-            🚪 Out: Left Venue
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => triggerPassCheckout('LEFT_VENUE')}
+              className="demo-btn left-venue"
+            >
+              🚪 Out: Left Venue
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

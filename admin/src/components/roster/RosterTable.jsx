@@ -185,8 +185,27 @@ export default function RosterTable({ onOpenManualModal }) {
         <div className="roster-table-container">
           {filteredParticipants.length === 0 ? (
             <EmptyState
-              title="No participants found"
-              description="Adjust your search query or team filter."
+              title={participants.length === 0 ? "No Participants Registered Yet" : "No Matching Participants"}
+              description={
+                participants.length === 0
+                  ? "When attendees scan their QR badges at the station, their attendance records will automatically populate here in real-time."
+                  : searchQuery
+                  ? `No attendees match "${searchQuery}".`
+                  : "No attendees match the selected team or status filter."
+              }
+              action={
+                participants.length === 0 ? (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    icon={UserPlus}
+                    onClick={() => onOpenManualModal(null)}
+                    style={{ marginTop: '8px' }}
+                  >
+                    Manual Check-In
+                  </Button>
+                ) : null
+              }
             />
           ) : (
             <table className="roster-table">

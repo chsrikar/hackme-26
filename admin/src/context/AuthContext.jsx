@@ -1,34 +1,32 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { MOCK_FACULTY } from '../data/mockRoster';
 import { authApi } from '../services/api';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [faculty, setFaculty] = useState(() => {
-    const saved = localStorage.getItem('faculty_user');
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('ops_user');
     if (saved) {
       try {
         return JSON.parse(saved);
       } catch {
-        // fallback
+        return null;
       }
     }
-    // Default logged-in mock faculty for fast demoing
-    return MOCK_FACULTY;
+    return null;
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await authApi.login(email, password);
-      localStorage.setItem('faculty_token', res.token);
-      localStorage.setItem('faculty_user', JSON.stringify(res.faculty));
-      setFaculty(res.faculty);
+      const res = await authApi.login(username, password);
+      localStorage.setItem('ops_token', res.token);
+      localStorage.setItem('ops_user', JSON.stringify(res.user));
+      setUser(res.user);
       return true;
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -39,13 +37,13 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('faculty_token');
-    localStorage.removeItem('faculty_user');
-    setFaculty(null);
+    localStorage.removeItem('ops_token');
+    localStorage.removeItem('ops_user');
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ faculty, isAuthenticated: Boolean(faculty), loading, error, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: Boolean(user), loading, error, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

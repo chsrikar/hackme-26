@@ -46,28 +46,24 @@ export function OpsSessionProvider({ children }) {
     };
   });
 
-  // Participant Roster
+  // Participant Roster - starts empty; records dynamically populate as QR codes are scanned
   const [participants, setParticipants] = useState(() => {
-    const saved = localStorage.getItem('ops_roster');
-    if (saved) {
-      try { return JSON.parse(saved); } catch {}
-    }
-    return INITIAL_PARTICIPANTS;
+    return [];
   });
 
   // Active Movement Passes
   const [activePasses, setActivePasses] = useState(() => {
-    return INITIAL_ACTIVE_PASSES;
+    return [];
   });
 
   // Food Request Queue
   const [foodRequests, setFoodRequests] = useState(() => {
-    return INITIAL_FOOD_REQUESTS;
+    return [];
   });
 
   // Mentor Assistance Queue
   const [mentorRequests, setMentorRequests] = useState(() => {
-    return INITIAL_MENTOR_REQUESTS;
+    return [];
   });
 
   // Day History Records
@@ -76,6 +72,20 @@ export function OpsSessionProvider({ children }) {
   // Scanner controls
   const [isScannerPaused, setIsScannerPaused] = useState(false);
   const [scanMode, setScanMode] = useState('auto'); // 'auto' | 'checkin' | 'WASHROOM' | etc.
+
+  // Live Recent Scans Activity Stream
+  const [recentScans, setRecentScans] = useState([]);
+
+  const addRecentScan = useCallback((scanItem) => {
+    setRecentScans((prev) => [
+      {
+        id: `scan-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        timestamp: Date.now(),
+        ...scanItem
+      },
+      ...prev.slice(0, 9)
+    ]);
+  }, []);
 
   // Toast notifications
   const [toasts, setToasts] = useState([]);
@@ -101,6 +111,8 @@ export function OpsSessionProvider({ children }) {
   useEffect(() => {
     if (participants && participants.length > 0) {
       localStorage.setItem('ops_roster', JSON.stringify(participants));
+    } else {
+      localStorage.removeItem('ops_roster');
     }
   }, [participants]);
 
@@ -111,7 +123,7 @@ export function OpsSessionProvider({ children }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch initial state from Django SQLite backend
+  // Fetch initial state from database
   useEffect(() => {
     let mounted = true;
     const fetchInitialData = async () => {
@@ -123,7 +135,7 @@ export function OpsSessionProvider({ children }) {
           mentorApi.getMentorRequests()
         ]);
         if (!mounted) return;
-        if (parts.status === 'fulfilled' && parts.value?.length > 0) {
+        if (parts.status === 'fulfilled' && Array.isArray(parts.value)) {
           setParticipants(parts.value);
         }
         if (passes.status === 'fulfilled' && Array.isArray(passes.value)) {
@@ -180,22 +192,71 @@ export function OpsSessionProvider({ children }) {
 
   // Real-time socket event subscriptions
   useEffect(() => {
-    const unsubs = [
-      subscribeToEvent('checkin:marked', (data) => {
-        setParticipants((prev) =>
-          prev.map((p) =>
-            p.rollNo === data.rollNo || p.id === data.participantId
-              ? { ...p, status: 'present', scannedAt: data.scannedAt || formatClockTime(), markedBy: 'qr_scan' }
+    const handleCheckin = (data) => {
+      const roll = data.rollNumber || data.rollNo;
+      const name = data.participantName || data.name || roll;
+      const nowStr = data.scannedAt ? new Date(data.scannedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : formatClockTime();
+
+      setParticipants((prev) => {
+        const exists = prev.some((p) => (roll && p.rollNo === roll) || (data.participantId && p.id === data.participantId));
+        if (exists) {
+          return prev.map((p) =>
+            (roll && p.rollNo === roll) || (data.participantId && p.id === data.participantId)
+              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
               : p
-          )
-        );
-        addToast('success', `✅ ${data.name || data.rollNo} checked in!`);
-      }),
+          );
+        }
+        return [
+          {
+            id: data.participantId || `p_${Date.now()}`,
+            name,
+            rollNo: roll,
+            team: data.team || 'Open Squad',
+            table: data.table || 'Table 01',
+            status: 'present',
+            scannedAt: nowStr,
+            markedBy: 'qr_scan'
+          },
+          ...prev
+        ];
+      });
+      addToast('success', `✅ ${name} checked in!`);
+      addRecentScan({
+        name,
+        rollNo: roll,
+        team: data.team || 'Open Squad',
+        actionType: 'CHECKIN',
+        mode: 'checkin'
+      });
+    };
+
+    const unsubs = [
+      subscribeToEvent('attendance:marked', handleCheckin),
+      subscribeToEvent('checkin:marked', handleCheckin),
 
       subscribeToEvent('pass:issued', (newPass) => {
         setActivePasses((prev) => [newPass, ...prev.filter((p) => p.id !== newPass.id)]);
         const cfg = getPassConfig(newPass.passType);
         addToast('info', `${cfg.icon} ${newPass.participantName} out — ${cfg.label}`, newPass.reason);
+        addRecentScan({
+          name: newPass.participantName,
+          rollNo: newPass.rollNo,
+          team: newPass.team,
+          actionType: 'PASS_OUT',
+          passType: newPass.passType,
+          reason: newPass.reason
+        });
+      }),
+
+      subscribeToEvent('hallpass:returned', (data) => {
+        setActivePasses((prev) => prev.filter((p) => p.id !== data.passId));
+        addToast('success', `↩️ ${data.participantName || 'Participant'} returned from pass`);
+        addRecentScan({
+          name: data.participantName || 'Participant',
+          rollNo: data.rollNo,
+          actionType: 'RETURN',
+          passType: data.passType
+        });
       }),
 
       subscribeToEvent('pass:returned', (data) => {
@@ -208,7 +269,7 @@ export function OpsSessionProvider({ children }) {
   }, [addToast]);
 
   // Handle QR Scan (Supports Check-in, Any Movement Pass checkout, or Pass Return)
-  const handleQrScan = useCallback((rawPayload) => {
+  const handleQrScan = useCallback(async (rawPayload) => {
     const result = validateAndParseQrPayload(rawPayload);
 
     if (!result.isValid) {
@@ -226,7 +287,7 @@ export function OpsSessionProvider({ children }) {
 
     if (isReturnScan) {
       if (!currentPass) {
-        addToast('error', `⚠️ No active pass found for ${result.name} (${result.rollNo})`);
+        addToast('error', `⚠️ No active pass found for ${result.name || result.rollNo}`);
         return { success: false, error: 'No active pass' };
       }
 
@@ -236,6 +297,15 @@ export function OpsSessionProvider({ children }) {
 
       setActivePasses((prev) => prev.filter((p) => p.id !== currentPass.id));
       passesApi.returnPass(currentPass.id).catch(console.error);
+
+      addRecentScan({
+        name: currentPass.participantName,
+        rollNo: currentPass.rollNo,
+        team: currentPass.team,
+        actionType: 'RETURN',
+        passType: currentPass.passType,
+        duration: durationStr
+      });
 
       addToast('success', `↩️ ${currentPass.participantName} returned — duration: ${durationStr}`, `${cfg.icon} ${cfg.label} completed`);
       return { success: true, mode: 'return', duration: durationStr };
@@ -247,8 +317,8 @@ export function OpsSessionProvider({ children }) {
       const cfg = getPassConfig(passTypeToUse);
 
       const target = participants.find((p) => p.rollNo === result.rollNo || p.id === result.participantId);
-      const name = target?.name || result.name;
-      const team = target?.team || result.team;
+      const name = target?.name || result.name || `Badge ${result.rollNo}`;
+      const team = target?.team || result.team || 'Open Squad';
 
       const newPass = {
         id: `pass-${Date.now().toString().slice(-5)}`,
@@ -265,39 +335,116 @@ export function OpsSessionProvider({ children }) {
       setActivePasses((prev) => [newPass, ...prev]);
       passesApi.issuePass(newPass).catch(console.error);
 
+      addRecentScan({
+        name,
+        rollNo: result.rollNo,
+        team,
+        actionType: 'PASS_OUT',
+        passType: passTypeToUse,
+        reason: newPass.reason
+      });
+
       addToast('info', `${cfg.icon} ${name} out — ${cfg.label}`, `Allowed limit: ${cfg.overdueMinutes}m • ${team}`);
       return { success: true, mode: 'pass_checkout', type: passTypeToUse };
     }
 
-    // Standard Check-in scan
-    const participant = participants.find(
+    // Standard Check-in scan (auto-creates participant in database on the fly if not yet registered)
+    const existing = participants.find(
       (p) => p.rollNo === result.rollNo || p.id === result.participantId
     );
 
-    if (!participant) {
-      addToast('error', `⚠️ Badge ${result.rollNo} is not registered in this hackathon cohort`);
-      return { success: false, error: 'Not in roster' };
-    }
-
-    if (participant.status === 'present') {
-      addToast('error', `⚠️ ${participant.name} is already checked in (at ${participant.scannedAt || 'earlier'})`);
+    if (existing && existing.status === 'present') {
+      addToast('error', `⚠️ ${existing.name} is already checked in (at ${existing.scannedAt || 'earlier'})`);
       return { success: false, error: 'Already checked in' };
     }
 
     const nowStr = formatClockTime();
 
-    setParticipants((prev) =>
-      prev.map((p) =>
-        p.id === participant.id
-          ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
-          : p
-      )
-    );
+    try {
+      const data = await rosterApi.processScan(rawPayload, 'CHECKIN');
+      const pName = data?.participantName || data?.name || result.name || `Badge ${result.rollNo}`;
+      const pRoll = data?.rollNumber || data?.rollNo || result.rollNo;
+      const pTeam = data?.team || result.team || 'Open Squad';
+      const pTable = data?.table || result.table || 'Table 01';
+      const pId = data?.participantId || data?.id || result.participantId || `p_${Date.now()}`;
 
-    rosterApi.processScan(participant.rollNo, 'CHECKIN').catch(console.error);
+      setParticipants((prev) => {
+        const found = prev.some((p) => p.rollNo === pRoll || p.id === pId);
+        if (found) {
+          return prev.map((p) =>
+            p.rollNo === pRoll || p.id === pId
+              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
+              : p
+          );
+        }
+        return [
+          {
+            id: pId,
+            name: pName,
+            rollNo: pRoll,
+            team: pTeam,
+            table: pTable,
+            status: 'present',
+            scannedAt: nowStr,
+            markedBy: 'qr_scan'
+          },
+          ...prev
+        ];
+      });
 
-    addToast('success', `✅ ${participant.name} checked in!`, `${participant.team} • Table: ${participant.table} • ${nowStr}`);
-    return { success: true, mode: 'checkin', participant: participant.name };
+      addRecentScan({
+        name: pName,
+        rollNo: pRoll,
+        team: pTeam,
+        actionType: 'CHECKIN',
+        mode: 'checkin'
+      });
+
+      addToast('success', `✅ ${pName} checked in!`, `${pTeam} • Table: ${pTable} • ${nowStr}`);
+      return { success: true, mode: 'checkin', participant: pName };
+    } catch (err) {
+      if (err.response?.status === 409) {
+        addToast('error', `⚠️ ${err.response?.data?.message || 'Already checked in'}`);
+        return { success: false, error: 'Already checked in' };
+      }
+      
+      // Fallback local registration if server unreachable
+      const pName = result.name || `Badge ${result.rollNo}`;
+      setParticipants((prev) => {
+        const found = prev.some((p) => p.rollNo === result.rollNo);
+        if (found) {
+          return prev.map((p) =>
+            p.rollNo === result.rollNo
+              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
+              : p
+          );
+        }
+        return [
+          {
+            id: result.participantId || `p_${Date.now()}`,
+            name: pName,
+            rollNo: result.rollNo,
+            team: result.team || 'Open Squad',
+            table: result.table || 'Table 01',
+            status: 'present',
+            scannedAt: nowStr,
+            markedBy: 'qr_scan'
+          },
+          ...prev
+        ];
+      });
+
+      addRecentScan({
+        name: pName,
+        rollNo: result.rollNo,
+        team: result.team || 'Open Squad',
+        actionType: 'CHECKIN',
+        mode: 'checkin'
+      });
+
+      addToast('success', `✅ ${pName} checked in!`, `${result.team || 'Open Squad'} • ${nowStr}`);
+      return { success: true, mode: 'checkin', participant: pName };
+    }
   }, [scanMode, activePasses, participants, addToast]);
 
   // Start new day session
@@ -444,6 +591,7 @@ export function OpsSessionProvider({ children }) {
         setIsScannerPaused,
         scanMode,
         setScanMode,
+        recentScans,
         toasts,
         addToast,
         removeToast,

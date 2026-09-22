@@ -5,20 +5,15 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('ops.lead@hackme26.dev');
-  const [password, setPassword] = useState('hackme_ops_2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const { login, loading, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const ok = await login(email, password);
+    const ok = await login(username, password);
     if (ok) navigate('/');
-  };
-
-  const handleQuickDemo = () => {
-    setEmail('ops.lead@hackme26.dev');
-    setPassword('hackme_ops_2026');
   };
 
   return (
@@ -75,19 +70,20 @@ export default function LoginForm() {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label" htmlFor="ops-email">
-            Ops Staff Email
+          <label className="form-label" htmlFor="ops-username">
+            Username
           </label>
           <div style={{ position: 'relative' }}>
             <input
-              id="ops-email"
-              type="email"
+              id="ops-username"
+              type="text"
               required
               className="form-input"
               style={{ width: '100%', paddingLeft: '38px' }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="ops.lead@hackme26.dev"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              autoComplete="username"
             />
             <Mail
               size={18}
@@ -98,7 +94,7 @@ export default function LoginForm() {
 
         <div className="form-group">
           <label className="form-label" htmlFor="ops-password">
-            Access Key / Password
+            Password
           </label>
           <div style={{ position: 'relative' }}>
             <input
@@ -110,6 +106,7 @@ export default function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
+              autoComplete="current-password"
             />
             <Lock
               size={18}
@@ -137,20 +134,13 @@ export default function LoginForm() {
           borderTop: '1px solid var(--border-subtle)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
           fontSize: '0.82rem'
         }}
       >
         <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
           <ShieldCheck size={14} /> Organizer / Volunteer Access
         </span>
-        <button
-          type="button"
-          onClick={handleQuickDemo}
-          style={{ color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'underline' }}
-        >
-          Use Demo Credentials
-        </button>
       </div>
     </div>
   );

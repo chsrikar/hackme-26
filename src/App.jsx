@@ -19,6 +19,7 @@ import RubricPage from './pages/RubricPage';
 import TerminalPage from './pages/TerminalPage';
 import ContactPage from './pages/ContactPage';
 import FoodMenuPage from './pages/FoodMenuPage';
+import AdminPortalPage from './pages/AdminPortalPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/admin-portal" element={<AdminPortalPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </PageWrapper>

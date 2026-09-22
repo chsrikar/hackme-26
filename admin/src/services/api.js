@@ -24,16 +24,24 @@ apiClient.interceptors.request.use((config) => {
 });
 
 export const authApi = {
-  // TODO: replace with real endpoint POST /auth/ops/login
-  login: async (email, password) => {
+  // Admin authentication with hardcoded credentials
+  login: async (username, password) => {
     await new Promise((r) => setTimeout(r, 300));
-    if (email && password) {
+    
+    // Validate credentials
+    if (username === 'ADMIN' && password === 'H@ackME#26') {
       return {
-        token: 'mock_hackathon_ops_jwt_token_8899',
-        user: { ...MOCK_OPS_USER, email }
+        token: 'hackme26_admin_jwt_token_secured',
+        user: { 
+          id: 'admin-001',
+          username: 'ADMIN',
+          role: 'administrator',
+          permissions: ['all']
+        }
       };
     }
-    throw new Error('Invalid email or password');
+    
+    throw new Error('Invalid username or password');
   }
 };
 
@@ -130,24 +138,24 @@ export const rosterApi = {
   getParticipants: async () => {
     try {
       const res = await apiClient.get('/participants/');
-      if (res.data && res.data.length > 0) {
+      if (res.data && Array.isArray(res.data)) {
         return res.data.map((p) => ({
           id: String(p.id),
           name: p.name,
-          rollNo: p.roll_no,
-          team: p.team_name,
+          rollNo: p.rollNo || p.rollNumber || p.roll_no,
+          team: p.team || p.team_name,
           table: p.table,
           status: p.status,
-          scannedAt: p.scanned_at ? new Date(p.scanned_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null,
-          markedBy: p.marked_by,
+          scannedAt: p.scannedAt ? new Date(p.scannedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : (p.scanned_at ? new Date(p.scanned_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null),
+          markedBy: p.markedBy || p.marked_by,
           phone: p.phone,
-          overrideNotes: p.override_notes
+          overrideNotes: p.overrideNotes || p.override_notes
         }));
       }
     } catch (e) {
       console.warn('rosterApi.getParticipants fallback:', e);
     }
-    return JSON.parse(JSON.stringify(INITIAL_PARTICIPANTS));
+    return [];
   },
 
   manualCheckInOverride: async (payload) => {
@@ -163,12 +171,39 @@ export const rosterApi = {
     }
   },
 
-  processScan: async (rollNo, type = 'CHECKIN', reason = '') => {
-    const res = await apiClient.post('/participants/scan/', {
-      rollNo,
-      type,
-      reason
+  processScan: async (tokenOrRoll, type = 'CHECKIN', reason = '') => {
+    try {
+      const res = await axios.post('/api/scan', { qrToken: String(tokenOrRoll) }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return res.data;
+    } catch (nodeErr) {
+      if (nodeErr.response?.status === 409) {
+        throw nodeErr;
+      }
+      try {
+        const res = await apiClient.post('/participants/scan/', {
+          rollNo: tokenOrRoll,
+          type,
+          reason
+        });
+        return res.data;
+      } catch (e) {
+        throw nodeErr;
+      }
+    }
+  }
+};
+
+export const scanApi = {
+  scanQr: async (qrToken) => {
+    const res = await axios.post('/api/scan', { qrToken }, {
+      headers: { 'Content-Type': 'application/json' }
     });
+    return res.data;
+  },
+  getBadgeToken: async (rollNo) => {
+    const res = await axios.get(`/api/participants/${rollNo}/badge-token`);
     return res.data;
   }
 };

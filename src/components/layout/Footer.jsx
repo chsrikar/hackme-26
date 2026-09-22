@@ -82,6 +82,23 @@ export default function Footer() {
               <li><a href="https://forms.gle/Z1KZCfkG4Jqq4eqj9" target="_blank" rel="noopener noreferrer" style={{ color: '#171717', textDecoration: 'none' }}>Register</a></li>
             </ul>
           </div>
+
+          {/* Col 4: Resources & Admin */}
+          <div>
+            <div className="font-pixel" style={{ fontSize: '0.85rem', color: '#0a0a0c', fontWeight: 800, marginBottom: '14px', textTransform: 'uppercase' }}>
+              Resources
+            </div>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem', fontWeight: 600, padding: 0, margin: 0 }}>
+              <li><Link to="/faq" style={{ color: '#171717', textDecoration: 'none' }}>FAQ</Link></li>
+              <li><Link to="/contact" style={{ color: '#171717', textDecoration: 'none' }}>Contact</Link></li>
+              <li><Link to="/food-menu" style={{ color: '#171717', textDecoration: 'none' }}>Food Menu</Link></li>
+              <li style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(0, 0, 0, 0.15)' }}>
+                <Link to="/admin-portal" style={{ color: '#0a0a0c', textDecoration: 'none', fontSize: '0.82rem', opacity: 0.7, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.target.style.opacity = 1} onMouseLeave={(e) => e.target.style.opacity = 0.7}>
+                  🔒 Admin Portal
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* Bottom Horizontal Line */}

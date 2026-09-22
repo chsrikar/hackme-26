@@ -1,0 +1,102 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Team {
+  id           String        @id @default(uuid())
+  name         String
+  tableNumber  String?
+  projectTitle String?
+  participants Participant[]
+  createdAt    DateTime      @default(now())
+}
+
+model Participant {
+  id          String             @id @default(uuid())
+  name        String
+  rollNumber  String             @unique
+  email       String?
+  phone       String?
+  college     String?
+  department  String?
+  referral    String?
+  teamId      String
+  team        Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  attendance  AttendanceRecord[]
+  passes      MovementPass[]
+  createdAt   DateTime           @default(now())
+}
+
+model DaySession {
+  id         String             @id @default(uuid())
+  label      String             // "Day 1", "Day 2"
+  startedAt  DateTime           @default(now())
+  closedAt   DateTime?
+  status     String             @default("active") // active | closed
+  attendance AttendanceRecord[]
+  passes     MovementPass[]
+}
+
+model AttendanceRecord {
+  id                String      @id @default(uuid())
+  participantId     String
+  participant       Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  daySessionId      String
+  daySession        DaySession  @relation(fields: [daySessionId], references: [id], onDelete: Cascade)
+  status            String      // present | absent
+  scannedAt         DateTime?
+  markedBy          String      // "scan" | "manual_override"
+  overrideByStaffId String?
+  createdAt         DateTime    @default(now())
+
+  @@unique([participantId, daySessionId])
+}
+
+model MovementPass {
+  id               String      @id @default(uuid())
+  participantId    String
+  participant      Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  daySessionId     String
+  daySession       DaySession  @relation(fields: [daySessionId], references: [id], onDelete: Cascade)
+  passType         String      // washroom | food_pickup | rest_break | left_venue
+  reason           String?
+  requestedAt      DateTime    @default(now())
+  expectedReturnBy DateTime
+  returnedAt       DateTime?
+  status           String      @default("active") // active | returned | overdue
+  closedBy         String?     // "self" | "staff_force_close"
+  createdAt        DateTime    @default(now())
+}
+
+model FoodRequest {
+  id            String   @id @default(uuid())
+  participantId String?
+  teamId        String?
+  teamName      String?
+  table         String?
+  items         String
+  quantity      Int      @default(1)
+  dietaryNote   String?
+  status        String   @default("pending") // pending | preparing | ready | delivered
+  requestedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model MentorRequest {
+  id             String    @id @default(uuid())
+  participantId  String?
+  teamId         String?
+  teamName       String?
+  table          String?
+  topic          String
+  category       String?
+  status         String    @default("open") // open | claimed | resolved
+  mentorAssigned String?
+  requestedAt    DateTime  @default(now())
+  resolvedAt     DateTime?
+}

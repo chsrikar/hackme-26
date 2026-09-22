@@ -86,7 +86,17 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
         participant = Participant.objects.filter(roll_no__iexact=roll_no).first()
         if not participant:
-            return Response({'error': f'Participant {roll_no} not registered'}, status=status.HTTP_404_NOT_FOUND)
+            team_name = request.data.get('team') or 'Open Squad'
+            table_name = request.data.get('table') or 'Table 01'
+            team, _ = Team.objects.get_or_create(name=team_name, defaults={'table_number': table_name})
+            participant_name = request.data.get('name') or f'Participant {roll_no.upper()}'
+            participant = Participant.objects.create(
+                roll_no=roll_no.upper(),
+                name=participant_name,
+                team=team,
+                table=table_name,
+                status='not_scanned'
+            )
 
         # Check if participant currently has an active movement pass
         active_pass = MovementPass.objects.filter(participant=participant, status='active').first()

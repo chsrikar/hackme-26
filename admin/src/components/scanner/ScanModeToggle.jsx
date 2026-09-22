@@ -1,56 +1,65 @@
 import React from 'react';
+import { Sparkles, CheckCircle2, RotateCcw } from 'lucide-react';
 import { PASS_TYPE_LIST } from '../../utils/passTypeConfig';
 
 export default function ScanModeToggle({ scanMode, setScanMode }) {
   return (
-    <div style={{ marginBottom: '12px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-        <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-          SCAN ACTION MODE:
-        </span>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-          Auto-detects from badge QR
+    <div className="scanner-mode-container">
+      <div className="scanner-mode-header">
+        <span className="mode-label">SCAN INTENT:</span>
+        <span className="mode-hint">
+          {scanMode === 'auto' ? '⚡ Auto-decides Check-in or Return' : `Target: ${scanMode.replace('_', ' ')}`}
         </span>
       </div>
 
-      <div className="scanner-mode-switch">
+      <div className="scanner-mode-grid">
         <button
           type="button"
-          className={`mode-tab ${scanMode === 'auto' ? 'active' : ''}`}
+          className={`mode-pill ${scanMode === 'auto' ? 'active auto' : ''}`}
           onClick={() => setScanMode('auto')}
-          title="Auto-detect action from QR payload"
+          title="Auto-detect action from badge QR"
         >
-          Auto
+          <Sparkles size={13} />
+          <span>Auto</span>
         </button>
 
         <button
           type="button"
-          className={`mode-tab ${scanMode === 'checkin' ? 'active' : ''}`}
+          className={`mode-pill ${scanMode === 'checkin' ? 'active checkin' : ''}`}
           onClick={() => setScanMode('checkin')}
+          title="Force attendee check-in"
         >
-          Check-In
+          <CheckCircle2 size={13} />
+          <span>Check-In</span>
+        </button>
+
+        <button
+          type="button"
+          className={`mode-pill ${scanMode === 'return' ? 'active return' : ''}`}
+          onClick={() => setScanMode('return')}
+          title="Mark participant pass returned"
+        >
+          <RotateCcw size={13} />
+          <span>Return</span>
         </button>
 
         {PASS_TYPE_LIST.map((pt) => (
           <button
             key={pt.id}
             type="button"
-            className={`mode-tab ${scanMode === pt.id ? 'active' : ''}`}
+            className={`mode-pill ${scanMode === pt.id ? 'active' : ''}`}
             onClick={() => setScanMode(pt.id)}
-            title={pt.label}
+            style={{
+              '--active-color': pt.color,
+              '--active-bg': pt.bgColor,
+              '--active-border': pt.borderColor
+            }}
+            title={`Issue ${pt.label} pass`}
           >
-            {pt.icon}
+            <span>{pt.icon}</span>
+            <span>{pt.label}</span>
           </button>
         ))}
-
-        <button
-          type="button"
-          className={`mode-tab ${scanMode === 'return' ? 'active' : ''}`}
-          onClick={() => setScanMode('return')}
-          title="Mark participant pass returned"
-        >
-          ↩ Return
-        </button>
       </div>
     </div>
   );
