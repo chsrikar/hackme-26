@@ -7,6 +7,7 @@ export default function CrtMonitor() {
     { id: 'schedule', name: 'Schedule', icon: <Clock size={22} color="#f26207" />, color: '#f26207', desc: '36-Hour Chronological Runbook & Milestones', path: '/schedule' },
     { id: 'vectors', name: 'Vectors', icon: <Cpu size={22} color="#00ff80" />, color: '#00ff80', desc: 'Frontier AI, Systems, Hardware & Web3 Tracks', path: '/vectors' },
     { id: 'prizes', name: 'Prizes', icon: <Sparkles size={22} color="#fbbf24" />, color: '#fbbf24', desc: 'Prize Pool & Recognition // Announced Soon', path: '/prizes' },
+    { id: 'food-menu', name: 'F&B Menu', icon: <Folder size={22} color="#10b981" />, color: '#10b981', desc: 'Food & Beverage Menu // Coming Soon', path: '/food-menu' },
     { id: 'rules', name: 'Rules', icon: <Shield size={22} color="#38bdf8" />, color: '#38bdf8', desc: 'Code of Conduct, Submission Deadlines & Team Size', path: '/rules' },
     { id: 'mentors', name: 'Mentors', icon: <Network size={22} color="#a855f7" />, color: '#a855f7', desc: '1-on-1 Senior Engineers & Faculty Office Hours', path: '/mentors' },
     { id: 'rubric', name: 'Rubric', icon: <Radio size={22} color="#00ff80" />, color: '#00ff80', desc: 'Transparent Automated Evaluation & Scoring Rubric', path: '/rubric' },

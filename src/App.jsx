@@ -18,6 +18,7 @@ import MentorsPage from './pages/MentorsPage';
 import RubricPage from './pages/RubricPage';
 import TerminalPage from './pages/TerminalPage';
 import ContactPage from './pages/ContactPage';
+import FoodMenuPage from './pages/FoodMenuPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/vectors" element={<VectorsPage />} />
           <Route path="/tracks" element={<Navigate to="/vectors" replace />} />
           <Route path="/prizes" element={<PrizesPage />} />
+          <Route path="/food-menu" element={<FoodMenuPage />} />
           <Route path="/rules" element={<RulesPage />} />
           <Route path="/mentors" element={<MentorsPage />} />
           <Route path="/team" element={<MentorsPage />} />

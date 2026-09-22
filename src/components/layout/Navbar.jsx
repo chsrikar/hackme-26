@@ -37,6 +37,10 @@ export default function Navbar() {
             Team
           </NavLink>
 
+          <NavLink to="/food-menu" className={({ isActive }) => `nav-pixel-link clip-pixel-corners ${isActive ? 'active' : ''}`}>
+            F&B Menu
+          </NavLink>
+
           <NavLink to="/faq" className={({ isActive }) => `nav-pixel-link clip-pixel-corners ${isActive ? 'active' : ''}`}>
             FAQ
           </NavLink>
