@@ -21,16 +21,17 @@ export function validateAndParseQrPayload(rawPayload) {
 
   const trimmed = rawPayload.trim();
 
-  // JSON format
+  // JSON format (Option 2: Embedded Participant JSON Payload)
   if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
     try {
       const parsed = JSON.parse(trimmed);
 
-      if (!parsed.rollNo && !parsed.participantId && !parsed.studentId) {
-        return { isValid: false, error: 'QR payload missing participant identifier' };
+      const rollNo = parsed.rollNumber || parsed.rollNo || parsed.roll_no || parsed.passId || parsed.pass_id || parsed.studentId || parsed.participantId || parsed.id;
+      if (!rollNo) {
+        return { isValid: false, error: 'QR payload missing participant identifier (rollNumber / rollNo / passId)' };
       }
 
-      // Check expiry (reject if older than 24 hours)
+      // Check expiry (reject if older than 24 hours, only if timestamp exists)
       if (parsed.timestamp) {
         const ageMs = Date.now() - Number(parsed.timestamp);
         if (ageMs > 24 * 60 * 60 * 1000) {
@@ -38,16 +39,19 @@ export function validateAndParseQrPayload(rawPayload) {
         }
       }
 
-      let type = (parsed.type || 'checkin').toUpperCase();
+      let type = (parsed.type || 'CHECKIN').toUpperCase();
       if (type === 'ATTENDANCE') type = 'CHECKIN';
 
       return {
         isValid: true,
         type,
         participantId: parsed.participantId || parsed.studentId,
-        rollNo: parsed.rollNo,
-        name: parsed.name || 'Participant',
-        team: parsed.team || 'Hackathon Team',
+        rollNo: String(rollNo),
+        name: parsed.name || parsed.participantName || parsed.studentName || `Participant ${rollNo}`,
+        team: parsed.team || parsed.teamName || 'Team Alpha',
+        table: parsed.table || parsed.tableNumber || 'Table 01',
+        college: parsed.college || 'VISAT',
+        phone: parsed.phone || parsed.mobile || '',
         reason: parsed.reason,
         timestamp: parsed.timestamp || Date.now()
       };

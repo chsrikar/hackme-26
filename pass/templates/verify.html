@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HACK26 — Pass Verification</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #061122;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+        }
+
+        .verify-card {
+            width: 100%;
+            max-width: 440px;
+            background: #0c1d33;
+            border-radius: 16px;
+            border: 1px solid #1a385c;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-header {
+            background: #08172b;
+            padding: 18px 20px;
+            text-align: center;
+            border-bottom: 1px solid #183654;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #16c8ff;
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            color: #8fa5bf;
+            margin-top: 3px;
+        }
+
+        .status-hero {
+            padding: 28px 20px 20px;
+            text-align: center;
+        }
+
+        .status-hero.valid {
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%);
+        }
+
+        .status-hero.invalid {
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.15) 0%, transparent 100%);
+        }
+
+        .badge-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+        }
+
+        .badge-icon.valid {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .badge-icon.invalid {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .status-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .status-title.valid {
+            color: #34d399;
+        }
+
+        .status-title.invalid {
+            color: #f87171;
+        }
+
+        .status-subtitle {
+            font-size: 13px;
+            color: #9cb3cc;
+        }
+
+        /* Scan Log Receipt Notice */
+        .scan-receipt {
+            margin: 14px 20px 0;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: rgba(22, 200, 255, 0.1);
+            border: 1px solid rgba(22, 200, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #62d8ff;
+        }
+
+        .details-list {
+            padding: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid #162f4d;
+            font-size: 14px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #7e9bb9;
+            font-size: 13px;
+            min-width: 100px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+            color: #ffffff;
+        }
+
+        .pass-tag {
+            font-family: monospace;
+            font-size: 15px;
+            color: #16c8ff;
+            background: rgba(22, 200, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(22, 200, 255, 0.3);
+        }
+
+        .hostel-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hostel-approved {
+            background: #064e3b;
+            color: #6ee7b7;
+            border: 1px solid #10b981;
+        }
+
+        .hostel-denied {
+            background: #232c38;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+
+        .footer {
+            padding: 16px 20px 22px;
+            text-align: center;
+            border-top: 1px solid #183654;
+            background: #08172b;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #6885a3;
+            margin-top: 6px;
+        }
+
+        .refresh-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 22px;
+            background: #16c8ff;
+            color: #031321;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .refresh-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="verify-card">
+    <div class="brand-header">
+        <div class="brand-title">HACK26 PASS VERIFICATION</div>
+        <div class="brand-sub">VISAT Engineering College • 24H Hackathon</div>
+    </div>
+
+    {% if valid and participant %}
+        <div class="status-hero valid">
+            <div class="badge-icon valid">✓</div>
+            <div class="status-title valid">PASS VERIFIED & LOGGED</div>
+            <div class="status-subtitle">Participant authorized for venue entry</div>
+        </div>
+
+        {% if scan_logged %}
+        <div class="scan-receipt">
+            <span>💾 Scan Recorded in Database</span>
+            <span>Scan #{{ total_scans }}</span>
+        </div>
+        {% endif %}
+
+        <div class="details-list">
+            <div class="detail-row">
+                <span class="detail-label">Pass ID</span>
+                <span class="detail-value pass-tag">{{ participant["pass_id"] }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Participant</span>
+                <span class="detail-value" style="font-size: 15px; color: #16c8ff;">{{ participant["name"] }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">College</span>
+                <span class="detail-value">{{ participant["college"] or "VISAT" }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Department</span>
+                <span class="detail-value">{{ participant["department_batch"] or "CSE" }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Hostel Access</span>
+                <span class="detail-value">
+                    {% if participant["hostel_access"] == 1 %}
+                        <span class="hostel-badge hostel-approved">✓ HOSTEL APPROVED</span>
+                    {% else %}
+                        <span class="hostel-badge hostel-denied">NO HOSTEL ACCESS</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Check-in Location</span>
+                <span class="detail-value">{{ location or "Main Entrance" }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Total Scans</span>
+                <span class="detail-value" style="color: #34d399;">{{ total_scans }} time(s)</span>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="status-hero invalid">
+            <div class="badge-icon invalid">✕</div>
+            <div class="status-title invalid">INVALID / INACTIVE PASS</div>
+            <div class="status-subtitle">
+                {{ message or "This pass is not active or payment has not been verified." }}
+            </div>
+        </div>
+
+        {% if participant %}
+        <div class="details-list">
+            <div class="detail-row">
+                <span class="detail-label">Name</span>
+                <span class="detail-value">{{ participant["name"] }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Pass ID</span>
+                <span class="detail-value pass-tag">{{ participant["pass_id"] or "N/A" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Payment Status</span>
+                <span class="detail-value" style="color: #facc15;">{{ participant["payment_status"] or "PENDING" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Pass Status</span>
+                <span class="detail-value" style="color: #f87171;">{{ participant["status"] or "INACTIVE" }}</span>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="footer">
+        <div style="font-size: 12px; color: #9cb3cc;">
+            Security & Gate Verification Portal
+        </div>
+        <div class="timestamp">
+            Verification Time: {{ last_scan or "Now" }}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HACK26 Control Panel</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #06152b;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            padding: 25px 40px;
+            border-bottom: 1px solid #183654;
+            background: #071a32;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #16c8ff;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: #9db0c7;
+        }
+
+        .container {
+            padding: 30px 40px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        /* =========================
+           FLASH MESSAGES
+        ========================= */
+
+        .flash {
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background: #064e3b;
+            color: #6ee7b7;
+            border: 1px solid #10b981;
+        }
+
+        .flash.error {
+            background: #450a0a;
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+        }
+
+        .flash.warning {
+            background: #451a03;
+            color: #fcd34d;
+            border: 1px solid #f59e0b;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(180px, 1fr));
+
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            padding: 22px;
+            border-radius: 12px;
+            background: #0b2745;
+            border: 1px solid #173d60;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #9db0c7;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .number {
+            margin-top: 10px;
+            font-size: 34px;
+            font-weight: bold;
+            color: #16c8ff;
+        }
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search-box {
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px;
+
+            border-radius: 8px;
+            border: 1px solid #315675;
+
+            background: #071a32;
+            color: white;
+
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #16c8ff;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-container {
+            overflow-x: auto;
+
+            border-radius: 12px;
+            border: 1px solid #173d60;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+
+            background: #0b2745;
+            color: #9db0c7;
+
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #173d60;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #0a2038;
+        }
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .paid {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .active {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .inactive {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .pass-id {
+            color: #16c8ff;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .action-area {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .send-button {
+            padding: 10px 16px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: #16c8ff;
+            color: #031321;
+
+            font-weight: bold;
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .send-button:hover {
+            background: #5bdcff;
+            transform: translateY(-1px);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .sent-button {
+            padding: 10px 16px;
+
+            border-radius: 7px;
+
+            background: #064e3b;
+            color: #4ade80;
+
+            border: 1px solid #10b981;
+
+            font-weight: bold;
+        }
+
+        .proof-button {
+            display: inline-block;
+
+            padding: 10px 14px;
+
+            border-radius: 7px;
+
+            background: #173d60;
+            color: #16c8ff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .proof-button:hover {
+            background: #215276;
+        }
+
+        .no-proof {
+            color: #64748b;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .number {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div class="header">
+
+    <h1>HACK26 CONTROL PANEL</h1>
+
+    <p>
+        Participant Pass Management System
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         FLASH MESSAGES
+    ================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =================================================
+         STATISTICS
+    ================================================== -->
+
+    <div class="stats">
+
+
+        <div class="card">
+
+            <h3>Registered</h3>
+
+            <div class="number">
+                {{ total_registered }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Paid</h3>
+
+            <div class="number">
+                {{ total_paid }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Passes Generated</h3>
+
+            <div class="number">
+                {{ total_passes }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Active Passes</h3>
+
+            <div class="number">
+                {{ total_active }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Hostel Authorized</h3>
+
+            <div class="number">
+                {{ total_hostel }}
+            </div>
+
+        </div>
+
+
+        <div class="card" style="border-color: #10b981;">
+
+            <h3 style="color: #6ee7b7;">Checked In</h3>
+
+            <div class="number" style="color: #34d399;">
+                {{ total_checked_in }}
+            </div>
+
+        </div>
+
+
+        <div class="card" style="border-color: #0284c7;">
+
+            <h3 style="color: #7dd3fc;">Total Scans</h3>
+
+            <div class="number" style="color: #38bdf8;">
+                {{ total_scans }}
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         LIVE SEARCH
+    ================================================== -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search name, college, mobile, email or Pass ID..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+    <!-- =================================================
+         PARTICIPANTS TABLE
+    ================================================== -->
+
+    <div class="table-container">
+
+        <table id="participantsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>Name</th>
+
+                    <th>College</th>
+
+                    <th>Department</th>
+
+                    <th>Mobile</th>
+
+                    <th>Email</th>
+
+                    <th>Payment</th>
+
+                    <th>Pass ID</th>
+
+                    <th>Pass Status</th>
+
+                    <th>Check-in</th>
+
+                    <th>Payment Proof</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for participant in participants %}
+
+
+                <tr class="participant-row">
+
+
+                    <!-- NAME -->
+
+                    <td>
+                        {{ participant["name"] }}
+                    </td>
+
+
+                    <!-- COLLEGE -->
+
+                    <td>
+                        {{ participant["college"] }}
+                    </td>
+
+
+                    <!-- DEPARTMENT -->
+
+                    <td>
+                        {{ participant["department_batch"] }}
+                    </td>
+
+
+                    <!-- MOBILE -->
+
+                    <td>
+                        {{ participant["mobile"] }}
+                    </td>
+
+
+                    <!-- EMAIL -->
+
+                    <td>
+                        {{ participant["email"] }}
+                    </td>
+
+
+                    <!-- PAYMENT -->
+
+                    <td>
+
+                        {% if participant["payment_status"] == "PAID" %}
+
+                            <span class="paid">
+                                PAID
+                            </span>
+
+                        {% else %}
+
+                            <span class="pending">
+                                {{ participant["payment_status"] }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- PASS ID -->
+
+                    <td>
+
+                        {% if participant["pass_id"] %}
+
+                            <span class="pass-id">
+                                {{ participant["pass_id"] }}
+                            </span>
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- PASS STATUS -->
+
+                    <td>
+
+                        {% if participant["pass_status"] == "ACTIVE" %}
+
+                            <span class="active">
+                                ✓ ACTIVE
+                            </span>
+
+                        {% elif participant["pass_status"] == "INACTIVE" %}
+
+                            <span class="inactive">
+                                INACTIVE
+                            </span>
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- CHECK-IN STATUS -->
+
+                    <td>
+
+                        {% if participant["scan_count"] and participant["scan_count"] > 0 %}
+
+                            <span style="color:#4ade80; font-weight:bold; background:rgba(74,222,128,0.15); padding:4px 8px; border-radius:6px; font-size:12px; display:inline-block;">
+                                ✓ Scanned ({{ participant["scan_count"] }}x)
+                            </span>
+                            {% if participant["last_scanned_at"] %}
+                            <div style="color:#8fa5bf; font-size:11px; margin-top:4px;">
+                                {{ participant["last_scanned_at"] }}
+                            </div>
+                            {% endif %}
+
+                        {% else %}
+
+                            <span style="color:#64748b; font-size:12px;">
+                                Not Scanned
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- PAYMENT PROOF -->
+
+                    <td>
+
+                        {% if participant["payment_proof_url"] %}
+
+                            <a
+                                class="proof-button"
+                                href="{{ participant['payment_proof_url'] }}"
+                                target="_blank"
+                            >
+                                VIEW PROOF
+                            </a>
+
+                        {% else %}
+
+                            <span class="no-proof">
+                                No proof
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        {% if participant["pass_id"] %}
+
+                            {% if participant["sent"] == 1 %}
+
+                                <span class="sent-button">
+                                    ✓ SENT / ACTIVE
+                                </span>
+
+                            {% else %}
+
+                                <form
+    method="POST"
+    action="{{ url_for('send_pass', participant_id=participant['id']) }}"
+    onsubmit="return confirm('Send this pass to the participant?');"
+>
+
+                                    <button
+                                        type="submit"
+                                        class="send-button"
+                                    >
+                                        SEND PASS
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <span class="no-proof">
+                                No pass
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                </tr>
+
+
+                {% else %}
+
+
+                <tr>
+
+                    <td
+                        colspan="11"
+                        style="text-align:center; padding:40px;"
+                    >
+
+                        No participants yet.
+
+                        <br><br>
+
+                        Google Sheet synchronization will populate
+                        participants here.
+
+                    </td>
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECENT EVENT SCANS LOG (LIVE SCAN ACTIVITY)
+    ====================================================== -->
+
+    <div style="margin-top: 50px;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="margin: 0; color: #16c8ff; font-size: 20px;">
+                Live Event Scans Stream ({{ recent_scans|length }})
+            </h2>
+            <span style="font-size: 13px; color: #8fa5bf;">
+                Auto-recorded whenever a pass QR code is scanned
+            </span>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Pass ID</th>
+                        <th>Participant Name</th>
+                        <th>College / Dept</th>
+                        <th>Scan Type</th>
+                        <th>Location</th>
+                        <th>Device / Scanner</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for scan in recent_scans %}
+                    <tr>
+                        <td style="color: #62d8ff; font-family: monospace;">{{ scan["timestamp"] }}</td>
+                        <td class="pass-id">{{ scan["pass_id"] }}</td>
+                        <td style="font-weight: bold; color: #ffffff;">{{ scan["participant_name"] or "Unknown" }}</td>
+                        <td>{{ scan["college"] or "VISAT" }} ({{ scan["department_batch"] or "CSE" }})</td>
+                        <td>
+                            <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+                                {{ scan["scan_type"] }}
+                            </span>
+                        </td>
+                        <td>{{ scan["location"] or "Main Entrance" }}</td>
+                        <td style="font-size: 12px; color: #8fa5bf; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            {{ scan["scanned_by"] or "Mobile Scanner" }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 35px; color: #8fa5bf;">
+                            No scans recorded yet. When security or volunteers scan any pass QR code, records will stream here immediately.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     LIVE SEARCH JAVASCRIPT
+====================================================== -->
+
+<script>
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const rows =
+    document.querySelectorAll(".participant-row");
+
+
+searchInput.addEventListener(
+    "input",
+    function () {
+
+        const searchText =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        rows.forEach(
+            function (row) {
+
+                const rowText =
+                    row.innerText.toLowerCase();
+
+
+                if (
+                    rowText.includes(searchText)
+                ) {
+
+                    row.style.display = "";
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

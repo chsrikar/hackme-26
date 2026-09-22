@@ -25,8 +25,14 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
     if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
       try {
         payload = JSON.parse(trimmed);
-        if (payload.rollNo && !payload.rollNumber) {
-          payload.rollNumber = payload.rollNo;
+        if (!payload.rollNumber) {
+          payload.rollNumber = payload.rollNo || payload.passId || payload.pass_id || payload.id;
+        }
+        if (!payload.name && payload.participantName) {
+          payload.name = payload.participantName;
+        }
+        if (!payload.team && payload.teamName) {
+          payload.team = payload.teamName;
         }
       } catch {}
     } else {
@@ -50,12 +56,12 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
     }
   }
 
-  const { passId } = payload;
-  const rollNumber = (payload.rollNumber || payload.rollNo || '').trim();
+  const passId = payload.movementPassId || (payload.type === 'RETURN' ? payload.passId : null);
+  const rollNumber = (payload.rollNumber || payload.rollNo || payload.passId || payload.pass_id || '').trim();
   const participantId = payload.participantId || payload.studentId;
 
   if (!participantId && !rollNumber) {
-    const error = new Error('Token payload missing participant badge identifier');
+    const error = new Error('Token payload missing participant badge identifier (e.g. rollNumber, rollNo, passId)');
     error.status = 400;
     error.code = 'INVALID_QR';
     throw error;
@@ -92,7 +98,7 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
   if (!participant) {
     // Dynamically auto-create team and participant from QR payload on first scan!
     const effectiveRoll = (rollNumber || participantId || `HACK-${Date.now().toString().slice(-4)}`).toUpperCase();
-    const teamName = payload.team || payload.teamName || 'Open Squad';
+    const teamName = payload.team || payload.teamName || 'Team Alpha';
     const tableName = payload.table || payload.tableNumber || 'Table 01';
 
     let team = await prisma.team.findFirst({ where: { name: teamName } });
@@ -110,8 +116,8 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
       data: {
         name: payload.name || `Participant ${effectiveRoll}`,
         rollNumber: effectiveRoll,
-        email: payload.email || `${effectiveRoll.toLowerCase()}@hackme26.dev`,
-        phone: payload.phone || '+91 9847000000',
+        email: payload.email || `${effectiveRoll.toLowerCase().replace(/[^a-z0-9]/g, '')}@hackme26.dev`,
+        phone: payload.phone || payload.mobile || '+91 9847000000',
         college: payload.college || 'VISAT',
         department: payload.department || 'CSE',
         teamId: team.id
@@ -120,18 +126,29 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
     });
 
     console.log(`[AutoRegister] New participant created from scan: ${participant.name} (${participant.rollNumber}) in ${team.name}`);
+  } else if (payload.name && (!participant.name || participant.name.startsWith('Badge ') || participant.name.startsWith('Participant '))) {
+    // Update existing placeholder with real name from QR
+    participant = await prisma.participant.update({
+      where: { id: participant.id },
+      data: {
+        name: payload.name,
+        ...(payload.phone || payload.mobile ? { phone: payload.phone || payload.mobile } : {}),
+        ...(payload.college ? { college: payload.college } : {})
+      },
+      include: { team: true }
+    });
   }
 
   // 4. Intent Detection: Movement Pass Return vs. Attendance Check-in
 
-  // Scenario A: Token is a Movement Pass (has passId)
+  // Scenario A: Token is a Movement Pass Return
   if (passId) {
     const movementPass = await prisma.movementPass.findUnique({
       where: { id: passId },
       include: { participant: true }
     });
 
-    if (!movementPass || movementPass.status !== 'active') {
+    if (movementPass && movementPass.status === 'active') {
       const error = new Error(`Pass ${passId} is no longer active (already returned or force-closed).`);
       error.status = 400;
       error.code = 'PASS_NOT_ACTIVE';

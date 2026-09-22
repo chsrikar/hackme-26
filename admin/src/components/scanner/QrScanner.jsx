@@ -264,6 +264,27 @@ export default function QrScanner({ onOpenManualModal }) {
           <div className="demo-triggers-grid animate-fade-in">
             <button
               type="button"
+              onClick={() => {
+                handleQrScan(JSON.stringify({
+                  name: "Diya Patel",
+                  rollNumber: "2024CS102",
+                  team: "Team Alpha"
+                }));
+              }}
+              className="demo-btn checkin"
+              style={{
+                gridColumn: '1 / -1',
+                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%)',
+                border: '1px solid rgba(59, 130, 246, 0.5)',
+                color: '#93c5fd',
+                fontWeight: 700
+              }}
+            >
+              ⚡ Test Option 2 QR: Diya Patel (2024CS102)
+            </button>
+
+            <button
+              type="button"
               onClick={triggerCheckIn}
               className="demo-btn checkin"
             >
