@@ -6,9 +6,9 @@ export default function AdminPortalPage() {
     document.title = 'Admin Portal - HackMe\'26';
   }, []);
 
-  const handleAdminAccess = () => {
-    const adminUrl = 'https://admin-kappa-nine-10.vercel.app/login';
-    window.open(adminUrl, '_blank', 'noopener,noreferrer');
+  const handleAdminAccess = (e) => {
+    if (e) e.preventDefault();
+    window.location.href = 'https://admin-kappa-nine-10.vercel.app/login';
   };
 
   return (
@@ -66,8 +66,7 @@ export default function AdminPortalPage() {
 
           <a
             href="https://admin-kappa-nine-10.vercel.app/login"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={handleAdminAccess}
             className="pixel-button-primary clip-pixel-corners"
             style={{
               display: 'inline-flex',
