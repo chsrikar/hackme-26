@@ -48,4 +48,4 @@ ENV/
 db.sqlite3
 *.db
 *.db-journal
-
+*.zip
