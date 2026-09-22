@@ -9,23 +9,23 @@ export default function AdminPortalPage() {
   const handleAdminAccess = () => {
     // In development, redirect to the admin panel running on port 5174
     // In production, this would point to the deployed admin URL
-    const adminUrl = import.meta.env.PROD 
-      ? '/admin' 
-      : 'http://localhost:5174';
-    
+    const adminUrl = import.meta.env.PROD
+      ? '/admin'
+      : 'https://admin-kappa-nine-10.vercel.app/login';
+
     window.open(adminUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className="page-container" style={{ paddingTop: '6rem', minHeight: '100vh' }}>
       <div className="content-wrapper" style={{ maxWidth: '48rem', margin: '0 auto' }}>
-        
+
         {/* Header Section */}
         <div className="overmind-frame clip-pixel-corners" style={{ padding: '2.5rem', textAlign: 'center' }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             gap: '1rem',
             marginBottom: '1.5rem'
           }}>
@@ -33,16 +33,16 @@ export default function AdminPortalPage() {
             <Lock size={32} color="#d4af37" strokeWidth={1.5} />
           </div>
 
-          <h1 className="font-pixel glitch-text" style={{ 
-            fontSize: '2rem', 
+          <h1 className="font-pixel glitch-text" style={{
+            fontSize: '2rem',
             marginBottom: '1rem',
             color: '#f26207'
           }}>
             Admin Portal Access
           </h1>
 
-          <p style={{ 
-            color: 'rgba(255, 255, 255, 0.7)', 
+          <p style={{
+            color: 'rgba(255, 255, 255, 0.7)',
             fontSize: '1.05rem',
             marginBottom: '2rem',
             lineHeight: '1.6'
@@ -52,15 +52,15 @@ export default function AdminPortalPage() {
             and real-time event monitoring.
           </p>
 
-          <div style={{ 
-            background: 'rgba(242, 98, 7, 0.1)', 
+          <div style={{
+            background: 'rgba(242, 98, 7, 0.1)',
             border: '1px solid rgba(242, 98, 7, 0.3)',
             padding: '1rem',
             marginBottom: '2rem',
             textAlign: 'left'
           }}>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.85)', 
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.85)',
               fontSize: '0.9rem',
               margin: 0
             }}>
@@ -105,22 +105,22 @@ export default function AdminPortalPage() {
         </div>
 
         {/* Features Overview */}
-        <div style={{ 
-          display: 'grid', 
+        <div style={{
+          display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: '1.5rem',
           marginTop: '2rem'
         }}>
           <div className="overmind-frame clip-pixel-corners" style={{ padding: '1.5rem' }}>
-            <h3 className="font-pixel" style={{ 
-              fontSize: '1.1rem', 
+            <h3 className="font-pixel" style={{
+              fontSize: '1.1rem',
               marginBottom: '0.75rem',
               color: '#d4af37'
             }}>
               🎯 Live Operations
             </h3>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.7)', 
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.7)',
               fontSize: '0.9rem',
               lineHeight: '1.5'
             }}>
@@ -129,15 +129,15 @@ export default function AdminPortalPage() {
           </div>
 
           <div className="overmind-frame clip-pixel-corners" style={{ padding: '1.5rem' }}>
-            <h3 className="font-pixel" style={{ 
-              fontSize: '1.1rem', 
+            <h3 className="font-pixel" style={{
+              fontSize: '1.1rem',
               marginBottom: '0.75rem',
               color: '#d4af37'
             }}>
               📊 Dashboard & Reports
             </h3>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.7)', 
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.7)',
               fontSize: '0.9rem',
               lineHeight: '1.5'
             }}>
@@ -146,15 +146,15 @@ export default function AdminPortalPage() {
           </div>
 
           <div className="overmind-frame clip-pixel-corners" style={{ padding: '1.5rem' }}>
-            <h3 className="font-pixel" style={{ 
-              fontSize: '1.1rem', 
+            <h3 className="font-pixel" style={{
+              fontSize: '1.1rem',
               marginBottom: '0.75rem',
               color: '#d4af37'
             }}>
               🍕 Food & Assistance
             </h3>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.7)', 
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.7)',
               fontSize: '0.9rem',
               lineHeight: '1.5'
             }}>
@@ -164,23 +164,23 @@ export default function AdminPortalPage() {
         </div>
 
         {/* System Architecture */}
-        <div className="overmind-frame clip-pixel-corners" style={{ 
-          padding: '2rem', 
+        <div className="overmind-frame clip-pixel-corners" style={{
+          padding: '2rem',
           marginTop: '2rem',
           background: 'rgba(0, 0, 0, 0.2)'
         }}>
-          <h3 className="font-pixel" style={{ 
-            fontSize: '1.1rem', 
+          <h3 className="font-pixel" style={{
+            fontSize: '1.1rem',
             marginBottom: '1.5rem',
             color: '#d4af37',
             textAlign: 'center'
           }}>
             System Architecture
           </h3>
-          
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-around', 
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-around',
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '1rem',
@@ -191,8 +191,8 @@ export default function AdminPortalPage() {
             fontSize: '0.85rem'
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ 
-                padding: '0.75rem 1rem', 
+              <div style={{
+                padding: '0.75rem 1rem',
                 background: 'rgba(255, 255, 255, 0.1)',
                 border: '2px solid #4a9eff',
                 marginBottom: '0.5rem'
@@ -210,8 +210,8 @@ export default function AdminPortalPage() {
             <div style={{ color: '#d4af37', fontSize: '1.5rem' }}>⟷</div>
 
             <div style={{ textAlign: 'center' }}>
-              <div style={{ 
-                padding: '0.75rem 1rem', 
+              <div style={{
+                padding: '0.75rem 1rem',
                 background: 'rgba(255, 255, 255, 0.1)',
                 border: '2px solid #f26207',
                 marginBottom: '0.5rem'
@@ -229,8 +229,8 @@ export default function AdminPortalPage() {
             <div style={{ color: '#d4af37', fontSize: '1.5rem' }}>⟷</div>
 
             <div style={{ textAlign: 'center' }}>
-              <div style={{ 
-                padding: '0.75rem 1rem', 
+              <div style={{
+                padding: '0.75rem 1rem',
                 background: 'rgba(255, 255, 255, 0.1)',
                 border: '2px solid #10b981',
                 marginBottom: '0.5rem'
@@ -246,8 +246,8 @@ export default function AdminPortalPage() {
             </div>
           </div>
 
-          <p style={{ 
-            color: 'rgba(255, 255, 255, 0.6)', 
+          <p style={{
+            color: 'rgba(255, 255, 255, 0.6)',
             fontSize: '0.85rem',
             textAlign: 'center',
             marginTop: '1rem',
@@ -258,20 +258,20 @@ export default function AdminPortalPage() {
         </div>
 
         {/* Help Section */}
-        <div className="overmind-frame clip-pixel-corners" style={{ 
-          padding: '1.5rem', 
+        <div className="overmind-frame clip-pixel-corners" style={{
+          padding: '1.5rem',
           marginTop: '2rem',
           background: 'rgba(0, 0, 0, 0.3)'
         }}>
-          <h3 className="font-pixel" style={{ 
-            fontSize: '1rem', 
+          <h3 className="font-pixel" style={{
+            fontSize: '1rem',
             marginBottom: '1rem',
             color: '#ffffff'
           }}>
             Need Help?
           </h3>
-          <p style={{ 
-            color: 'rgba(255, 255, 255, 0.7)', 
+          <p style={{
+            color: 'rgba(255, 255, 255, 0.7)',
             fontSize: '0.9rem',
             lineHeight: '1.6',
             marginBottom: '0.5rem'
@@ -279,13 +279,13 @@ export default function AdminPortalPage() {
             If you're an organizer without credentials, contact the tech team lead.
             For technical issues with the admin portal, reach out to the development team.
           </p>
-          <p style={{ 
-            color: 'rgba(255, 255, 255, 0.5)', 
+          <p style={{
+            color: 'rgba(255, 255, 255, 0.5)',
             fontSize: '0.85rem',
             margin: 0
           }}>
-            🔗 Admin Portal: <code style={{ 
-              background: 'rgba(255, 255, 255, 0.1)', 
+            🔗 Admin Portal: <code style={{
+              background: 'rgba(255, 255, 255, 0.1)',
               padding: '2px 6px',
               borderRadius: '2px',
               color: '#d4af37'
