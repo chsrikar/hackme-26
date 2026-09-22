@@ -18,24 +18,28 @@ const OpsSessionContext = createContext(null);
 
 // Helper to sanitize / heal participant records with official directory details
 function sanitizeParticipant(p) {
-  if (!p) return p;
+  if (!p || typeof p !== 'object') return p;
   const key = p.passId || p.rollNo || p.id;
-  const match = PARTICIPANT_DIRECTORY[key] ||
-                PARTICIPANT_DIRECTORY[String(key).toUpperCase()] ||
-                PARTICIPANT_DIRECTORY[String(key).toLowerCase()];
+  if (!key) return p;
+
+  const strKey = String(key).trim();
+  const match = PARTICIPANT_DIRECTORY[strKey] ||
+                PARTICIPANT_DIRECTORY[strKey.toUpperCase()] ||
+                PARTICIPANT_DIRECTORY[strKey.toLowerCase()];
   if (match) {
     return {
       ...p,
       name: match.name,
       passId: match.passId,
       rollNo: match.passId,
-      phone: match.phone || p.phone || '',
+      phone: String(match.phone || p.phone || ''),
       college: match.college || p.college || 'VISAT'
     };
   }
 
   // If name has token in parentheses (e.g. Pass Badge (3MbN2t1K))
-  const tokenMatch = p.name?.match(/\((.*?)\)/)?.[1];
+  const nameStr = typeof p.name === 'string' ? p.name : '';
+  const tokenMatch = nameStr.match(/\((.*?)\)/)?.[1];
   if (tokenMatch) {
     const foundEntry = Object.entries(PARTICIPANT_DIRECTORY).find(([k]) =>
       k.toLowerCase().startsWith(tokenMatch.toLowerCase())
@@ -47,7 +51,7 @@ function sanitizeParticipant(p) {
         name: matchObj.name,
         passId: matchObj.passId,
         rollNo: matchObj.passId,
-        phone: matchObj.phone || p.phone || '',
+        phone: String(matchObj.phone || p.phone || ''),
         college: matchObj.college || p.college || 'VISAT'
       };
     }
@@ -93,10 +97,12 @@ export function OpsSessionProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          return parsed.map(sanitizeParticipant);
+          return parsed.filter(Boolean).map(sanitizeParticipant);
         }
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to parse ops_roster:', e);
+    }
     return [];
   });
 

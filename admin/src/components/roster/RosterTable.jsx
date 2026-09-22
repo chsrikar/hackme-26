@@ -11,17 +11,23 @@ export default function RosterTable({ onOpenManualModal }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Filtered participants: search across Name, HM26 Pass Code, and Phone Number
+  // Filtered participants: search across Name, HM26 Pass Code, and Phone Number (100% type-safe)
   const filteredParticipants = useMemo(() => {
+    if (!Array.isArray(participants)) return [];
+    const q = (searchQuery || '').toLowerCase().trim();
     return participants.filter((p) => {
-      const q = searchQuery.toLowerCase().trim();
+      if (!p) return false;
+      const nameStr = String(p.name || '').toLowerCase();
+      const passIdStr = String(p.passId || '').toLowerCase();
+      const rollNoStr = String(p.rollNo || '').toLowerCase();
+      const phoneStr = String(p.phone || p.mobile || '');
+
       const matchesSearch =
         !q ||
-        (p.name && p.name.toLowerCase().includes(q)) ||
-        (p.passId && p.passId.toLowerCase().includes(q)) ||
-        (p.rollNo && p.rollNo.toLowerCase().includes(q)) ||
-        (p.phone && p.phone.includes(q)) ||
-        (p.mobile && p.mobile.includes(q));
+        nameStr.includes(q) ||
+        passIdStr.includes(q) ||
+        rollNoStr.includes(q) ||
+        phoneStr.includes(q);
 
       const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
 
