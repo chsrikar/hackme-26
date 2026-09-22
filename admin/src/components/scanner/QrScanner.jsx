@@ -36,13 +36,19 @@ export default function QrScanner({ onOpenManualModal }) {
 
   const html5QrCodeRef = useRef(null);
   const isScanningActiveRef = useRef(false);
+  const lastScannedRef = useRef({ text: null, time: 0 });
 
   const onScanSuccess = useCallback((decodedText) => {
-    if (lastScanned === decodedText) return;
+    const now = Date.now();
+    // Debounce duplicate scans of the exact same code within 3 seconds
+    if (lastScannedRef.current.text === decodedText && (now - lastScannedRef.current.time < 3000)) {
+      return;
+    }
+    lastScannedRef.current = { text: decodedText, time: now };
     setLastScanned(decodedText);
-    setTimeout(() => setLastScanned(null), 1800);
+    setTimeout(() => setLastScanned(null), 3000);
     handleQrScan(decodedText);
-  }, [lastScanned, handleQrScan]);
+  }, [handleQrScan]);
 
   const startCamera = useCallback(async () => {
     if (html5QrCodeRef.current && isScanningActiveRef.current) return;

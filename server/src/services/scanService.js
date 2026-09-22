@@ -36,15 +36,31 @@ export async function processScan(rawToken, socketIo, staffId = 'scanner_station
         }
       } catch {}
     } else {
-      // Direct badge code match (e.g. "HACK-01A" or badge ID)
-      const match = trimmed.match(/HACK-[0-9]{2}[A-D]/i) || trimmed.match(/^[A-Z0-9_-]{3,20}$/i);
-      if (match) {
-        payload = {
-          rollNumber: match[0].toUpperCase(),
-          name: `Badge ${match[0].toUpperCase()}`,
-          team: 'Open Squad',
-          type: 'base'
-        };
+      // Direct badge code match (e.g. "HACK-01A", "HM26-003", or URL /verify/<token>)
+      if (trimmed.includes('/verify/')) {
+        const parts = trimmed.split('/verify/');
+        const token = parts[1]?.split('?')[0]?.split('#')[0]?.trim();
+        if (token) {
+          const isPassId = /^HM26-\d{3}$/i.test(token);
+          payload = {
+            rollNumber: token.toUpperCase(),
+            name: isPassId ? `Participant ${token.toUpperCase()}` : `Badge ${token.slice(0, 8).toUpperCase()}`,
+            team: 'Team Alpha',
+            type: 'base'
+          };
+        }
+      }
+
+      if (!payload) {
+        const match = trimmed.match(/HM26-[0-9]{3}/i) || trimmed.match(/HACK-[0-9]{2}[A-D]/i) || trimmed.match(/^[A-Z0-9_-]{3,64}$/i);
+        if (match) {
+          payload = {
+            rollNumber: match[0].toUpperCase(),
+            name: `Badge ${match[0].toUpperCase()}`,
+            team: 'Team Alpha',
+            type: 'base'
+          };
+        }
       }
     }
 
