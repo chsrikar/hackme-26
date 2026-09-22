@@ -1101,3 +1101,120 @@ body {
   }
 }
 
+/* ==========================================================================
+   56. ADMIN PORTAL - RESPONSIVE MOBILE STYLES
+   ========================================================================== */
+.admin-portal-wrapper {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.admin-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: #f26207;
+  color: #ffffff !important;
+  border: 2px solid #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(242, 98, 7, 0.35);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.admin-portal-btn:hover {
+  background-color: #d54d00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 25px rgba(242, 98, 7, 0.6);
+}
+
+.admin-arch-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 12px;
+  padding: 1.25rem 1rem;
+  background: rgba(242, 98, 7, 0.04);
+  border: 1px solid rgba(242, 98, 7, 0.2);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+}
+
+.admin-arch-node {
+  text-align: center;
+  flex: 1;
+  min-width: 130px;
+}
+
+.admin-arch-arrow-h {
+  color: #d4af37;
+  font-size: 1.4rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.admin-arch-arrow-v {
+  display: none;
+  color: #d4af37;
+  font-size: 1.3rem;
+  user-select: none;
+  margin: 4px 0;
+}
+
+@media (max-width: 680px) {
+  .admin-portal-page {
+    padding-top: 4.75rem !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .admin-portal-hero {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .admin-portal-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 14px 16px !important;
+    font-size: 0.92rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .admin-arch-container {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 1rem 0.75rem !important;
+  }
+
+  .admin-arch-node {
+    width: 100% !important;
+  }
+
+  .admin-arch-arrow-h {
+    display: none !important;
+  }
+
+  .admin-arch-arrow-v {
+    display: block !important;
+  }
+
+  .admin-help-link {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+    display: inline-block !important;
+    font-size: 0.78rem !important;
+    max-width: 100% !important;
+    margin-top: 4px !important;
+  }
+}
+
+
