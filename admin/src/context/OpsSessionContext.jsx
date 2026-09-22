@@ -373,10 +373,12 @@ export function OpsSessionProvider({ children }) {
              p.id === result.participantId
     );
 
-    // If scanning a RETURN (or auto-detecting return when pass is already open)
+    // If scanning a RETURN (or auto-detecting return when pass is already open, or scanning same badge in movement mode)
     const isExplicitReturn = currentScanMode === 'return' || result.type === 'RETURN';
     const isAutoReturn = (currentScanMode === 'auto' && Boolean(currentPass));
-    const isReturnScan = isExplicitReturn || isAutoReturn;
+    // If attendee already holds an active pass and scans in movement mode (Food Pickup, Washroom, Rest Break, Left Venue), count as returned back!
+    const isToggleMovementReturn = (['WASHROOM', 'FOOD_PICKUP', 'REST_BREAK', 'LEFT_VENUE'].includes(currentScanMode) && Boolean(currentPass));
+    const isReturnScan = isExplicitReturn || isAutoReturn || isToggleMovementReturn;
 
     if (isReturnScan) {
       if (!currentPass) {
@@ -388,7 +390,7 @@ export function OpsSessionProvider({ children }) {
       const durationStr = formatDuration(elapsedMs);
       const cfg = getPassConfig(currentPass.passType);
 
-      setActivePasses((prev) => prev.filter((p) => p.id !== currentPass.id && p.rollNo !== currentPass.rollNo));
+      setActivePasses((prev) => prev.filter((p) => p.id !== currentPass.id && p.rollNo !== currentPass.rollNo && p.passId !== currentPass.rollNo));
       passesApi.returnPass(currentPass.id).catch(console.error);
 
       addRecentScan({
@@ -400,7 +402,7 @@ export function OpsSessionProvider({ children }) {
         duration: durationStr
       });
 
-      addToast('success', `↩️ ${currentPass.participantName} returned — duration: ${durationStr}`, `${cfg.icon} ${cfg.label} completed`);
+      addToast('success', `↩️ ${currentPass.participantName} returned from ${cfg.label} — duration: ${durationStr}`, `${cfg.icon} Pass completed & returned`);
       return { success: true, mode: 'return', duration: durationStr };
     }
 

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useOpsSession } from '../../context/OpsSessionContext';
 import { generateTestPayload } from '../../utils/qrValidation';
+import { getPassConfig } from '../../utils/passTypeConfig';
 import ScanModeToggle from './ScanModeToggle';
 import Button from '../common/Button';
 
@@ -159,6 +160,11 @@ export default function QrScanner({ onOpenManualModal }) {
   };
 
   const getActionLabel = (name, code) => {
+    const activePass = activePasses?.find((p) => p.rollNo === code || p.passId === code);
+    if (activePass) {
+      const cfg = getPassConfig(activePass.passType);
+      return `↩ Return: ${name} (${cfg.label})`;
+    }
     if (scanMode === 'auto') return `⚡ Auto: ${name} (${code})`;
     if (scanMode === 'checkin') return `✅ Check-in: ${name} (${code})`;
     if (scanMode === 'return') return `↩ Return: ${name} (${code})`;
