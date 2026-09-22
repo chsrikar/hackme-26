@@ -17,10 +17,14 @@ export default function RosterTable({ onOpenManualModal }) {
   // Filtered participants
   const filteredParticipants = useMemo(() => {
     return participants.filter((p) => {
+      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.rollNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.team.toLowerCase().includes(searchQuery.toLowerCase());
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        (p.rollNo && p.rollNo.toLowerCase().includes(q)) ||
+        (p.passId && p.passId.toLowerCase().includes(q)) ||
+        (p.phone && p.phone.includes(q)) ||
+        (p.mobile && p.mobile.includes(q));
 
       const matchesTeam = selectedTeam === 'all' || p.team === selectedTeam;
       const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
@@ -157,7 +161,7 @@ export default function RosterTable({ onOpenManualModal }) {
             type="text"
             className="form-input"
             style={{ fontSize: '0.84rem', minHeight: '34px', paddingLeft: '34px' }}
-            placeholder="Search participant, roll or team..."
+            placeholder="Search by participant name, HM26 code, or phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -211,12 +215,11 @@ export default function RosterTable({ onOpenManualModal }) {
             <table className="roster-table">
               <thead>
                 <tr>
-                  <th>Participant</th>
-                  <th>Team</th>
-                  <th>Table</th>
+                  <th>Participant Name</th>
+                  <th>Pass Code</th>
+                  <th>Phone Number</th>
                   <th>Status</th>
                   <th>Checked In</th>
-                  <th style={{ textAlign: 'right' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -224,7 +227,6 @@ export default function RosterTable({ onOpenManualModal }) {
                   <RosterRow
                     key={p.id}
                     participant={p}
-                    onManualOverride={(target) => onOpenManualModal(target)}
                   />
                 ))}
               </tbody>

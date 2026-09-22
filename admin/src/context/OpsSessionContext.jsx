@@ -382,6 +382,8 @@ export function OpsSessionProvider({ children }) {
             id: pId,
             name: pName,
             rollNo: pRoll,
+            passId: result.passId || pRoll,
+            phone: result.phone || data?.phone || '',
             team: pTeam,
             table: pTable,
             status: 'present',
@@ -394,13 +396,13 @@ export function OpsSessionProvider({ children }) {
 
       addRecentScan({
         name: pName,
-        rollNo: pRoll,
+        rollNo: result.passId || pRoll,
         team: pTeam,
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
 
-      addToast('success', `✅ ${pName} checked in!`, `${pTeam} • Table: ${pTable} • ${nowStr}`);
+      addToast('success', `✅ ${pName} (${result.passId || pRoll}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
     } catch (err) {
       if (err.response?.status === 409) {
@@ -410,12 +412,13 @@ export function OpsSessionProvider({ children }) {
       
       // Fallback local registration if server unreachable
       const pName = result.name || `Badge ${result.rollNo}`;
+      const finalPassId = result.passId || result.rollNo;
       setParticipants((prev) => {
-        const found = prev.some((p) => p.rollNo === result.rollNo);
+        const found = prev.some((p) => p.rollNo === result.rollNo || (result.passId && p.passId === result.passId));
         if (found) {
           return prev.map((p) =>
-            p.rollNo === result.rollNo
-              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
+            p.rollNo === result.rollNo || (result.passId && p.passId === result.passId)
+              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan', phone: result.phone || p.phone }
               : p
           );
         }
@@ -423,8 +426,10 @@ export function OpsSessionProvider({ children }) {
           {
             id: result.participantId || `p_${Date.now()}`,
             name: pName,
-            rollNo: result.rollNo,
-            team: result.team || 'Open Squad',
+            rollNo: finalPassId,
+            passId: finalPassId,
+            phone: result.phone || '',
+            team: result.team || 'Team Alpha',
             table: result.table || 'Table 01',
             status: 'present',
             scannedAt: nowStr,
@@ -436,13 +441,13 @@ export function OpsSessionProvider({ children }) {
 
       addRecentScan({
         name: pName,
-        rollNo: result.rollNo,
-        team: result.team || 'Open Squad',
+        rollNo: finalPassId,
+        team: result.team || 'Team Alpha',
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
 
-      addToast('success', `✅ ${pName} checked in!`, `${result.team || 'Open Squad'} • ${nowStr}`);
+      addToast('success', `✅ ${pName} (${finalPassId}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
     }
   }, [scanMode, activePasses, participants, addToast]);
