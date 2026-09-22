@@ -371,35 +371,67 @@ export function OpsSessionProvider({ children }) {
       const passTypeToUse = scanMode !== 'auto' && scanMode !== 'checkin' ? scanMode : result.type;
       const cfg = getPassConfig(passTypeToUse);
 
-      const target = participants.find((p) => p.rollNo === result.rollNo || p.id === result.participantId);
-      const name = target?.name || result.name || `Badge ${result.rollNo}`;
-      const team = target?.team || result.team || 'Open Squad';
+      const target = participants.find((p) =>
+        p.rollNo === result.rollNo ||
+        (result.passId && p.passId === result.passId) ||
+        (result.passId && p.rollNo === result.passId) ||
+        p.id === result.participantId
+      );
+      const finalPassId = result.passId || target?.passId || result.rollNo;
+      const name = result.name || target?.name || `Participant ${finalPassId}`;
+      const phone = result.phone || target?.phone || '';
 
       const newPass = {
         id: `pass-${Date.now().toString().slice(-5)}`,
         studentId: target?.id || result.participantId || 'p_ext',
         participantName: name,
-        rollNo: result.rollNo,
-        team,
+        rollNo: finalPassId,
+        passId: finalPassId,
+        phone,
+        team: target?.team || result.team || 'Team Alpha',
         passType: passTypeToUse,
         reason: result.reason || `Authorized ${cfg.label}`,
         departTime: Date.now(),
         status: 'active'
       };
 
-      setActivePasses((prev) => [newPass, ...prev]);
+      setActivePasses((prev) => [newPass, ...prev.filter((p) => p.rollNo !== finalPassId)]);
       passesApi.issuePass(newPass).catch(console.error);
+
+      // Ensure participant is also in attendance roster
+      setParticipants((prev) => {
+        const found = prev.some((p) => p.rollNo === finalPassId || p.passId === finalPassId);
+        if (found) {
+          return prev.map((p) =>
+            p.rollNo === finalPassId || p.passId === finalPassId
+              ? { ...p, status: 'present', name, phone: phone || p.phone }
+              : p
+          );
+        }
+        return [
+          {
+            id: result.participantId || `p_${Date.now()}`,
+            name,
+            rollNo: finalPassId,
+            passId: finalPassId,
+            phone,
+            status: 'present',
+            scannedAt: formatClockTime(),
+            markedBy: 'qr_scan'
+          },
+          ...prev
+        ];
+      });
 
       addRecentScan({
         name,
-        rollNo: result.rollNo,
-        team,
+        rollNo: finalPassId,
         actionType: 'PASS_OUT',
         passType: passTypeToUse,
         reason: newPass.reason
       });
 
-      addToast('info', `${cfg.icon} ${name} out — ${cfg.label}`, `Allowed limit: ${cfg.overdueMinutes}m • ${team}`);
+      addToast('info', `${cfg.icon} ${name} (${finalPassId}) out on ${cfg.label}`, `Allowed limit: ${cfg.overdueMinutes}m`);
       return { success: true, mode: 'pass_checkout', type: passTypeToUse };
     }
 

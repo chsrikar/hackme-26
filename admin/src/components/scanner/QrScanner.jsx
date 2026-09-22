@@ -241,7 +241,7 @@ export default function QrScanner({ onOpenManualModal }) {
           <input
             type="text"
             className="manual-code-input"
-            placeholder="Scan or enter badge (e.g. HACK-01A)"
+            placeholder="Scan or enter badge (e.g. HM26-001)"
             value={manualCodeInput}
             onChange={(e) => setManualCodeInput(e.target.value)}
           />
@@ -270,13 +270,7 @@ export default function QrScanner({ onOpenManualModal }) {
           <div className="demo-triggers-grid animate-fade-in">
             <button
               type="button"
-              onClick={() => {
-                handleQrScan(JSON.stringify({
-                  name: "Diya Patel",
-                  rollNumber: "2024CS102",
-                  team: "Team Alpha"
-                }));
-              }}
+              onClick={() => handleQrScan('HM26-001')}
               className="demo-btn checkin"
               style={{
                 gridColumn: '1 / -1',
@@ -286,15 +280,31 @@ export default function QrScanner({ onOpenManualModal }) {
                 fontWeight: 700
               }}
             >
-              ⚡ Test Option 2 QR: Diya Patel (2024CS102)
+              ⚡ Scan Anto Jerom T (HM26-001)
             </button>
 
             <button
               type="button"
-              onClick={triggerCheckIn}
+              onClick={() => handleQrScan('HM26-002')}
               className="demo-btn checkin"
             >
-              ✅ Check-In Sample Badge
+              ✅ Scan Nimisha S A (HM26-002)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQrScan('HM26-003')}
+              className="demo-btn checkin"
+            >
+              ✅ Scan Parthiv das (HM26-003)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQrScan('HM26-999')}
+              className="demo-btn checkin"
+            >
+              ✅ Scan Adithyan Rajesh (HM26-999)
             </button>
 
             <button
