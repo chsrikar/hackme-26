@@ -7,12 +7,7 @@ export default function AdminPortalPage() {
   }, []);
 
   const handleAdminAccess = () => {
-    // In development, redirect to the admin panel running on port 5174
-    // In production, this would point to the deployed admin URL
-    const adminUrl = import.meta.env.PROD
-      ? '/admin'
-      : 'https://admin-kappa-nine-10.vercel.app/login';
-
+    const adminUrl = 'https://admin-kappa-nine-10.vercel.app/login';
     window.open(adminUrl, '_blank', 'noopener,noreferrer');
   };
 
@@ -69,8 +64,10 @@ export default function AdminPortalPage() {
             </p>
           </div>
 
-          <button
-            onClick={handleAdminAccess}
+          <a
+            href="https://admin-kappa-nine-10.vercel.app/login"
+            target="_blank"
+            rel="noopener noreferrer"
             className="pixel-button-primary clip-pixel-corners"
             style={{
               display: 'inline-flex',
@@ -85,23 +82,24 @@ export default function AdminPortalPage() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.05em',
+              textDecoration: 'none'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#d54d00';
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 4px 12px rgba(242, 98, 7, 0.5)';
+              e.currentTarget.style.backgroundColor = '#d54d00';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(242, 98, 7, 0.5)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = '#f26207';
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
+              e.currentTarget.style.backgroundColor = '#f26207';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
             }}
           >
             <Lock size={18} />
             Access Admin Panel
             <ExternalLink size={18} />
-          </button>
+          </a>
         </div>
 
         {/* Features Overview */}
@@ -284,14 +282,21 @@ export default function AdminPortalPage() {
             fontSize: '0.85rem',
             margin: 0
           }}>
-            🔗 Admin Portal: <code style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              padding: '2px 6px',
-              borderRadius: '2px',
-              color: '#d4af37'
-            }}>
-              {import.meta.env.PROD ? window.location.origin + '/admin' : 'localhost:5174'}
-            </code>
+            🔗 Admin Portal: <a
+              href="https://admin-kappa-nine-10.vercel.app/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                color: '#d4af37',
+                textDecoration: 'none',
+                fontFamily: 'monospace'
+              }}
+            >
+              https://admin-kappa-nine-10.vercel.app/login ↗
+            </a>
           </p>
         </div>
 

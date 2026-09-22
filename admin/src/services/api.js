@@ -29,7 +29,7 @@ export const authApi = {
     await new Promise((r) => setTimeout(r, 300));
     
     // Validate credentials
-    if (username === 'ADMIN' && password === 'H@ackME#26') {
+    if (username && username.trim().toUpperCase() === 'ADMIN' && password === 'H@ackME#26') {
       return {
         token: 'hackme26_admin_jwt_token_secured',
         user: { 
