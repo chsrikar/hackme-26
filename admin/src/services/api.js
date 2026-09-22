@@ -196,11 +196,42 @@ export const rosterApi = {
 };
 
 export const scanApi = {
+  logScanToBackend: async (tokenOrCode, scanType = 'EVENT ENTRY', location = 'Admin Scanner Station') => {
+    const payload = {
+      token: String(tokenOrCode).trim(),
+      qrToken: String(tokenOrCode).trim(),
+      passId: String(tokenOrCode).trim(),
+      type: scanType,
+      location,
+      scannedBy: 'Admin Portal Web'
+    };
+
+    const endpoints = [
+      '/api/scan',
+      'http://127.0.0.1:5000/api/scan',
+      'http://localhost:5000/api/scan',
+      'http://192.168.0.185:5000/api/scan'
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          mode: 'cors'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return data;
+        }
+      } catch {}
+    }
+    return null;
+  },
+
   scanQr: async (qrToken) => {
-    const res = await axios.post('/api/scan', { qrToken }, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-    return res.data;
+    return scanApi.logScanToBackend(qrToken, 'EVENT ENTRY');
   },
   getBadgeToken: async (rollNo) => {
     const res = await axios.get(`/api/participants/${rollNo}/badge-token`);

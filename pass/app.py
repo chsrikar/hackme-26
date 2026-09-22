@@ -689,16 +689,27 @@ def verify_pass(token):
     )
 
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    return response
+
+
 # =========================================================
 # API SCAN (FOR EXTERNAL SCANNERS & ADMIN PORTAL)
 # =========================================================
 
-@app.route("/api/scan", methods=["POST"])
+@app.route("/api/scan", methods=["POST", "OPTIONS"])
 def api_scan():
     """
     REST API endpoint for scanning passes programmatically
     (e.g., from Admin Portal webcam or handheld scanners).
     """
+    if request.method == "OPTIONS":
+        return "", 200
+
     data = request.get_json(silent=True) or {}
     token = data.get("token") or data.get("qrToken") or data.get("passId")
 
@@ -706,8 +717,9 @@ def api_scan():
         return {"success": False, "error": "Missing QR token or passId"}, 400
 
     # Extract token if a full URL was scanned
-    if "/verify/" in token:
-        token = token.split("/verify/")[-1].split("?")[0].strip()
+    token_str = str(token).strip()
+    if "/verify/" in token_str:
+        token_str = token_str.split("/verify/")[-1].split("?")[0].strip()
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -728,8 +740,11 @@ def api_scan():
             ps.sent
         FROM passes ps
         JOIN participants p ON p.id = ps.participant_id
-        WHERE ps.verification_token = ? OR ps.pass_id = ?
-    """, (token, token))
+        WHERE ps.verification_token = ?
+           OR ps.pass_id = ?
+           OR UPPER(ps.pass_id) = UPPER(?)
+           OR ps.verification_token LIKE ?
+    """, (token_str, token_str, token_str, f"%{token_str}%"))
 
     participant = cursor.fetchone()
 
@@ -737,11 +752,8 @@ def api_scan():
         connection.close()
         return {"success": False, "error": "Participant or pass not found"}, 404
 
-    is_active = (
-        participant["registration_status"] == "ACTIVE"
-        and participant["status"] == "ACTIVE"
-        and participant["sent"] == 1
-    )
+    # Allow scan logging for any registered participant
+    is_active = (participant["registration_status"] == "ACTIVE")
 
     if not is_active:
         connection.close()
@@ -756,7 +768,7 @@ def api_scan():
         }, 403
 
     scan_type = data.get("type", "EVENT ENTRY")
-    location = data.get("location", "Admin Desk")
+    location = data.get("location", "Admin Scanner Station")
     scanned_by = data.get("scannedBy", "Admin Portal")
 
     cursor.execute("""
@@ -818,7 +830,7 @@ def search():
 if __name__ == "__main__":
 
     app.run(
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=5000,
         debug=True
     )

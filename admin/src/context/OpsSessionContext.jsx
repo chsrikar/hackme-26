@@ -7,7 +7,7 @@ import {
   INITIAL_MENTOR_REQUESTS,
   MOCK_DAY_HISTORY
 } from '../data/mockRoster';
-import { daySessionApi, passesApi, foodApi, mentorApi, rosterApi } from '../services/api';
+import { daySessionApi, passesApi, foodApi, mentorApi, rosterApi, scanApi } from '../services/api';
 import { subscribeToEvent } from '../services/socket';
 import { validateAndParseQrPayload } from '../utils/qrValidation';
 import { getPassTiming, formatClockTime, formatDuration } from '../utils/timeFormat';
@@ -156,18 +156,34 @@ export function OpsSessionProvider({ children }) {
     } catch {}
   }, [activePasses]);
 
-  // Live Recent Scans Activity Stream
-  const [recentScans, setRecentScans] = useState([]);
+  // Live Recent Scans Activity Stream - rehydrates from localStorage
+  const [recentScans, setRecentScans] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ops_recent_scans');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
+    return [];
+  });
 
   const addRecentScan = useCallback((scanItem) => {
-    setRecentScans((prev) => [
-      {
-        id: `scan-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-        timestamp: Date.now(),
-        ...scanItem
-      },
-      ...prev.slice(0, 9)
-    ]);
+    setRecentScans((prev) => {
+      const updated = [
+        {
+          id: `scan-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+          timestamp: Date.now(),
+          timeStr: formatClockTime(),
+          ...scanItem
+        },
+        ...prev.filter((s) => s.id !== scanItem.id).slice(0, 99)
+      ];
+      try {
+        localStorage.setItem('ops_recent_scans', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
   }, []);
 
   // Toast notifications
@@ -401,6 +417,7 @@ export function OpsSessionProvider({ children }) {
         passType: currentPass.passType,
         duration: durationStr
       });
+      scanApi.logScanToBackend(currentPass.passId || currentPass.rollNo, `RETURN (${currentPass.passType})`, 'Pass Return Desk').catch(() => {});
 
       addToast('success', `↩️ ${currentPass.participantName} returned from ${cfg.label} — duration: ${durationStr}`, `${cfg.icon} Pass completed & returned`);
       return { success: true, mode: 'return', duration: durationStr };
@@ -472,6 +489,7 @@ export function OpsSessionProvider({ children }) {
         passType: passTypeToUse,
         reason: newPass.reason
       });
+      scanApi.logScanToBackend(finalPassId, passTypeToUse, `${cfg.label} Station`).catch(() => {});
 
       addToast('info', `${cfg.icon} ${name} (${finalPassId}) out on ${cfg.label}`, `Allowed limit: ${cfg.overdueMinutes}m`);
       return { success: true, mode: 'pass_checkout', type: passTypeToUse };
@@ -543,6 +561,7 @@ export function OpsSessionProvider({ children }) {
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
+      scanApi.logScanToBackend(result.passId || pRoll, 'EVENT ENTRY', 'Main Entrance').catch(() => {});
 
       addToast('success', `✅ ${pName} (${result.passId || pRoll}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
@@ -607,6 +626,7 @@ export function OpsSessionProvider({ children }) {
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
+      scanApi.logScanToBackend(finalPassId, 'EVENT ENTRY', 'Main Entrance').catch(() => {});
 
       addToast('success', `✅ ${pName} (${finalPassId}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
@@ -620,6 +640,7 @@ export function OpsSessionProvider({ children }) {
     setRecentScans([]);
     localStorage.removeItem('ops_roster');
     localStorage.removeItem('ops_active_passes');
+    localStorage.removeItem('ops_recent_scans');
     addToast('info', 'Participant roster & active passes cleared');
   }, [addToast]);
 
