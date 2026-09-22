@@ -12,8 +12,48 @@ import { subscribeToEvent } from '../services/socket';
 import { validateAndParseQrPayload } from '../utils/qrValidation';
 import { getPassTiming, formatClockTime, formatDuration } from '../utils/timeFormat';
 import { getPassConfig } from '../utils/passTypeConfig';
+import { PARTICIPANT_DIRECTORY } from '../data/participantDirectory';
 
 const OpsSessionContext = createContext(null);
+
+// Helper to sanitize / heal participant records with official directory details
+function sanitizeParticipant(p) {
+  if (!p) return p;
+  const key = p.passId || p.rollNo || p.id;
+  const match = PARTICIPANT_DIRECTORY[key] ||
+                PARTICIPANT_DIRECTORY[String(key).toUpperCase()] ||
+                PARTICIPANT_DIRECTORY[String(key).toLowerCase()];
+  if (match) {
+    return {
+      ...p,
+      name: match.name,
+      passId: match.passId,
+      rollNo: match.passId,
+      phone: match.phone || p.phone || '',
+      college: match.college || p.college || 'VISAT'
+    };
+  }
+
+  // If name has token in parentheses (e.g. Pass Badge (3MbN2t1K))
+  const tokenMatch = p.name?.match(/\((.*?)\)/)?.[1];
+  if (tokenMatch) {
+    const foundEntry = Object.entries(PARTICIPANT_DIRECTORY).find(([k]) =>
+      k.toLowerCase().startsWith(tokenMatch.toLowerCase())
+    );
+    if (foundEntry) {
+      const matchObj = foundEntry[1];
+      return {
+        ...p,
+        name: matchObj.name,
+        passId: matchObj.passId,
+        rollNo: matchObj.passId,
+        phone: matchObj.phone || p.phone || '',
+        college: matchObj.college || p.college || 'VISAT'
+      };
+    }
+  }
+  return p;
+}
 
 export function OpsSessionProvider({ children }) {
   // Theme state: dark mode default for night hackathon venue
@@ -46,8 +86,17 @@ export function OpsSessionProvider({ children }) {
     };
   });
 
-  // Participant Roster - starts empty; records dynamically populate as QR codes are scanned
+  // Participant Roster - rehydrates from localStorage and heals with directory
   const [participants, setParticipants] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ops_roster');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map(sanitizeParticipant);
+        }
+      }
+    } catch {}
     return [];
   });
 
@@ -369,11 +418,20 @@ export function OpsSessionProvider({ children }) {
       const pId = data?.participantId || data?.id || result.participantId || `p_${Date.now()}`;
 
       setParticipants((prev) => {
-        const found = prev.some((p) => p.rollNo === pRoll || p.id === pId);
+        const found = prev.some((p) => p.rollNo === pRoll || p.id === pId || (result.passId && p.passId === result.passId));
         if (found) {
           return prev.map((p) =>
-            p.rollNo === pRoll || p.id === pId
-              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan' }
+            p.rollNo === pRoll || p.id === pId || (result.passId && p.passId === result.passId)
+              ? {
+                  ...p,
+                  name: pName,
+                  rollNo: result.passId || pRoll,
+                  passId: result.passId || pRoll,
+                  phone: result.phone || data?.phone || p.phone || '',
+                  status: 'present',
+                  scannedAt: nowStr,
+                  markedBy: 'qr_scan'
+                }
               : p
           );
         }
@@ -381,7 +439,7 @@ export function OpsSessionProvider({ children }) {
           {
             id: pId,
             name: pName,
-            rollNo: pRoll,
+            rollNo: result.passId || pRoll,
             passId: result.passId || pRoll,
             phone: result.phone || data?.phone || '',
             team: pTeam,
@@ -414,11 +472,30 @@ export function OpsSessionProvider({ children }) {
       const pName = result.name || `Badge ${result.rollNo}`;
       const finalPassId = result.passId || result.rollNo;
       setParticipants((prev) => {
-        const found = prev.some((p) => p.rollNo === result.rollNo || (result.passId && p.passId === result.passId));
+        const found = prev.some((p) =>
+          p.rollNo === result.rollNo ||
+          p.rollNo === finalPassId ||
+          p.passId === finalPassId ||
+          (result.passId && p.passId === result.passId) ||
+          (result.participantId && p.id === result.participantId)
+        );
         if (found) {
           return prev.map((p) =>
-            p.rollNo === result.rollNo || (result.passId && p.passId === result.passId)
-              ? { ...p, status: 'present', scannedAt: nowStr, markedBy: 'qr_scan', phone: result.phone || p.phone }
+            p.rollNo === result.rollNo ||
+            p.rollNo === finalPassId ||
+            p.passId === finalPassId ||
+            (result.passId && p.passId === result.passId) ||
+            (result.participantId && p.id === result.participantId)
+              ? {
+                  ...p,
+                  name: pName,
+                  rollNo: finalPassId,
+                  passId: finalPassId,
+                  phone: result.phone || p.phone || '',
+                  status: 'present',
+                  scannedAt: nowStr,
+                  markedBy: 'qr_scan'
+                }
               : p
           );
         }
@@ -601,6 +678,7 @@ export function OpsSessionProvider({ children }) {
         addToast,
         removeToast,
         handleQrScan,
+        clearRoster,
         startDaySession,
         closeDaySession,
         manualCheckIn,
