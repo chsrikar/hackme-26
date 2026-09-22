@@ -535,6 +535,14 @@ export function OpsSessionProvider({ children }) {
     }
   }, [scanMode, activePasses, participants, addToast]);
 
+  // Clear roster records
+  const clearRoster = useCallback(() => {
+    setParticipants([]);
+    setRecentScans([]);
+    localStorage.removeItem('ops_roster');
+    addToast('info', 'Participant roster cleared');
+  }, [addToast]);
+
   // Start new day session
   const startDaySession = async (dayObj) => {
     const newSession = await daySessionApi.startDaySession({
