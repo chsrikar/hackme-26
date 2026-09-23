@@ -136,9 +136,31 @@ export const daySessionApi = {
 
 export const rosterApi = {
   getParticipants: async () => {
+    // 1. Fetch from SQLite backend (Flask)
+    const endpoints = [
+      '/api/roster',
+      '/api/participants',
+      'http://127.0.0.1:5000/api/roster',
+      'http://localhost:5000/api/roster',
+      'http://192.168.0.185:5000/api/roster'
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, { mode: 'cors' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            return data;
+          }
+        }
+      } catch {}
+    }
+
+    // 2. Fetch from Node backend if running
     try {
       const res = await apiClient.get('/participants/');
-      if (res.data && Array.isArray(res.data)) {
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
         return res.data.map((p) => ({
           id: String(p.id),
           name: p.name,
@@ -155,6 +177,16 @@ export const rosterApi = {
     } catch (e) {
       console.warn('rosterApi.getParticipants fallback:', e);
     }
+
+    // 3. Fallback to localStorage ops_roster so refresh NEVER wipes out data
+    try {
+      const saved = localStorage.getItem('ops_roster');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+
     return [];
   },
 
@@ -196,14 +228,17 @@ export const rosterApi = {
 };
 
 export const scanApi = {
-  logScanToBackend: async (tokenOrCode, scanType = 'EVENT ENTRY', location = 'Admin Scanner Station') => {
+  logScanToBackend: async (tokenOrCode, scanType = 'EVENT ENTRY', location = 'Admin Scanner Station', duration = '', metadata = null, extraData = {}) => {
     const payload = {
       token: String(tokenOrCode).trim(),
       qrToken: String(tokenOrCode).trim(),
       passId: String(tokenOrCode).trim(),
       type: scanType,
       location,
-      scannedBy: 'Admin Portal Web'
+      duration: duration || '',
+      metadata: metadata || (duration ? { duration } : ''),
+      scannedBy: 'Admin Portal Web',
+      ...extraData
     };
 
     const endpoints = [
@@ -233,6 +268,38 @@ export const scanApi = {
   scanQr: async (qrToken) => {
     return scanApi.logScanToBackend(qrToken, 'EVENT ENTRY');
   },
+
+  getRecentScans: async () => {
+    const endpoints = [
+      '/api/recent-scans',
+      'http://127.0.0.1:5000/api/recent-scans',
+      'http://localhost:5000/api/recent-scans',
+      'http://192.168.0.185:5000/api/recent-scans'
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, { mode: 'cors' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            return data;
+          }
+        }
+      } catch {}
+    }
+
+    try {
+      const saved = localStorage.getItem('ops_recent_scans');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
+
+    return [];
+  },
+
   getBadgeToken: async (rollNo) => {
     const res = await axios.get(`/api/participants/${rollNo}/badge-token`);
     return res.data;
@@ -241,9 +308,33 @@ export const scanApi = {
 
 export const passesApi = {
   getActivePasses: async () => {
+    // 1. Fetch from SQLite backend (Flask)
+    const endpoints = [
+      '/api/active-passes',
+      'http://127.0.0.1:5000/api/active-passes',
+      'http://localhost:5000/api/active-passes',
+      'http://192.168.0.185:5000/api/active-passes'
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, { mode: 'cors' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            return data.map((p) => ({
+              ...p,
+              departTime: typeof p.departTime === 'string' ? new Date(p.departTime).getTime() : (p.departTime || Date.now())
+            }));
+          }
+        }
+      } catch {}
+    }
+
+    // 2. Fetch from Node backend if running
     try {
       const res = await apiClient.get('/passes/?status=active');
-      if (res.data) {
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
         return res.data.map((p) => ({
           id: String(p.id),
           studentId: String(p.participant),
@@ -260,7 +351,17 @@ export const passesApi = {
     } catch (e) {
       console.warn('passesApi.getActivePasses fallback:', e);
     }
-    return JSON.parse(JSON.stringify(INITIAL_ACTIVE_PASSES));
+
+    // 3. Fallback to localStorage ops_active_passes
+    try {
+      const saved = localStorage.getItem('ops_active_passes');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
+
+    return [];
   },
 
   issuePass: async (payload) => {

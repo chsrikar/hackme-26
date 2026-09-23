@@ -210,8 +210,6 @@ export function OpsSessionProvider({ children }) {
   useEffect(() => {
     if (participants && participants.length > 0) {
       localStorage.setItem('ops_roster', JSON.stringify(participants));
-    } else {
-      localStorage.removeItem('ops_roster');
     }
   }, [participants]);
 
@@ -227,18 +225,30 @@ export function OpsSessionProvider({ children }) {
     let mounted = true;
     const fetchInitialData = async () => {
       try {
-        const [parts, passes, foods, mentors] = await Promise.allSettled([
+        const [parts, passes, foods, mentors, recent] = await Promise.allSettled([
           rosterApi.getParticipants(),
           passesApi.getActivePasses(),
           foodApi.getFoodRequests(),
-          mentorApi.getMentorRequests()
+          mentorApi.getMentorRequests(),
+          scanApi.getRecentScans()
         ]);
         if (!mounted) return;
-        if (parts.status === 'fulfilled' && Array.isArray(parts.value)) {
+        if (parts.status === 'fulfilled' && Array.isArray(parts.value) && parts.value.length > 0) {
           setParticipants(parts.value);
         }
         if (passes.status === 'fulfilled' && Array.isArray(passes.value)) {
           setActivePasses(passes.value);
+        }
+        if (recent.status === 'fulfilled' && Array.isArray(recent.value) && recent.value.length > 0) {
+          setRecentScans((prev) => {
+            const existingIds = new Set(recent.value.map((s) => s.id));
+            const newFromPrev = prev.filter((s) => !existingIds.has(s.id));
+            const merged = [...newFromPrev, ...recent.value].slice(0, 100);
+            try {
+              localStorage.setItem('ops_recent_scans', JSON.stringify(merged));
+            } catch {}
+            return merged;
+          });
         }
         if (foods.status === 'fulfilled' && Array.isArray(foods.value)) {
           setFoodRequests(foods.value);
@@ -417,7 +427,14 @@ export function OpsSessionProvider({ children }) {
         passType: currentPass.passType,
         duration: durationStr
       });
-      scanApi.logScanToBackend(currentPass.passId || currentPass.rollNo, `RETURN (${currentPass.passType})`, 'Pass Return Desk').catch(() => {});
+      scanApi.logScanToBackend(
+        currentPass.passId || currentPass.rollNo,
+        `RETURN (${currentPass.passType})`,
+        'Pass Return Desk',
+        durationStr,
+        { passType: currentPass.passType, duration: durationStr },
+        { name: currentPass.participantName, phone: currentPass.phone }
+      ).catch(() => {});
 
       addToast('success', `↩️ ${currentPass.participantName} returned from ${cfg.label} — duration: ${durationStr}`, `${cfg.icon} Pass completed & returned`);
       return { success: true, mode: 'return', duration: durationStr };
@@ -489,7 +506,14 @@ export function OpsSessionProvider({ children }) {
         passType: passTypeToUse,
         reason: newPass.reason
       });
-      scanApi.logScanToBackend(finalPassId, passTypeToUse, `${cfg.label} Station`).catch(() => {});
+      scanApi.logScanToBackend(
+        finalPassId,
+        passTypeToUse,
+        `${cfg.label} Station`,
+        '',
+        { passType: passTypeToUse, reason: newPass.reason },
+        { name, phone, team: newPass.team, college: target?.college || result.college }
+      ).catch(() => {});
 
       addToast('info', `${cfg.icon} ${name} (${finalPassId}) out on ${cfg.label}`, `Allowed limit: ${cfg.overdueMinutes}m`);
       return { success: true, mode: 'pass_checkout', type: passTypeToUse };
@@ -561,7 +585,14 @@ export function OpsSessionProvider({ children }) {
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
-      scanApi.logScanToBackend(result.passId || pRoll, 'EVENT ENTRY', 'Main Entrance').catch(() => {});
+      scanApi.logScanToBackend(
+        result.passId || pRoll,
+        'EVENT ENTRY',
+        'Main Entrance',
+        '',
+        null,
+        { name: pName, phone: result.phone || data?.phone, college: result.college, department: result.department }
+      ).catch(() => {});
 
       addToast('success', `✅ ${pName} (${result.passId || pRoll}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };
@@ -626,7 +657,14 @@ export function OpsSessionProvider({ children }) {
         actionType: 'CHECKIN',
         mode: 'checkin'
       });
-      scanApi.logScanToBackend(finalPassId, 'EVENT ENTRY', 'Main Entrance').catch(() => {});
+      scanApi.logScanToBackend(
+        finalPassId,
+        'EVENT ENTRY',
+        'Main Entrance',
+        '',
+        null,
+        { name: pName, phone: result.phone, college: result.college, department: result.department }
+      ).catch(() => {});
 
       addToast('success', `✅ ${pName} (${finalPassId}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
       return { success: true, mode: 'checkin', participant: pName };

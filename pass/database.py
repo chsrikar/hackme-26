@@ -48,7 +48,7 @@ def get_db():
 
 def initialize_database():
     """
-    Create all required HACK26 tables.
+    Create all required HACK26 tables and execute safe migrations.
 
     Existing tables/data are NOT deleted.
     """
@@ -155,6 +155,11 @@ def initialize_database():
             -- EVENT EXIT
             -- HOSTEL ENTRY
             -- HOSTEL EXIT
+            -- WASHROOM
+            -- FOOD_PICKUP
+            -- REST_BREAK
+            -- LEFT_VENUE
+            -- RETURN
             scan_type TEXT NOT NULL,
 
             location TEXT,
@@ -167,6 +172,12 @@ def initialize_database():
                 REFERENCES participants(id)
         )
     """)
+
+    # Safe column migration: add metadata to scan_logs if not present
+    cursor.execute("PRAGMA table_info(scan_logs)")
+    columns = [row["name"] for row in cursor.fetchall()]
+    if "metadata" not in columns:
+        cursor.execute("ALTER TABLE scan_logs ADD COLUMN metadata TEXT")
 
     # =====================================================
     # ADMINS
@@ -222,6 +233,22 @@ def initialize_database():
         ON passes(verification_token)
     """)
 
+    # Fast scan log lookup & audit queries
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_scan_logs_pass_id
+        ON scan_logs(pass_id)
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_scan_logs_participant_id
+        ON scan_logs(participant_id)
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_scan_logs_timestamp
+        ON scan_logs(timestamp)
+    """)
+
     connection.commit()
     connection.close()
 
@@ -235,6 +262,6 @@ if __name__ == "__main__":
     initialize_database()
 
     print("========================================")
-    print("HACK26 DATABASE INITIALIZED")
+    print("HACK26 DATABASE INITIALIZED & MIGRATED")
     print("========================================")
     print(f"Database: {DATABASE_PATH}")
