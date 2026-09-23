@@ -610,27 +610,70 @@ def fetch_and_parse_verifier_url(url_or_token):
     return None
 
 
-def log_scan_to_csv_and_excel(pass_id, participant_name, college, department, mobile, scan_type, location, duration="", scanned_by="Admin Portal"):
+def log_scan_to_csv_and_excel(pass_id, participant_name, college, department, mobile, scan_type, location, duration="", scanned_by="Admin Portal", qr_url=""):
     """
-    Maintains a real-time CSV and Excel attendance & movement log on disk.
-    Saved at: pass/database/attendance_live_export.csv and .xlsx
+    Maintains real-time CSV and Excel logs on disk:
+      - Main Check-in: pass/database/attendance_live_export.csv
+      - Washroom/Toilet: pass/database/washroom_live_export.csv
+      - Food Passes: pass/database/food_live_export.csv
+    Guarantees no duplicate event check-in records for the same pass_id.
     """
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    row_data = [now_str, pass_id, participant_name, college or "VISAT", department or "CSE", mobile or "", scan_type, location or "", duration or "", scanned_by or ""]
-
     base_db_dir = Path(__file__).resolve().parent / "database"
     base_db_dir.mkdir(parents=True, exist_ok=True)
 
+    row_data = [now_str, pass_id, participant_name, college or "VISAT", department or "CSE", mobile or "", scan_type, location or "", duration or "", scanned_by or "", qr_url or ""]
+
+    # 1. Toilet / Washroom pass
+    st_upper = (scan_type or "").upper()
+    if "WASHROOM" in st_upper or "TOILET" in st_upper:
+        washroom_path = base_db_dir / "washroom_live_export.csv"
+        file_exists = washroom_path.exists()
+        try:
+            with open(washroom_path, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Action", "Location", "Duration", "Scanned By", "QR URL"])
+                writer.writerow(row_data)
+        except Exception as e:
+            print("Washroom CSV write error:", e)
+        return
+
+    # 2. Food pass
+    if "FOOD" in st_upper:
+        food_path = base_db_dir / "food_live_export.csv"
+        file_exists = food_path.exists()
+        try:
+            with open(food_path, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Action", "Location", "Duration", "Scanned By", "QR URL"])
+                writer.writerow(row_data)
+        except Exception as e:
+            print("Food CSV write error:", e)
+        return
+
+    # 3. Main Attendance / Event Entry (Deduplicated)
     csv_path = base_db_dir / "attendance_live_export.csv"
     file_exists = csv_path.exists()
     try:
-        with open(csv_path, "a", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            if not file_exists:
-                writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By"])
-            writer.writerow(row_data)
+        already_logged = False
+        if file_exists:
+            with open(csv_path, "r", encoding="utf-8", errors="ignore") as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    if len(row) > 1 and row[1].strip().upper() == str(pass_id).strip().upper() and "EVENT ENTRY" in (row[6] if len(row) > 6 else ""):
+                        already_logged = True
+                        break
+
+        if not already_logged:
+            with open(csv_path, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By", "QR URL"])
+                writer.writerow(row_data)
     except Exception as e:
-        print("CSV export write error:", e)
+        print("Attendance CSV write error:", e)
 
     try:
         import openpyxl
@@ -639,7 +682,7 @@ def log_scan_to_csv_and_excel(pass_id, participant_name, college, department, mo
             wb = openpyxl.Workbook()
             ws = wb.active
             ws.title = "HACK26 Attendance"
-            ws.append(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By"])
+            ws.append(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By", "QR URL"])
         else:
             wb = openpyxl.load_workbook(xlsx_path)
             ws = wb.active
@@ -1180,7 +1223,8 @@ def api_scan():
             scan_type=scan_type,
             location=location,
             duration=data.get("duration", ""),
-            scanned_by=scanned_by
+            scanned_by=scanned_by,
+            qr_url=data.get("qrUrl") or data.get("url") or token_str
         )
 
         cursor.execute("""

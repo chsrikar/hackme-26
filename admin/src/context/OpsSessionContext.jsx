@@ -613,7 +613,8 @@ export function OpsSessionProvider({ children }) {
       p.id === result.participantId
     );
 
-    if (existing && existing.status === 'present') {
+    const isPlaceholder = !existing?.passId || existing?.passId === 'HM26-000' || existing?.name?.startsWith('Participant HM26-');
+    if (existing && existing.status === 'present' && !isPlaceholder && existing.passId === (result.passId || result.rollNo)) {
       addToast('error', `⚠️ ${existing.name} (${existing.passId || existing.rollNo}) is already checked in (at ${existing.scannedAt || 'earlier'})`);
       return { success: false, error: 'Already checked in' };
     }

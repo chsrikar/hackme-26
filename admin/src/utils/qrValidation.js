@@ -95,7 +95,7 @@ export function validateAndParseQrPayload(rawPayload) {
 
       const known = lookupParticipant(rawToken) || (queryParams.passId ? lookupParticipant(queryParams.passId) : null);
 
-      if (rawToken || known) {
+      if (known || queryParams.name || queryParams.passId) {
         const finalPassId = known?.passId || queryParams.passId || (rawToken && /^HM26-\d{3}$/i.test(rawToken) ? rawToken.toUpperCase() : 'HM26-000');
         const finalName = known?.name || queryParams.name || `Participant ${finalPassId}`;
         const finalPhone = known?.phone || queryParams.phone || '';
@@ -115,6 +115,13 @@ export function validateAndParseQrPayload(rawPayload) {
           timestamp: Date.now()
         };
       }
+
+      // If not yet known, do not assume valid HM26-000; defer to async live verifier
+      return {
+        isValid: false,
+        needsResolve: true,
+        error: 'Resolving badge from verification URL...'
+      };
     } catch {
       // fallback
     }
@@ -243,8 +250,27 @@ export async function resolveAndParseQrPayloadAsync(rawPayload) {
 
       if (res.ok) {
         const data = await res.json();
+
+        // If verifier explicitly declares pass is inactive or not found
+        if (data.isActive === false || data.success === false) {
+          return {
+            isValid: false,
+            isActive: false,
+            error: data.error || 'Pass is not active or unapproved. Attendee must activate pass before scanning.'
+          };
+        }
+
         const p = data.participant || data;
         if (p && (p.name || p.passId)) {
+          // If status says INACTIVE
+          if (p.status && (p.status.toUpperCase() === 'INACTIVE' || p.status.toUpperCase() === 'PENDING')) {
+            return {
+              isValid: false,
+              isActive: false,
+              error: 'Pass is inactive. Attendee has not activated pass.'
+            };
+          }
+
           const finalPassId = p.passId || p.rollNo || syncResult.passId;
           const finalName = p.name || syncResult.name;
           const finalCollege = p.college || 'Visat Engineering College';
@@ -288,6 +314,15 @@ export async function resolveAndParseQrPayloadAsync(rawPayload) {
     } catch {
       // try next endpoint
     }
+  }
+
+  // If this was a verification URL or long token and could NOT be verified / resolved:
+  if (trimmed.includes('/verify/') || trimmed.length > 20) {
+    return {
+      isValid: false,
+      isActive: false,
+      error: 'Pass is inactive or unapproved. Attendee must activate pass before scanning.'
+    };
   }
 
   return syncResult;

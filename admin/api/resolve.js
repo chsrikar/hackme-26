@@ -42,10 +42,34 @@ export default async function handler(req, res) {
 
     const name = pairs['Name'];
     const passId = pairs['Pass ID'];
+    const passStatus = (pairs['Pass Status'] || '').toUpperCase();
+
+    const lowerHtml = html.toLowerCase();
+    const isInactive = passStatus === 'INACTIVE' ||
+                       passStatus === 'PENDING' ||
+                       passStatus === 'UNAPPROVED' ||
+                       lowerHtml.includes('not active') ||
+                       lowerHtml.includes('inactive') ||
+                       lowerHtml.includes('not approved') ||
+                       lowerHtml.includes('unapproved');
+
+    if (isInactive) {
+      return res.status(200).json({
+        success: false,
+        isActive: false,
+        error: 'Pass is inactive or unapproved. Attendee must activate pass before scanning.',
+        participant: {
+          name: name || '',
+          passId: passId || '',
+          status: 'INACTIVE'
+        }
+      });
+    }
 
     if (name && passId) {
       return res.status(200).json({
         success: true,
+        isActive: true,
         participant: {
           name,
           passId,
@@ -56,8 +80,16 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(404).json({ error: 'Could not extract participant info from verification page' });
+    return res.status(404).json({
+      success: false,
+      isActive: false,
+      error: 'Pass not activated or participant info not found'
+    });
   } catch (err) {
-    return res.status(500).json({ error: err.message || 'Error resolving verifier URL' });
+    return res.status(500).json({
+      success: false,
+      isActive: false,
+      error: err.message || 'Error resolving verifier URL'
+    });
   }
 }
