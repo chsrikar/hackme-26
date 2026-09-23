@@ -7,6 +7,10 @@ import secrets
 import sqlite3
 import re
 import smtplib
+import csv
+import urllib.request
+import hashlib
+from datetime import datetime
 from pathlib import Path
 from email.message import EmailMessage
 
@@ -563,6 +567,89 @@ def send_pass(participant_id):
 
 
 # =========================================================
+# LIVE VERIFIER & REAL-TIME EXCEL/CSV LOGGING
+# =========================================================
+
+def fetch_and_parse_verifier_url(url_or_token):
+    """
+    Fetches and parses live badge verification HTML from the public verifier (Render or custom).
+    Extracts participant details: Name, College, Department / Batch, Pass ID, Pass Status.
+    """
+    if not url_or_token:
+        return None
+    url_or_token = str(url_or_token).strip()
+    if url_or_token.startswith("http://") or url_or_token.startswith("https://"):
+        target_url = url_or_token
+    elif len(url_or_token) >= 15:
+        target_url = f"https://hack26-public-verifier.onrender.com/verify/{url_or_token}"
+    else:
+        return None
+
+    try:
+        req = urllib.request.Request(
+            target_url,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        )
+        with urllib.request.urlopen(req, timeout=4.5) as resp:
+            if resp.status == 200:
+                html = resp.read().decode("utf-8", errors="replace")
+                pairs = dict(re.findall(r'<div\s+class=[\'"]label[\'"]>\s*(.*?)\s*</div>\s*<div\s+class=[\'"]value[\'"]>\s*(.*?)\s*</div>', html, re.DOTALL))
+                clean = {k.strip(): re.sub(r'\s+', ' ', v).strip() for k, v in pairs.items()}
+                name = clean.get("Name")
+                pass_id = clean.get("Pass ID")
+                if name and pass_id:
+                    return {
+                        "name": name,
+                        "passId": pass_id,
+                        "college": clean.get("College", "Visat Engineering College"),
+                        "department": clean.get("Department / Batch") or clean.get("Department", "CSE"),
+                        "status": clean.get("Pass Status", "ACTIVE")
+                    }
+    except Exception as e:
+        pass
+    return None
+
+
+def log_scan_to_csv_and_excel(pass_id, participant_name, college, department, mobile, scan_type, location, duration="", scanned_by="Admin Portal"):
+    """
+    Maintains a real-time CSV and Excel attendance & movement log on disk.
+    Saved at: pass/database/attendance_live_export.csv and .xlsx
+    """
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    row_data = [now_str, pass_id, participant_name, college or "VISAT", department or "CSE", mobile or "", scan_type, location or "", duration or "", scanned_by or ""]
+
+    base_db_dir = Path(__file__).resolve().parent / "database"
+    base_db_dir.mkdir(parents=True, exist_ok=True)
+
+    csv_path = base_db_dir / "attendance_live_export.csv"
+    file_exists = csv_path.exists()
+    try:
+        with open(csv_path, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By"])
+            writer.writerow(row_data)
+    except Exception as e:
+        print("CSV export write error:", e)
+
+    try:
+        import openpyxl
+        xlsx_path = base_db_dir / "attendance_live_export.xlsx"
+        if not xlsx_path.exists():
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            ws.title = "HACK26 Attendance"
+            ws.append(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By"])
+        else:
+            wb = openpyxl.load_workbook(xlsx_path)
+            ws = wb.active
+        ws.append(row_data)
+        wb.save(xlsx_path)
+    except Exception:
+        pass
+
+
+# =========================================================
 # HELPER: CANONICAL PARTICIPANT & PASS RESOLUTION
 # =========================================================
 
@@ -577,7 +664,8 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
     and assigns a unique pass_id.
     Handles concurrent scans safely with sqlite3 UNIQUE constraints.
     """
-    token_str = str(token_str or "").strip()
+    raw_scan = str(token_str or "").strip()
+    token_str = raw_scan
 
     # 1. Check if token_str contains JSON payload
     if token_str.startswith("{") and token_str.endswith("}"):
@@ -622,6 +710,108 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
         row = cursor.fetchone()
         if row:
             return dict(row), None
+
+    # 2. Check if token_str or original raw scan resolves via live public verifier
+    candidate_target = raw_scan if ("http://" in raw_scan or "https://" in raw_scan) else token_str
+    live_info = fetch_and_parse_verifier_url(candidate_target)
+    if live_info:
+        l_name = live_info["name"]
+        l_pass_id = live_info["passId"]
+        l_college = live_info.get("college", "Visat Engineering College")
+        l_dept = live_info.get("department", "CSE")
+
+        # Check if pass already exists for this pass_id
+        cursor.execute("""
+            SELECT
+                p.id AS participant_id,
+                p.name,
+                p.college,
+                p.department_batch,
+                p.mobile,
+                p.email,
+                p.hostel_access,
+                p.registration_status,
+                ps.id AS pass_record_id,
+                ps.pass_id,
+                ps.verification_token,
+                ps.status,
+                ps.sent
+            FROM passes ps
+            JOIN participants p ON p.id = ps.participant_id
+            WHERE ps.pass_id = ? OR UPPER(ps.pass_id) = UPPER(?)
+        """, (l_pass_id, l_pass_id))
+        existing_joined = cursor.fetchone()
+        if existing_joined:
+            return dict(existing_joined), None
+
+        # Check if participant exists by name or mobile
+        p_phone = (client_data.get("mobile") or client_data.get("phone") or "").strip()
+        p_match = None
+        if p_phone:
+            cursor.execute("SELECT * FROM participants WHERE mobile = ?", (p_phone,))
+            p_match = cursor.fetchone()
+        if not p_match:
+            cursor.execute("SELECT * FROM participants WHERE UPPER(name) = UPPER(?)", (l_name,))
+            p_match = cursor.fetchone()
+
+        if p_match:
+            p_id = p_match["id"]
+        else:
+            v_key = hashlib.sha256(f"verifier|{l_pass_id}|{l_name}".encode("utf-8")).hexdigest()
+            cursor.execute("""
+                INSERT INTO participants (
+                    source_key,
+                    form_timestamp,
+                    name,
+                    college,
+                    department_batch,
+                    mobile,
+                    registration_status,
+                    payment_status
+                ) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'ACTIVE', 'PAID')
+            """, (v_key, l_name, l_college, l_dept, p_phone))
+            p_id = cursor.lastrowid
+
+        # Insert pass for this participant
+        v_token = token_str if len(token_str) >= 16 else secrets.token_urlsafe(32)
+        try:
+            cursor.execute("""
+                INSERT INTO passes (
+                    participant_id,
+                    pass_id,
+                    verification_token,
+                    status,
+                    generated_at,
+                    sent,
+                    sent_at
+                ) VALUES (?, ?, ?, 'ACTIVE', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP)
+            """, (p_id, l_pass_id, v_token))
+        except sqlite3.IntegrityError:
+            pass
+
+        # Return the resolved record
+        cursor.execute("""
+            SELECT
+                p.id AS participant_id,
+                p.name,
+                p.college,
+                p.department_batch,
+                p.mobile,
+                p.email,
+                p.hostel_access,
+                p.registration_status,
+                ps.id AS pass_record_id,
+                ps.pass_id,
+                ps.verification_token,
+                ps.status,
+                ps.sent
+            FROM passes ps
+            JOIN participants p ON p.id = ps.participant_id
+            WHERE p.id = ?
+        """, (p_id,))
+        resolved = cursor.fetchone()
+        if resolved:
+            return dict(resolved), None
 
     # 2. If not found in passes, look up participant in participants table
     part_id = None
@@ -984,6 +1174,19 @@ def api_scan():
         ))
         connection.commit()
 
+        # Real-time CSV & Excel persistence on disk
+        log_scan_to_csv_and_excel(
+            pass_id=participant["pass_id"],
+            participant_name=participant["name"],
+            college=participant["college"],
+            department=participant["department_batch"],
+            mobile=participant["mobile"],
+            scan_type=scan_type,
+            location=location,
+            duration=data.get("duration", ""),
+            scanned_by=scanned_by
+        )
+
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM scan_logs
@@ -1011,6 +1214,91 @@ def api_scan():
         connection.rollback()
         connection.close()
         return {"success": False, "error": str(e)}, 500
+
+
+# =========================================================
+# RESOLVE PASS (FOR LIVE SCANNER PREVIEW & AUTO-ENRICHMENT)
+# =========================================================
+
+@app.route("/api/resolve-pass", methods=["GET", "POST", "OPTIONS"])
+def api_resolve_pass():
+    """
+    Given a token or URL, resolves canonical participant details.
+    If not in local DB, fetches real-time from the public verifier and imports them.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+    else:
+        data = request.args.to_dict()
+
+    target = data.get("token") or data.get("url") or data.get("qrData") or data.get("passId") or data.get("qrToken") or ""
+    if not target:
+        return {"success": False, "error": "No token or URL provided"}, 400
+
+    connection = get_connection()
+    cursor = connection.cursor()
+    try:
+        participant, err = resolve_or_create_participant_and_pass(cursor, target, data)
+        connection.commit()
+        connection.close()
+
+        if not participant:
+            return {"success": False, "error": err or "Pass could not be resolved"}, 404
+
+        return {
+            "success": True,
+            "participant": {
+                "id": participant["participant_id"],
+                "name": participant["name"],
+                "passId": participant["pass_id"],
+                "college": participant["college"],
+                "department": participant["department_batch"],
+                "phone": participant["mobile"],
+                "status": participant["status"]
+            }
+        }
+    except Exception as e:
+        connection.close()
+        return {"success": False, "error": str(e)}, 500
+
+
+# =========================================================
+# EXPORT ATTENDANCE (DIRECT CSV DOWNLOAD)
+# =========================================================
+
+@app.route("/api/export-attendance", methods=["GET", "OPTIONS"])
+def api_export_attendance():
+    """
+    Direct CSV download of attendance, food, washroom, and movement scans.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    from flask import send_file
+    csv_path = Path(__file__).resolve().parent / "database" / "attendance_live_export.csv"
+    if not csv_path.exists():
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT sl.timestamp, sl.pass_id, p.name, p.college, p.department_batch, p.mobile, sl.scan_type, sl.location, sl.metadata, sl.scanned_by
+            FROM scan_logs sl
+            JOIN participants p ON p.id = sl.participant_id
+            ORDER BY sl.id DESC
+        """)
+        rows = cursor.fetchall()
+        connection.close()
+
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Timestamp", "Pass ID", "Name", "College", "Department", "Mobile", "Scan Type", "Location", "Duration", "Scanned By"])
+            for r in rows:
+                writer.writerow([r["timestamp"], r["pass_id"], r["name"], r["college"] or "VISAT", r["department_batch"] or "CSE", r["mobile"] or "", r["scan_type"], r["location"], r["metadata"] or "", r["scanned_by"]])
+
+    return send_file(csv_path, mimetype="text/csv", as_attachment=True, download_name="hack26_live_attendance.csv")
 
 
 # =========================================================

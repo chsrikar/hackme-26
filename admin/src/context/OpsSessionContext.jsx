@@ -7,9 +7,9 @@ import {
   INITIAL_MENTOR_REQUESTS,
   MOCK_DAY_HISTORY
 } from '../data/mockRoster';
-import { daySessionApi, passesApi, foodApi, mentorApi, rosterApi, scanApi } from '../services/api';
+import { daySessionApi, passesApi, foodApi, mentorApi, rosterApi, scanApi, downloadAttendanceCsv } from '../services/api';
 import { subscribeToEvent } from '../services/socket';
-import { validateAndParseQrPayload } from '../utils/qrValidation';
+import { validateAndParseQrPayload, resolveAndParseQrPayloadAsync } from '../utils/qrValidation';
 import { getPassTiming, formatClockTime, formatDuration } from '../utils/timeFormat';
 import { getPassConfig } from '../utils/passTypeConfig';
 import { PARTICIPANT_DIRECTORY } from '../data/participantDirectory';
@@ -379,7 +379,7 @@ export function OpsSessionProvider({ children }) {
 
   // Handle QR Scan (Supports Check-in, Any Movement Pass checkout, or Pass Return)
   const handleQrScan = useCallback(async (rawPayload, explicitIntent = null) => {
-    const result = validateAndParseQrPayload(rawPayload);
+    const result = await resolveAndParseQrPayloadAsync(rawPayload);
 
     if (!result.isValid) {
       addToast('error', `⚠️ ${result.error || 'Invalid QR code'}`);
@@ -801,6 +801,11 @@ export function OpsSessionProvider({ children }) {
     addToast('success', `Mentor request resolved`);
   };
 
+  const exportAttendance = useCallback(() => {
+    downloadAttendanceCsv(participants, recentScans);
+    addToast('success', '📥 Live Attendance CSV exported successfully!');
+  }, [participants, recentScans, addToast]);
+
   return (
     <OpsSessionContext.Provider
       value={{
@@ -839,7 +844,8 @@ export function OpsSessionProvider({ children }) {
         addFoodRequest,
         advanceFoodStatus,
         claimMentorTicket,
-        resolveMentorTicket
+        resolveMentorTicket,
+        exportAttendance
       }}
     >
       {children}

@@ -134,15 +134,24 @@ export const daySessionApi = {
   }
 };
 
+export function getBackendEndpoints(path) {
+  const custom = localStorage.getItem('ops_backend_url')?.trim()?.replace(/\/+$/, '');
+  return [
+    custom ? `${custom}${path}` : null,
+    path,
+    `http://127.0.0.1:5000${path}`,
+    `http://localhost:5000${path}`,
+    `http://192.168.5.184:5000${path}`,
+    `http://192.168.0.185:5000${path}`
+  ].filter(Boolean);
+}
+
 export const rosterApi = {
   getParticipants: async () => {
     // 1. Fetch from SQLite backend (Flask)
     const endpoints = [
-      '/api/roster',
-      '/api/participants',
-      'http://127.0.0.1:5000/api/roster',
-      'http://localhost:5000/api/roster',
-      'http://192.168.0.185:5000/api/roster'
+      ...getBackendEndpoints('/api/roster'),
+      '/api/participants'
     ];
 
     for (const url of endpoints) {
@@ -241,12 +250,7 @@ export const scanApi = {
       ...extraData
     };
 
-    const endpoints = [
-      '/api/scan',
-      'http://127.0.0.1:5000/api/scan',
-      'http://localhost:5000/api/scan',
-      'http://192.168.0.185:5000/api/scan'
-    ];
+    const endpoints = getBackendEndpoints('/api/scan');
 
     for (const url of endpoints) {
       try {
@@ -270,12 +274,7 @@ export const scanApi = {
   },
 
   getRecentScans: async () => {
-    const endpoints = [
-      '/api/recent-scans',
-      'http://127.0.0.1:5000/api/recent-scans',
-      'http://localhost:5000/api/recent-scans',
-      'http://192.168.0.185:5000/api/recent-scans'
-    ];
+    const endpoints = getBackendEndpoints('/api/recent-scans');
 
     for (const url of endpoints) {
       try {
@@ -306,15 +305,66 @@ export const scanApi = {
   }
 };
 
+export function downloadAttendanceCsv(participants = [], recentScans = []) {
+  const headers = ['Timestamp', 'Pass ID', 'Name', 'College', 'Department', 'Phone', 'Scan Type', 'Status', 'Duration'];
+  const rows = [];
+
+  // 1. From recent activity logs
+  if (Array.isArray(recentScans) && recentScans.length > 0) {
+    for (const s of recentScans) {
+      rows.push([
+        s.timestamp ? new Date(s.timestamp).toLocaleString() : new Date().toLocaleString(),
+        s.passId || s.rollNo || '',
+        s.name || s.participantName || '',
+        s.college || 'Visat Engineering College',
+        s.department || 'CSE',
+        s.phone || '',
+        s.actionType || s.passType || 'SCAN',
+        'Recorded',
+        s.duration || ''
+      ]);
+    }
+  }
+
+  // 2. Add all checked-in participants
+  if (Array.isArray(participants) && participants.length > 0) {
+    for (const p of participants) {
+      if (!rows.some((r) => r[1] === (p.passId || p.rollNo))) {
+        rows.push([
+          p.scannedAt || new Date().toLocaleTimeString(),
+          p.passId || p.rollNo || '',
+          p.name || '',
+          p.college || 'Visat Engineering College',
+          p.department || 'CSE',
+          p.phone || '',
+          'CHECKIN',
+          p.status || 'present',
+          ''
+        ]);
+      }
+    }
+  }
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map((r) => r.map((val) => `"${String(val || '').replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `hack26_live_attendance_${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export const passesApi = {
   getActivePasses: async () => {
     // 1. Fetch from SQLite backend (Flask)
-    const endpoints = [
-      '/api/active-passes',
-      'http://127.0.0.1:5000/api/active-passes',
-      'http://localhost:5000/api/active-passes',
-      'http://192.168.0.185:5000/api/active-passes'
-    ];
+    const endpoints = getBackendEndpoints('/api/active-passes');
 
     for (const url of endpoints) {
       try {

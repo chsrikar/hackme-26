@@ -6,4 +6,7 @@ credentials/
 generated_passes/
 database/*.db
 database/*.db-journal
+database/*.csv
+database/*.xlsx
 hackme-26/
+

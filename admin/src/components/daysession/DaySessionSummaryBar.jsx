@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Lock, Radio, Users, CheckCircle2, ShieldAlert, UserPlus, Footprints, Utensils, HelpCircle } from 'lucide-react';
+import { Clock, Lock, Radio, Users, CheckCircle2, ShieldAlert, UserPlus, Footprints, Utensils, HelpCircle, Download } from 'lucide-react';
 import { useOpsSession } from '../../context/OpsSessionContext';
 import { getElapsedTime } from '../../utils/timeFormat';
 import Button from '../common/Button';
 
 export default function DaySessionSummaryBar({ onCloseClick, onOpenManualModal }) {
-  const { activeDay, stats, criticalLeftVenueOverdue, activePasses, foodRequests, mentorRequests } = useOpsSession();
+  const { activeDay, stats, criticalLeftVenueOverdue, activePasses, foodRequests, mentorRequests, exportAttendance } = useOpsSession();
   const [elapsed, setElapsed] = useState('00m 00s');
 
   useEffect(() => {
@@ -122,6 +122,17 @@ export default function DaySessionSummaryBar({ onCloseClick, onOpenManualModal }
 
         {/* Right: Quick Actions */}
         <div className="ops-summary-actions">
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={Download}
+            onClick={exportAttendance}
+            className="btn-export-attendance"
+            title="Download full attendance and scan logs as Excel/CSV"
+          >
+            Export Excel / CSV
+          </Button>
+
           {onOpenManualModal && (
             <Button
               variant="secondary"
