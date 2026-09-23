@@ -22,10 +22,12 @@ rows = cursor.fetchall()
 
 directory = {}
 
-# First pass: explicitly mapped passes
+# Only map participants who actually have an issued pass record
 for r in rows:
+    if not r["pass_id"]:
+        continue
     clean_phone = (r['mobile'] or '').strip()
-    pass_code = r["pass_id"] or f"HM26-{r['id']:03d}"
+    pass_code = r["pass_id"].strip().upper()
     item = {
         "id": str(r["id"]),
         "name": (r["name"] or "Participant").strip(),
@@ -35,25 +37,36 @@ for r in rows:
         "department": (r["department_batch"] or "CSE").strip()
     }
 
-    # Map by passId if present
-    if r["pass_id"]:
-        directory[r["pass_id"].upper()] = item
-        directory[r["pass_id"].lower()] = item
+    directory[pass_code] = item
+    directory[pass_code.lower()] = item
 
-    # Map by verification_token if present
     if r["verification_token"]:
-        directory[r["verification_token"]] = item
-        directory[r["verification_token"].upper()] = item
-        directory[r["verification_token"].lower()] = item
+        token = r["verification_token"].strip()
+        directory[token] = item
+        directory[token.upper()] = item
+        directory[token.lower()] = item
 
-    # Map by HM26-xxx with participant id
-    directory[f"HM26-{r['id']:03d}"] = item
-    directory[f"hm26-{r['id']:03d}"] = item
+# Ensure active passes are strictly defined
+directory["HM26-006"] = {
+    "id": "155",
+    "name": "Manu Saju Pulickal",
+    "phone": "",
+    "passId": "HM26-006",
+    "college": "Visat Engineering College",
+    "department": "CSE, 4th Year"
+}
+directory["hm26-006"] = directory["HM26-006"]
+directory["AyxSNB3bx4s59YoC0sCaefJUgDvsrzrW01Rn_fQOyFM"] = directory["HM26-006"]
 
-    # Map by id
-    directory[str(r["id"])] = item
-
-# Ensure test passes and known active demo passes are strictly defined
+directory["HM26-004"] = {
+    "id": "156",
+    "name": "Ashik Madhu",
+    "phone": "",
+    "passId": "HM26-004",
+    "college": "Visat Engineering College",
+    "department": "CSE, 4th Year"
+}
+directory["hm26-004"] = directory["HM26-004"]
 directory["HM26-001"] = {
     "id": "121",
     "name": "Anto Jerom T",

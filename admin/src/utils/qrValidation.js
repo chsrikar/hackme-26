@@ -13,10 +13,30 @@ export function validateAndParseQrPayload(rawPayload) {
 
   const trimmed = rawPayload.trim();
 
-  // Helper: check participant directory
+  // Helper: check participant directory with live cache priority
   const lookupParticipant = (key) => {
     if (!key) return null;
     const strKey = String(key).trim();
+
+    // 1. Check verified live resolutions in localStorage first
+    try {
+      const cachedMap = JSON.parse(localStorage.getItem('ops_resolved_passes') || '{}');
+      const cached = cachedMap[strKey] ||
+                     cachedMap[strKey.toUpperCase()] ||
+                     cachedMap[strKey.toLowerCase()];
+      if (cached && cached.name) {
+        return {
+          id: cached.passId || strKey,
+          name: cached.name,
+          passId: cached.passId || strKey,
+          college: cached.college || 'Visat Engineering College',
+          department: cached.department || 'CSE, 4th Year',
+          phone: cached.phone || ''
+        };
+      }
+    } catch {}
+
+    // 2. Fallback to participant directory
     return PARTICIPANT_DIRECTORY[strKey] ||
            PARTICIPANT_DIRECTORY[strKey.toUpperCase()] ||
            PARTICIPANT_DIRECTORY[strKey.toLowerCase()] ||
@@ -233,8 +253,19 @@ export async function resolveAndParseQrPayloadAsync(rawPayload) {
           // Save to local cache
           try {
             const cachedMap = JSON.parse(localStorage.getItem('ops_resolved_passes') || '{}');
-            cachedMap[trimmed] = { passId: finalPassId, name: finalName, college: finalCollege, department: finalDept };
-            cachedMap[tokenCandidate] = cachedMap[trimmed];
+            const entry = {
+              passId: finalPassId,
+              name: finalName,
+              college: finalCollege,
+              department: finalDept,
+              phone: p.phone || syncResult.phone || ''
+            };
+            cachedMap[trimmed] = entry;
+            cachedMap[tokenCandidate] = entry;
+            if (finalPassId) {
+              cachedMap[finalPassId] = entry;
+              cachedMap[finalPassId.toUpperCase()] = entry;
+            }
             localStorage.setItem('ops_resolved_passes', JSON.stringify(cachedMap));
           } catch {}
 

@@ -813,30 +813,25 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
         if resolved:
             return dict(resolved), None
 
-    # 2. If not found in passes, look up participant in participants table
+    # 2. If not found in passes, look up participant by phone, name, or explicit participantId
     part_id = None
-    hm_match = re.match(r"^HM26-(\d{3,4})$", token_str, re.IGNORECASE)
-    if hm_match:
-        part_id = int(hm_match.group(1))
-    elif token_str.isdigit():
-        part_id = int(token_str)
-    elif client_data.get("participantId") and str(client_data.get("participantId")).isdigit():
+    if client_data.get("participantId") and str(client_data.get("participantId")).isdigit() and not str(client_data.get("participantId")).startswith("HM26"):
         part_id = int(client_data.get("participantId"))
 
     part_name = (client_data.get("name") or client_data.get("participantName") or "").strip()
     part_phone = (client_data.get("mobile") or client_data.get("phone") or "").strip()
 
     participant_row = None
-    if part_id:
-        cursor.execute("SELECT * FROM participants WHERE id = ?", (part_id,))
-        participant_row = cursor.fetchone()
-
-    if not participant_row and part_phone:
+    if part_phone:
         cursor.execute("SELECT * FROM participants WHERE mobile = ? OR mobile LIKE ?", (part_phone, f"%{part_phone[-10:]}%"))
         participant_row = cursor.fetchone()
 
-    if not participant_row and part_name:
+    if not participant_row and part_name and not part_name.startswith("Participant HM26-") and not part_name.startswith("Badge HM26-"):
         cursor.execute("SELECT * FROM participants WHERE UPPER(name) = UPPER(?)", (part_name,))
+        participant_row = cursor.fetchone()
+
+    if not participant_row and part_id:
+        cursor.execute("SELECT * FROM participants WHERE id = ?", (part_id,))
         participant_row = cursor.fetchone()
 
     # 3. If participant exists in participants table:
@@ -847,8 +842,8 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
         existing_pass = cursor.fetchone()
 
         if not existing_pass:
-            # Generate or reuse permanent Pass ID
-            assigned_pass_id = f"HM26-{p_id:03d}"
+            # Assign scanned pass code or generate permanent Pass ID
+            assigned_pass_id = token_str if re.match(r"^HM26-\d{3,4}$", token_str, re.I) else f"HM26-{p_id:03d}"
             cursor.execute("SELECT id FROM passes WHERE pass_id = ?", (assigned_pass_id,))
             if cursor.fetchone():
                 cursor.execute("SELECT pass_id FROM passes WHERE pass_id LIKE 'HM26-%'")
@@ -936,8 +931,8 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
             if participant_row:
                 return resolve_or_create_participant_and_pass(cursor, f"HM26-{participant_row['id']:03d}", client_data)
 
-        new_pass_id = f"HM26-{new_pid:03d}"
-        cursor.execute("SELECT id FROM passes WHERE pass_id = ?", (new_pass_id,))
+        assigned_pass_id = token_str.upper() if re.match(r"^HM26-\d{3,4}$", token_str, re.I) else f"HM26-{new_pid:03d}"
+        cursor.execute("SELECT id FROM passes WHERE pass_id = ?", (assigned_pass_id,))
         if cursor.fetchone():
             cursor.execute("SELECT pass_id FROM passes WHERE pass_id LIKE 'HM26-%'")
             existing_numbers = [
@@ -945,7 +940,8 @@ def resolve_or_create_participant_and_pass(cursor, token_str, client_data):
                 if r["pass_id"][5:].isdigit()
             ]
             highest = max(existing_numbers, default=0)
-            new_pass_id = f"HM26-{highest + 1:03d}"
+            assigned_pass_id = f"HM26-{highest + 1:03d}"
+        new_pass_id = assigned_pass_id
 
         v_token = secrets.token_urlsafe(32)
         try:
@@ -1348,7 +1344,8 @@ def api_roster():
 
     result = []
     for r in rows:
-        pass_id = r["pass_id"] or f"HM26-{r['id']:03d}"
+        pass_id = r["pass_id"]
+        roll_code = pass_id or f"REG-{r['id']:03d}"
         is_present = (r["scan_count"] or 0) > 0
         scanned_at_str = None
         if r["last_scanned_at"]:
@@ -1362,8 +1359,8 @@ def api_roster():
         result.append({
             "id": str(r["id"]),
             "name": r["name"],
-            "rollNo": pass_id,
-            "passId": pass_id,
+            "rollNo": roll_code,
+            "passId": pass_id or roll_code,
             "team": r["department_batch"] or "Team Alpha",
             "table": "Table 01",
             "phone": r["mobile"] or "",

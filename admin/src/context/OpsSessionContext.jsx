@@ -16,13 +16,57 @@ import { PARTICIPANT_DIRECTORY } from '../data/participantDirectory';
 
 const OpsSessionContext = createContext(null);
 
-// Helper to sanitize / heal participant records with official directory details
+// Helper to sanitize / heal participant records with official directory details without overwriting valid scanned names
 function sanitizeParticipant(p) {
   if (!p || typeof p !== 'object') return p;
   const key = p.passId || p.rollNo || p.id;
   if (!key) return p;
 
   const strKey = String(key).trim();
+
+  // 1. Check if we have verified live resolution data in localStorage
+  let resolved = null;
+  try {
+    const cachedMap = JSON.parse(localStorage.getItem('ops_resolved_passes') || '{}');
+    resolved = cachedMap[strKey] ||
+               cachedMap[strKey.toUpperCase()] ||
+               cachedMap[strKey.toLowerCase()] ||
+               (p.passId && (cachedMap[p.passId] || cachedMap[p.passId.toUpperCase()])) ||
+               (p.rollNo && (cachedMap[p.rollNo] || cachedMap[p.rollNo.toUpperCase()]));
+  } catch {}
+
+  const currentName = typeof p.name === 'string' ? p.name.trim() : '';
+  const isGeneric = !currentName ||
+                    currentName.startsWith('Participant HM26-') ||
+                    currentName.startsWith('Badge HM26-') ||
+                    currentName.startsWith('p_');
+
+  // If we have verified live resolution data from scanner/verifier, that is absolute source of truth
+  if (resolved && resolved.name) {
+    return {
+      ...p,
+      name: resolved.name,
+      passId: resolved.passId || p.passId || strKey,
+      rollNo: resolved.passId || p.rollNo || strKey,
+      college: resolved.college || p.college || 'Visat Engineering College',
+      department: resolved.department || p.department || 'CSE, 4th Year',
+      phone: resolved.phone || p.phone || '',
+      status: p.status || 'present'
+    };
+  }
+
+  // If participant ALREADY has a genuine scanned name (e.g. Rojo, Manu Saju Pulickal, Ashik Madhu):
+  // NEVER overwrite it with static directory entries!
+  if (!isGeneric) {
+    return {
+      ...p,
+      passId: p.passId || strKey,
+      rollNo: p.rollNo || strKey,
+      status: p.status || 'present'
+    };
+  }
+
+  // Only if name was completely generic/unknown (e.g. "Participant HM26-000"), look up directory
   const match = PARTICIPANT_DIRECTORY[strKey] ||
                 PARTICIPANT_DIRECTORY[strKey.toUpperCase()] ||
                 PARTICIPANT_DIRECTORY[strKey.toLowerCase()];
@@ -33,7 +77,8 @@ function sanitizeParticipant(p) {
       passId: match.passId,
       rollNo: match.passId,
       phone: String(match.phone || p.phone || ''),
-      college: match.college || p.college || 'VISAT'
+      college: match.college || p.college || 'VISAT',
+      department: match.department || p.department || 'CSE'
     };
   }
 
@@ -234,7 +279,47 @@ export function OpsSessionProvider({ children }) {
         ]);
         if (!mounted) return;
         if (parts.status === 'fulfilled' && Array.isArray(parts.value) && parts.value.length > 0) {
-          setParticipants(parts.value);
+          setParticipants((prev) => {
+            const rawBackend = parts.value.map(sanitizeParticipant);
+            // If local state is empty, use sanitized backend
+            if (!prev || prev.length === 0) return rawBackend;
+
+            // Merge: preserve all checked-in / present participants from local session
+            const merged = rawBackend.map((bp) => {
+              const bKey = (bp.passId || bp.rollNo || bp.id || '').trim();
+              const localMatch = prev.find((lp) => {
+                const lKey = (lp.passId || lp.rollNo || lp.id || '').trim();
+                return (bKey && lKey && bKey.toLowerCase() === lKey.toLowerCase()) ||
+                       (bp.name && lp.name && bp.name.toLowerCase() === lp.name.toLowerCase());
+              });
+
+              if (localMatch && (localMatch.status === 'present' || localMatch.scannedAt)) {
+                return {
+                  ...bp,
+                  name: localMatch.name && !localMatch.name.startsWith('Participant HM26-') ? localMatch.name : bp.name,
+                  status: 'present',
+                  scannedAt: localMatch.scannedAt || bp.scannedAt,
+                  markedBy: localMatch.markedBy || bp.markedBy || 'qr_scan'
+                };
+              }
+              return bp;
+            });
+
+            // Keep local participants that were scanned on the fly (e.g. dynamic live badges)
+            prev.forEach((lp) => {
+              const lKey = (lp.passId || lp.rollNo || lp.id || '').trim();
+              const exists = merged.some((m) => {
+                const mKey = (m.passId || m.rollNo || m.id || '').trim();
+                return (lKey && mKey && lKey.toLowerCase() === mKey.toLowerCase()) ||
+                       (lp.name && m.name && lp.name.toLowerCase() === m.name.toLowerCase());
+              });
+              if (!exists && (lp.status === 'present' || lp.scannedAt)) {
+                merged.unshift(lp);
+              }
+            });
+
+            return merged;
+          });
         }
         if (passes.status === 'fulfilled' && Array.isArray(passes.value)) {
           setActivePasses(passes.value);
@@ -578,6 +663,23 @@ export function OpsSessionProvider({ children }) {
         ];
       });
 
+      try {
+        const cachedMap = JSON.parse(localStorage.getItem('ops_resolved_passes') || '{}');
+        const entry = {
+          passId: result.passId || pRoll,
+          name: pName,
+          college: result.college || data?.college || 'VISAT',
+          department: result.department || data?.department || 'CSE',
+          phone: result.phone || data?.phone || '',
+          qrUrl: rawPayload
+        };
+        const passKey = String(result.passId || pRoll).trim();
+        cachedMap[passKey] = entry;
+        cachedMap[passKey.toUpperCase()] = entry;
+        cachedMap[String(rawPayload).trim()] = entry;
+        localStorage.setItem('ops_resolved_passes', JSON.stringify(cachedMap));
+      } catch {}
+
       addRecentScan({
         name: pName,
         rollNo: result.passId || pRoll,
@@ -591,7 +693,7 @@ export function OpsSessionProvider({ children }) {
         'Main Entrance',
         '',
         null,
-        { name: pName, phone: result.phone || data?.phone, college: result.college, department: result.department }
+        { name: pName, phone: result.phone || data?.phone, college: result.college || data?.college, department: result.department || data?.department, qrUrl: rawPayload }
       ).catch(() => {});
 
       addToast('success', `✅ ${pName} (${result.passId || pRoll}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
@@ -650,6 +752,23 @@ export function OpsSessionProvider({ children }) {
         ];
       });
 
+      try {
+        const cachedMap = JSON.parse(localStorage.getItem('ops_resolved_passes') || '{}');
+        const entry = {
+          passId: finalPassId,
+          name: pName,
+          college: result.college || 'VISAT',
+          department: result.department || 'CSE',
+          phone: result.phone || '',
+          qrUrl: rawPayload
+        };
+        const passKey = String(finalPassId).trim();
+        cachedMap[passKey] = entry;
+        cachedMap[passKey.toUpperCase()] = entry;
+        cachedMap[String(rawPayload).trim()] = entry;
+        localStorage.setItem('ops_resolved_passes', JSON.stringify(cachedMap));
+      } catch {}
+
       addRecentScan({
         name: pName,
         rollNo: finalPassId,
@@ -663,7 +782,7 @@ export function OpsSessionProvider({ children }) {
         'Main Entrance',
         '',
         null,
-        { name: pName, phone: result.phone, college: result.college, department: result.department }
+        { name: pName, phone: result.phone, college: result.college, department: result.department, qrUrl: rawPayload }
       ).catch(() => {});
 
       addToast('success', `✅ ${pName} (${finalPassId}) checked in!`, `${result.phone ? '📞 ' + result.phone + ' • ' : ''}${nowStr}`);
