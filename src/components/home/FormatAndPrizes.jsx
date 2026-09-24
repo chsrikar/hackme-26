@@ -19,13 +19,14 @@ export default function FormatAndPrizes() {
   ];
 
   const timelineEvents = [
-    { time: "Day 1, Morning", activity: "Registration & team check-in", tag: "Logistics" },
-    { time: "Day 1, Afternoon", activity: "Opening ceremony, problem statements released", tag: "Inauguration" },
-    { time: "Day 1, Evening", activity: "Hacking begins", tag: "Sprint Start" },
-    { time: "Overnight", activity: "Build, games, music breaks", tag: "Continuous Hack" },
-    { time: "Day 2, Morning", activity: "Mentor check-ins / progress review", tag: "Mentorship" },
-    { time: "Day 2, Afternoon", activity: "Submissions close, judging", tag: "Jury Pitch" },
-    { time: "Day 2, Evening", activity: "Campfire, results & closing", tag: "Celebration" }
+    { time: "Day 1, 10:00 AM", activity: "Hackathon Briefing & Rules", tag: "Briefing" },
+    { time: "Day 1, 11:00 AM", activity: "Room Allocation & Work Setup", tag: "Setup" },
+    { time: "Day 1, 2:00 PM", activity: "Hackathon Work Begins", tag: "Sprint Start" },
+    { time: "Day 1, 5:00 PM", activity: "Games & Music Band", tag: "Social & Music" },
+    { time: "Day 1, 9:30 PM", activity: "Overnight Hackathon Continues", tag: "Overnight" },
+    { time: "Day 2, 9:00 AM", activity: "Final Submission Deadline", tag: "Deadline" },
+    { time: "Day 2, 9:00 AM", activity: "Project Presentations & Judging", tag: "Evaluation" },
+    { time: "Day 2, 11:00 AM", activity: "Association Inauguration & Programme Close", tag: "Ceremony" }
   ];
 
   return (

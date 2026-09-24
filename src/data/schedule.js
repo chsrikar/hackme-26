@@ -3,149 +3,157 @@ export const scheduleDays = [
     dayId: "day-1",
     dayLabel: "Day 1",
     title: "CSE DEPARTMENT ASSOCIATION & HACKATHON — DAY 1",
-    date: "Day 1 // Inauguration, Briefing & Overnight Hackathon",
-    theme: "Association Inauguration, Hackathon Briefing, Cultural Evening & Overnight Work",
+    date: "25 September 2026 // Day 1",
+    theme: "Hackathon Briefing, Setup, Music Band, Games & Overnight Sprint",
     events: [
       {
-        time: "9:30 AM – 11:30 AM",
-        duration: "2 hrs",
-        activity: "Association Inauguration",
-        title: "Association Inauguration",
-        type: "Ceremony",
-        details: "Core inaugural ceremony for the CSE Department Association & Hackathon.",
-        description: "Core inaugural ceremony for the CSE Department Association & Hackathon.",
-        location: "Main Auditorium",
-        agenda: [
-          "Welcome Speech",
-          "Presidential Address",
-          "Inauguration & Lamp Lighting",
-          "Cinematic Dept Video (2-3 min)",
-          "Activities Introduction",
-          "Vote of Thanks"
-        ],
-        subItems: [
-          { title: "Welcome Speech", details: "" },
-          { title: "Presidential Address", details: "" },
-          { title: "Inauguration & Lamp Lighting", details: "" },
-          { title: "Cinematic Dept Video", details: "2-3 min" },
-          { title: "Activities Introduction", details: "" },
-          { title: "Vote of Thanks", details: "" }
-        ]
-      },
-      {
-        time: "11:30 AM – 12:30 PM",
+        time: "10:00 AM – 11:00 AM",
         duration: "1 hr",
         activity: "Hackathon Briefing & Rules",
         title: "Hackathon Briefing & Rules",
         type: "Briefing",
-        details: "Detailed briefing on rules, challenge topics, problem statement reveal, and evaluation deadlines.",
-        description: "Detailed briefing on rules, challenge topics, problem statement reveal, and evaluation deadlines.",
+        details: "Rules & topics explanation, problem statement reveal, and judging & submission guidelines.",
+        description: "Rules & topics explanation, problem statement reveal, and judging & submission guidelines.",
         location: "Seminar Hall / Main Stage",
         agenda: [
-          "Rules & Topics Explanation",
-          "Problem Statement Reveal",
-          "Judging & Submission Deadline"
+          "Rules & topics explanation",
+          "Problem statement reveal",
+          "Judging & submission guidelines"
         ],
         subItems: [
-          { title: "Rules & Topics Explanation", details: "" },
-          { title: "Problem Statement Reveal", details: "" },
-          { title: "Judging & Submission Deadline", details: "" }
+          { title: "Rules & topics explanation", details: "" },
+          { title: "Problem statement reveal", details: "" },
+          { title: "Judging & submission guidelines", details: "" }
         ]
       },
       {
-        time: "12:30 PM – 2:00 PM",
-        duration: "1.5 hrs",
-        activity: "Lunch & Room Allocation",
-        title: "Lunch & Room Allocation",
-        type: "Logistics",
-        details: "Lunch break and room allocation for working sessions.",
-        description: "Lunch break and room allocation for working sessions.",
-        location: "Dining Commons & Lab Blocks",
-        agenda: [
-          "Lunch break",
-          "Room allocation for sessions"
-        ],
-        subItems: [
-          { title: "Lunch break", details: "" },
-          { title: "Room allocation for sessions", details: "" }
-        ]
-      },
-      {
-        time: "2:00 PM – 4:00 PM",
+        time: "11:00 AM – 1:00 PM",
         duration: "2 hrs",
-        activity: "Work Session & Setup",
-        title: "Work Session & Setup",
-        type: "Hacking",
-        details: "Workspace setup & project work across allocated development rooms.",
-        description: "Workspace setup & project work across allocated development rooms.",
-        location: "Assigned Project Labs",
+        activity: "Room Allocation & Work Setup",
+        title: "Room Allocation & Work Setup",
+        type: "Logistics",
+        details: "Room allocation, workspace setup, and team/project preparation.",
+        description: "Room allocation, workspace setup, and team/project preparation.",
+        location: "Assigned Project Labs / Classrooms",
         agenda: [
-          "Workspace setup & project work"
+          "Room allocation",
+          "Workspace setup",
+          "Team/project preparation"
         ],
         subItems: [
-          { title: "Workspace setup & project work", details: "" }
+          { title: "Room allocation", details: "" },
+          { title: "Workspace setup", details: "" },
+          { title: "Team/project preparation", details: "" }
         ]
       },
       {
-        time: "4:00 PM – 5:00 PM",
+        time: "1:00 PM – 2:00 PM",
         duration: "1 hr",
-        activity: "Refreshment & Free Time",
-        title: "Refreshment & Free Time",
+        activity: "Lunch Break",
+        title: "Lunch Break",
         type: "Break",
-        details: "Tea break (4:00–4:30 PM) followed by rest & free time.",
-        description: "Tea break (4:00–4:30 PM) followed by rest & free time.",
-        location: "Cafeteria & Open Lawn",
-        agenda: [
-          "Tea break (4:00–4:30 PM)",
-          "Rest & free time"
-        ],
-        subItems: [
-          { title: "Tea break (4:00–4:30 PM)", details: "" },
-          { title: "Rest & free time", details: "" }
-        ]
-      },
-      {
-        time: "5:00 PM – 8:00 PM",
-        duration: "3 hrs",
-        activity: "Evening Entertainment, Games & Campfire",
-        title: "Evening Entertainment, Games & Campfire",
-        type: "Social",
-        details: "Music, Dance, Singing, Campfire, and interactive entertainment games.",
-        description: "Music, Dance, Singing, Campfire, and interactive entertainment games.",
-        location: "Open Ground / Amphitheatre",
-        agenda: [
-          "Music, Dance, Singing",
-          "Campfire",
-          "Games: Freeze Dance, Tongue Twister, Memory Chain, Secret Killer, Mentalism"
-        ],
-        subItems: [
-          { title: "Music, Dance, Singing", details: "" },
-          { title: "Campfire", details: "" },
-          { title: "Games", details: "Freeze Dance, Tongue Twister, Memory Chain, Secret Killer, Mentalism" }
-        ]
-      },
-      {
-        time: "8:00 PM",
-        duration: "30 min",
-        activity: "Dinner",
-        title: "Dinner",
-        type: "Break",
-        details: "Dinner break for all hackathon teams and organizing crew.",
-        description: "Dinner break for all hackathon teams and organizing crew.",
+        details: "Lunch break for all registered hackers and organizers.",
+        description: "Lunch break for all registered hackers and organizers.",
         location: "Dining Commons",
         agenda: [
-          "Dinner break"
+          "Lunch break"
         ],
-        subItems: []
+        subItems: [
+          { title: "Lunch break", details: "" }
+        ]
       },
       {
-        time: "8:30 PM Onwards",
-        duration: "Overnight",
-        activity: "Hackathon Overnight Work",
-        title: "Hackathon Overnight Work",
+        time: "2:00 PM – 4:30 PM",
+        duration: "2.5 hrs",
+        activity: "Hackathon Work",
+        title: "Hackathon Work",
         type: "Hacking",
-        details: "Overnight project development, debugging, and continuous mentorship rounds.",
-        description: "Overnight project development, debugging, and continuous mentorship rounds.",
+        details: "Project development, team collaboration, and implementation sprint.",
+        description: "Project development, team collaboration, and implementation sprint.",
+        location: "Assigned Development Labs",
+        agenda: [
+          "Project development",
+          "Team collaboration and implementation"
+        ],
+        subItems: [
+          { title: "Project development", details: "" },
+          { title: "Team collaboration and implementation", details: "" }
+        ]
+      },
+      {
+        time: "5:00 PM",
+        duration: "Session",
+        activity: "Games Start – Ice-Breaking Session",
+        title: "Games Start – Ice-Breaking Session",
+        type: "Social",
+        details: "Ice-breaking activities and team interaction.",
+        description: "Ice-breaking activities and team interaction.",
+        location: "Open Ground / Main Stage",
+        agenda: [
+          "Ice-breaking activities",
+          "Team interaction"
+        ],
+        subItems: [
+          { title: "Ice-breaking activities", details: "" },
+          { title: "Team interaction", details: "" }
+        ]
+      },
+      {
+        time: "5:00 PM – 7:00 PM",
+        duration: "2 hrs",
+        activity: "Music Band",
+        title: "Music Band",
+        type: "Entertainment",
+        details: "Live music / band performance to energize builders.",
+        description: "Live music / band performance to energize builders.",
+        location: "Open Stage / Amphitheatre",
+        agenda: [
+          "Live music / band performance"
+        ],
+        subItems: [
+          { title: "Live music / band performance", details: "" }
+        ]
+      },
+      {
+        time: "7:00 PM – 8:00 PM",
+        duration: "1 hr",
+        activity: "Fresh Up",
+        title: "Fresh Up",
+        type: "Break",
+        details: "Fresh-up and personal time for participants.",
+        description: "Fresh-up and personal time for participants.",
+        location: "Campus Amenities / Rest Zones",
+        agenda: [
+          "Fresh-up and personal time"
+        ],
+        subItems: [
+          { title: "Fresh-up and personal time", details: "" }
+        ]
+      },
+      {
+        time: "8:00 PM – 9:30 PM",
+        duration: "1.5 hrs",
+        activity: "Games Continue",
+        title: "Games Continue",
+        type: "Social",
+        details: "Group games, fun challenges, and evening entertainment.",
+        description: "Group games, fun challenges, and evening entertainment.",
+        location: "Open Ground / Auditorium",
+        agenda: [
+          "Group games and entertainment"
+        ],
+        subItems: [
+          { title: "Group games and entertainment", details: "" }
+        ]
+      },
+      {
+        time: "9:30 PM Onwards",
+        duration: "Overnight",
+        activity: "Hackathon Continues",
+        title: "Hackathon Continues",
+        type: "Hacking",
+        details: "Overnight project development, debugging, and continuous build progress.",
+        description: "Overnight project development, debugging, and continuous build progress.",
         location: "Assigned Development Labs",
         agenda: [
           "Overnight project development"
@@ -160,40 +168,44 @@ export const scheduleDays = [
     dayId: "day-2",
     dayLabel: "Day 2",
     title: "CSE DEPARTMENT ASSOCIATION & HACKATHON — DAY 2",
-    date: "Day 2 // Submissions, Presentations & Grand Closing",
-    theme: "Final Submissions, Project Evaluation & Prize Distribution",
+    date: "26 September 2026 // Day 2",
+    theme: "Final Submissions, Presentations & Association Inauguration",
     events: [
       {
-        time: "7:00 AM",
+        time: "7:00 AM – 8:00 AM",
         duration: "1 hr",
         activity: "Fresh Up & Tea",
         title: "Fresh Up & Tea",
         type: "Break",
-        details: "Morning tea & refreshments.",
-        description: "Morning tea & refreshments.",
+        details: "Morning tea & refreshments to kickstart Day 2.",
+        description: "Morning tea & refreshments to kickstart Day 2.",
         location: "Cafeteria / Refreshment Desk",
         agenda: [
           "Morning tea & refreshments"
         ],
-        subItems: []
+        subItems: [
+          { title: "Morning tea & refreshments", details: "" }
+        ]
       },
       {
-        time: "8:00 AM",
+        time: "8:00 AM – 9:00 AM",
         duration: "1 hr",
         activity: "Breakfast",
         title: "Breakfast",
         type: "Break",
-        details: "Breakfast break for all participants.",
-        description: "Breakfast break for all participants.",
+        details: "Breakfast break for all participants and mentors.",
+        description: "Breakfast break for all participants and mentors.",
         location: "Dining Commons",
         agenda: [
           "Breakfast break"
         ],
-        subItems: []
+        subItems: [
+          { title: "Breakfast break", details: "" }
+        ]
       },
       {
         time: "9:00 AM",
-        duration: "Strict Deadline",
+        duration: "Hard Deadline",
         activity: "Hackathon Final Submission",
         title: "Hackathon Final Submission",
         type: "Milestone",
@@ -208,37 +220,55 @@ export const scheduleDays = [
         ]
       },
       {
-        time: "10:30 AM Onwards",
-        duration: "~1.5 hrs",
-        activity: "Project Presentation & Evaluation",
-        title: "Project Presentation & Evaluation",
+        time: "9:00 AM – 11:00 AM",
+        duration: "2 hrs",
+        activity: "Hackathon Presentation",
+        title: "Hackathon Presentation",
         type: "Judging",
-        details: "5 mins presentation per team; 2 mins Q&A with judges.",
-        description: "5 mins presentation per team; 2 mins Q&A with judges.",
+        details: "Team-wise project presentation, live demonstration & jury evaluation.",
+        description: "Team-wise project presentation, live demonstration & jury evaluation.",
         location: "Jury Panels / Presentation Halls",
         agenda: [
-          "5 mins presentation per team; 2 mins Q&A with judges"
+          "Team-wise project presentation",
+          "Demonstration & evaluation"
         ],
         subItems: [
-          { title: "Team Presentations", details: "5 mins presentation per team" },
-          { title: "Jury Q&A", details: "2 mins Q&A with judges" }
+          { title: "Team-wise project presentation", details: "" },
+          { title: "Demonstration & evaluation", details: "" }
         ]
       },
       {
-        time: "12:00 PM",
-        duration: "1 hr",
-        activity: "Prize Distribution & Closing Ceremony",
-        title: "Prize Distribution & Closing Ceremony",
+        time: "11:00 AM – 1:00 PM",
+        duration: "2 hrs",
+        activity: "Association Inauguration",
+        title: "Association Inauguration",
         type: "Ceremony",
-        details: "Hackathon Winner Announcement & Prize Distribution; Closing Ceremony.",
-        description: "Hackathon Winner Announcement & Prize Distribution; Closing Ceremony.",
+        details: "Welcome & inaugural programme, association activities and formal proceedings.",
+        description: "Welcome & inaugural programme, association activities and formal proceedings.",
         location: "Main Auditorium",
         agenda: [
-          "Hackathon Winner Announcement & Prize Distribution; Closing Ceremony"
+          "Welcome & inaugural programme",
+          "Association activities and formal proceedings"
         ],
         subItems: [
-          { title: "Hackathon Winner Announcement", details: "Prize & trophy distribution" },
-          { title: "Closing Ceremony", details: "Formal valedictory & group photo" }
+          { title: "Welcome & inaugural programme", details: "" },
+          { title: "Association activities and formal proceedings", details: "" }
+        ]
+      },
+      {
+        time: "1:00 PM",
+        duration: "Closing",
+        activity: "Programme Ends",
+        title: "Programme Ends",
+        type: "Ceremony",
+        details: "Closing of the programme and formal conclusion of HackMe'26.",
+        description: "Closing of the programme and formal conclusion of HackMe'26.",
+        location: "Main Auditorium",
+        agenda: [
+          "Closing of the programme"
+        ],
+        subItems: [
+          { title: "Closing of the programme", details: "" }
         ]
       }
     ]
