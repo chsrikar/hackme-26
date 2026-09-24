@@ -8,7 +8,7 @@ export default function ResearchAndCta() {
       num: "01",
       tag: "DISPATCH 01",
       title: "Team Formation & Track Selection Guide",
-      desc: "Strategies for assembling 3–4 member squads, balancing frontend, backend, and hardware skills, and choosing your primary innovation track."
+      desc: "Strategies for assembling 2-5 member squads, balancing frontend, backend, and hardware skills, and choosing your primary innovation track."
     },
     {
       num: "02",

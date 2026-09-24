@@ -14,7 +14,7 @@ export default function RulesPage() {
       icon: <Users size={20} color="#38bdf8" />,
       tag: "COMPOSITION",
       points: [
-        "Teams must consist of 2 to 4 registered participants.",
+        "Teams must consist of 2-5 Members (registered participants).",
         "Cross-department, cross-college, and cross-year teams are fully permitted and strongly encouraged.",
         "Individual solo hackers can form teams during the Day 1 morning mixer and room allocation phase."
       ]

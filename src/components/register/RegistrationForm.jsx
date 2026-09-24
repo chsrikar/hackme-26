@@ -11,7 +11,6 @@ export default function RegistrationForm() {
     teamName: '',
     trackPreference: tracks[0]?.id || 'ai-ml-intelligence',
     teamMembers: [
-      { name: '', email: '' },
       { name: '', email: '' }
     ]
   });
@@ -22,7 +21,7 @@ export default function RegistrationForm() {
   const [regId, setRegId] = useState('');
 
   const addMember = () => {
-    if (formData.teamMembers.length < 3) { // up to 3 additional members (total 4)
+    if (formData.teamMembers.length < 4) { // up to 4 additional members (total 5)
       setFormData((prev) => ({
         ...prev,
         teamMembers: [...prev.teamMembers, { name: '', email: '' }]
@@ -31,7 +30,7 @@ export default function RegistrationForm() {
   };
 
   const removeMember = (index) => {
-    if (formData.teamMembers.length > 1) { // minimum 2 additional (total 3)
+    if (formData.teamMembers.length > 1) { // minimum 1 additional (total 2)
       setFormData((prev) => ({
         ...prev,
         teamMembers: prev.teamMembers.filter((_, i) => i !== index)
@@ -113,7 +112,6 @@ export default function RegistrationForm() {
                 teamName: '',
                 trackPreference: tracks[0]?.id || 'ai-ml-intelligence',
                 teamMembers: [
-                  { name: '', email: '' },
                   { name: '', email: '' }
                 ]
               });
@@ -274,19 +272,19 @@ export default function RegistrationForm() {
           </select>
         </div>
 
-        {/* Team Members (3–4 members fixed) */}
+        {/* Team Members (2–5 members) */}
         <div style={{ borderTop: '1px dashed #282836', paddingTop: '18px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: '#ffffff', fontWeight: 700 }}>
-                Team Members (Fixed 3–4 Members)
+                Team Members (2-5 Members)
               </span>
               <span style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af' }}>
                 Leader + {formData.teamMembers.length} members ({formData.teamMembers.length + 1} total builders)
               </span>
             </div>
 
-            {formData.teamMembers.length < 3 && (
+            {formData.teamMembers.length < 4 && (
               <button
                 type="button"
                 onClick={addMember}
@@ -304,7 +302,7 @@ export default function RegistrationForm() {
                   gap: '4px'
                 }}
               >
-                <Plus size={13} /> Add 4th Member
+                <Plus size={13} /> Add Member
               </button>
             )}
           </div>
@@ -353,7 +351,7 @@ export default function RegistrationForm() {
                     outline: 'none'
                   }}
                 />
-                {formData.teamMembers.length > 2 && (
+                {formData.teamMembers.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeMember(idx)}

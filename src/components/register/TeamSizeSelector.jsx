@@ -1,7 +1,7 @@
 import { Users } from 'lucide-react';
 
 export default function TeamSizeSelector({ value, onChange }) {
-  const sizes = [1, 2, 3, 4];
+  const sizes = [2, 3, 4, 5];
 
   return (
     <div>

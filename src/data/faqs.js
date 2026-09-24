@@ -2,7 +2,7 @@ export const faqs = [
   {
     id: "faq-team",
     question: "Do I need a team to register?",
-    answer: "Yes — teams must consist of 3–4 members. If you don't have a full team yet, you can register and coordinate with fellow builders during team matching."
+    answer: "Yes — teams must consist of 2-5 Members. If you don't have a full team yet, you can register and coordinate with fellow builders during team matching."
   },
   {
     id: "faq-fee",

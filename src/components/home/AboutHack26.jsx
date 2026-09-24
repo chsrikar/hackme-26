@@ -6,7 +6,7 @@ export default function AboutHack26() {
     {
       title: "Hackathon",
       tagline: "Build · Code · Innovate",
-      desc: "Twenty-four hours, one shot to ship. Work in a team of 3–4, tackle a real problem, and walk away with something you actually built.",
+      desc: "Twenty-four hours, one shot to ship. Work in a team of 2-5 Members, tackle a real problem, and walk away with something you actually built.",
       icon: <Terminal size={24} color="var(--color-overmind-orange)" />,
       color: "var(--color-overmind-orange)"
     },

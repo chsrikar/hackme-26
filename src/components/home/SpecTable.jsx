@@ -3,7 +3,7 @@ import { Check, ArrowRight } from 'lucide-react';
 
 export default function SpecTable() {
   const comparison = [
-    { parameter: 'Team Composition', typical: '1–2 solo or ad-hoc', hack26: '3–4 builders per team' },
+    { parameter: 'Team Composition', typical: '1–2 solo or ad-hoc', hack26: '2-5 Members per team' },
     { parameter: 'Duration', typical: '6–12 hours', hack26: '24 hours, continuous' },
     { parameter: 'Eligibility', typical: 'Host college only', hack26: 'Open to all colleges' },
     { parameter: 'Judging', typical: 'Subjective pitch only', hack26: 'Fixed rubric, live demo + code review' },
