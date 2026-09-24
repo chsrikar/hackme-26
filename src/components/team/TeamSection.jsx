@@ -82,20 +82,6 @@ export default function TeamSection() {
           >
             <div className="denmu-team-name">{member.name}</div>
             <div className="denmu-team-role">{member.role}</div>
-            {member.category && (
-              <span
-                style={{
-                  fontSize: '0.68rem',
-                  color: 'var(--color-overmind-orange)',
-                  fontFamily: 'var(--font-mono)',
-                  marginTop: '4px',
-                  display: 'inline-block',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                // {member.category.toUpperCase()}
-              </span>
-            )}
           </div>
         ))}
       </div>

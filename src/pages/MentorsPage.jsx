@@ -187,7 +187,7 @@ export default function MentorsPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '16px' }}>
             {filteredCrew.map((org, oIdx) => (
               <div
                 key={oIdx}
@@ -195,10 +195,10 @@ export default function MentorsPage() {
                 style={{
                   background: '#0d0d11',
                   border: '1px solid #202028',
-                  padding: 'clamp(16px, 3.5vw, 22px)'
+                  padding: '16px 18px'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div
                     style={{
                       width: '38px',
@@ -218,42 +218,13 @@ export default function MentorsPage() {
                     {org.avatarText}
                   </div>
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
-                        {org.name}
-                      </h4>
-                      {org.category && (
-                        <span style={{ fontSize: '0.65rem', color: 'var(--color-overmind-orange)', fontFamily: 'var(--font-mono)' }}>
-                          [{org.category}]
-                        </span>
-                      )}
-                    </div>
-                    <span style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff', margin: 0, lineHeight: 1.2 }}>
+                      {org.name}
+                    </h4>
+                    <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontFamily: 'var(--font-mono)' }}>
                       {org.role}
                     </span>
                   </div>
-                </div>
-
-                <p style={{ fontSize: '0.84rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '12px' }}>
-                  {org.bio}
-                </p>
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {org.tags.map((tag, tIdx) => (
-                    <span
-                      key={tIdx}
-                      style={{
-                        background: '#16161e',
-                        border: '1px solid #292936',
-                        color: '#cbd5e1',
-                        fontSize: '0.7rem',
-                        fontFamily: 'var(--font-mono)',
-                        padding: '1px 6px'
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
                 </div>
               </div>
             ))}

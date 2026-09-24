@@ -2,155 +2,123 @@ export const organizers = [
   // 1. Organizers
   {
     name: "Sabeel",
-    role: "Lead Organizer & Event Director",
+    role: "Organizer",
     category: "Organizers",
     department: "Organizing Committee",
-    bio: "Leading HackMe'26 with a vision to create an unforgettable hackathon experience for all participants.",
-    avatarText: "SA",
-    tags: ["Organizer", "Director"]
+    avatarText: "SA"
   },
   {
     name: "Amegh",
-    role: "Organizer & Communications",
+    role: "Organizer",
     category: "Organizers",
     department: "Organizing Committee",
-    bio: "Creating engaging content, coordinating announcements, and managing communication across teams.",
-    avatarText: "AM",
-    tags: ["Organizer", "Communications"]
+    avatarText: "AM"
   },
   {
     name: "Deva",
-    role: "Organizer & Partnerships",
+    role: "Organizer",
     category: "Organizers",
     department: "Organizing Committee",
-    bio: "Building strategic partnerships, sponsorships, and institutional relations for HackMe'26.",
-    avatarText: "DE",
-    tags: ["Organizer", "Partnerships"]
+    avatarText: "DE"
   },
   {
     name: "Dhanush",
-    role: "Organizer & Outreach",
+    role: "Organizer",
     category: "Organizers",
     department: "Organizing Committee",
-    bio: "Driving participant engagement, community reach, and campus marketing initiatives.",
-    avatarText: "DH",
-    tags: ["Organizer", "Outreach"]
+    avatarText: "DH"
   },
 
   // 2. Discipline
   {
     name: "Athaf",
-    role: "Discipline & Protocol Lead",
+    role: "Discipline",
     category: "Discipline",
     department: "Discipline Committee",
-    bio: "Ensuring event protocols, code of conduct compliance, and venue safety during the 24-hour sprint.",
-    avatarText: "AT",
-    tags: ["Discipline", "Protocol"]
+    avatarText: "AT"
   },
   {
     name: "Aidan",
-    role: "Discipline & Safety Coordinator",
+    role: "Discipline",
     category: "Discipline",
     department: "Discipline Committee",
-    bio: "Overseeing participant safety, hall decorum, and venue logistics throughout the hackathon.",
-    avatarText: "AI",
-    tags: ["Discipline", "Safety"]
+    avatarText: "AI"
   },
   {
     name: "Rijomon",
-    role: "Discipline & Floor Coordination",
+    role: "Discipline",
     category: "Discipline",
     department: "Discipline Committee",
-    bio: "Supervising venue flow, floor management, and night-shift security protocols.",
-    avatarText: "RM",
-    tags: ["Discipline", "Coordination"]
+    avatarText: "RM"
   },
   {
     name: "Shreyas",
-    role: "Discipline & Operations Support",
+    role: "Discipline",
     category: "Discipline",
     department: "Discipline Committee",
-    bio: "Monitoring team allocations, lab access protocols, and operational compliance.",
-    avatarText: "SH",
-    tags: ["Discipline", "Operations"]
+    avatarText: "SH"
   },
 
   // 3. Technical
   {
     name: "Srikar",
-    role: "Technical Lead & Platform Architect",
+    role: "Technical",
     category: "Technical",
     department: "Technical Team",
-    bio: "Architecting the HackMe'26 platform, real-time live attendance tracking, and web infrastructure.",
-    avatarText: "SR",
-    tags: ["Technical", "Platform"]
+    avatarText: "SR"
   },
   {
     name: "Parthiv",
-    role: "Technical Lead & Infrastructure",
+    role: "Technical",
     category: "Technical",
     department: "Technical Team",
-    bio: "Managing technical infrastructure, campus networking, and deployment pipelines.",
-    avatarText: "PA",
-    tags: ["Technical", "Infrastructure"]
+    avatarText: "PA"
   },
   {
     name: "Athul",
-    role: "Technical Support & Systems",
+    role: "Technical",
     category: "Technical",
     department: "Technical Team",
-    bio: "Providing technical guidance, hardware/lab support, and developer assistance to builders.",
-    avatarText: "AT",
-    tags: ["Technical", "Systems"]
+    avatarText: "AT"
   },
 
   // 4. Entertainment
   {
     name: "Nandhana Ajeesh",
-    role: "Entertainment & Cultural Lead",
+    role: "Entertainment",
     category: "Entertainment",
     department: "Entertainment Team",
-    bio: "Orchestrating music sessions, games, midnight entertainment, and the closing campfire vibes.",
-    avatarText: "NA",
-    tags: ["Entertainment", "Cultural Lead"]
+    avatarText: "NA"
   },
   {
     name: "Nandana Venugopal",
-    role: "Entertainment & Creative Events",
+    role: "Entertainment",
     category: "Entertainment",
     department: "Entertainment Team",
-    bio: "Curating interactive breaks, fun mini-challenges, and engaging community activities.",
-    avatarText: "NV",
-    tags: ["Entertainment", "Creative"]
+    avatarText: "NV"
   },
   {
     name: "Praveen",
-    role: "Entertainment & Stage Coordination",
+    role: "Entertainment",
     category: "Entertainment",
     department: "Entertainment Team",
-    bio: "Handling audiovisual setups, stage management, sound design, and campfire logistics.",
-    avatarText: "PR",
-    tags: ["Entertainment", "Stage"]
+    avatarText: "PR"
   },
 
   // 5. Event Volunteers
   {
     name: "Devika",
-    role: "Event Volunteer Coordinator",
+    role: "Event Volunteer",
     category: "Event Volunteers",
     department: "Volunteer Team",
-    bio: "Guiding the volunteer crew, assisting participants with on-ground logistics, and desk operations.",
-    avatarText: "DV",
-    tags: ["Volunteer", "Logistics"]
+    avatarText: "DV"
   },
   {
     name: "Rithika",
-    role: "Event Volunteer Lead",
+    role: "Event Volunteer",
     category: "Event Volunteers",
     department: "Volunteer Team",
-    bio: "Supporting participant check-ins, attendee hospitality, and hackathon floor assistance.",
-    avatarText: "RI",
-    tags: ["Volunteer", "Hospitality"]
+    avatarText: "RI"
   }
 ];
 

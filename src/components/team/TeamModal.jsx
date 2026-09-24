@@ -36,9 +36,11 @@ export default function TeamModal({ member, onClose }) {
         </div>
 
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '20px', marginBottom: '24px' }}>
-          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
-            {member.bio}
-          </p>
+          {member.bio && (
+            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
+              {member.bio}
+            </p>
+          )}
           {member.expertise && (
             <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px 16px', borderLeft: '2px solid var(--color-accent)', marginTop: '16px' }}>
               <span className="mono-tag" style={{ display: 'block', marginBottom: '4px', color: 'var(--text-muted)' }}>DOMAINS & SPECIALIZATION</span>
