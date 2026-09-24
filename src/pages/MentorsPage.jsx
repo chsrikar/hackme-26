@@ -1,9 +1,16 @@
+import { useState } from 'react';
 import { judgesAndMentors, organizers } from '../data/organizers';
 import { Network, Award, Briefcase, ArrowLeft, MessageSquare, Calendar, ShieldCheck, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PixelButton from '../components/common/PixelButton';
 
 export default function MentorsPage() {
+  const [crewFilter, setCrewFilter] = useState('ALL');
+  const crewCategories = ['ALL', 'ORGANIZERS', 'DISCIPLINE', 'TECHNICAL', 'ENTERTAINMENT', 'EVENT VOLUNTEERS'];
+
+  const filteredCrew = crewFilter === 'ALL'
+    ? organizers
+    : organizers.filter((org) => org.category && org.category.toUpperCase() === crewFilter);
   return (
     <div style={{ backgroundColor: '#070708', minHeight: '100vh', color: '#f5f5f4', paddingTop: '40px', paddingBottom: '90px' }}>
       <div className="page-container">
@@ -147,12 +154,41 @@ export default function MentorsPage() {
 
         {/* Organizing Committee & Faculty Leads */}
         <div style={{ marginBottom: '60px' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-overmind-orange)', letterSpacing: '0.06em', marginBottom: '18px' }}>
-            // 02. CSE DEPARTMENT ORGANIZING CREW
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--color-overmind-orange)', letterSpacing: '0.06em' }}>
+              // 02. CSE DEPARTMENT ORGANIZING CREW & COMMITTEES
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {crewCategories.map((cat) => {
+                const isActive = crewFilter === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCrewFilter(cat)}
+                    className="clip-pixel-corners"
+                    style={{
+                      background: isActive ? 'var(--color-overmind-orange)' : '#111116',
+                      color: isActive ? '#000000' : '#9ca3af',
+                      border: `1px solid ${isActive ? 'var(--color-overmind-orange)' : '#262634'}`,
+                      padding: '4px 10px',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '20px' }}>
-            {organizers.map((org, oIdx) => (
+            {filteredCrew.map((org, oIdx) => (
               <div
                 key={oIdx}
                 className="clip-pixel-corners"
@@ -182,9 +218,16 @@ export default function MentorsPage() {
                     {org.avatarText}
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
-                      {org.name}
-                    </h4>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                        {org.name}
+                      </h4>
+                      {org.category && (
+                        <span style={{ fontSize: '0.65rem', color: 'var(--color-overmind-orange)', fontFamily: 'var(--font-mono)' }}>
+                          [{org.category}]
+                        </span>
+                      )}
+                    </div>
                     <span style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
                       {org.role}
                     </span>

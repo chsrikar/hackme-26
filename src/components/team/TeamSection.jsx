@@ -4,21 +4,69 @@ import { organizers, judgesAndMentors } from '../../data/organizers';
 
 export default function TeamSection() {
   const [selectedMember, setSelectedMember] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('ALL');
+
+  const categories = [
+    'ALL',
+    'ORGANIZERS',
+    'DISCIPLINE',
+    'TECHNICAL',
+    'ENTERTAINMENT',
+    'EVENT VOLUNTEERS',
+    'FACULTY'
+  ];
 
   const allMembers = [
     ...organizers,
     ...judgesAndMentors
   ];
 
+  const filteredMembers = activeCategory === 'ALL'
+    ? allMembers
+    : allMembers.filter((m) => {
+        if (activeCategory === 'FACULTY') {
+          return m.category === 'Faculty' || Boolean(m.organization);
+        }
+        return m.category && m.category.toUpperCase() === activeCategory;
+      });
+
   return (
     <section className="page-container container" style={{ paddingBottom: 'var(--space-4xl)' }} id="team-section">
       <div className="denmu-section-header">
-        <h2 className="denmu-section-title">THE COMMITTEE & PARTNERS</h2>
-        <span className="mono-tag">// OPERATORS & FELLOWS</span>
+        <h2 className="denmu-section-title">THE COMMITTEE & TEAMS</h2>
+        <span className="mono-tag">// OPERATORS, TECHNICAL & CREW</span>
+      </div>
+
+      {/* Category filter tabs */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '32px' }}>
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat;
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveCategory(cat)}
+              className="clip-pixel-corners"
+              style={{
+                background: isActive ? 'var(--color-overmind-orange)' : '#111116',
+                color: isActive ? '#000000' : '#a1a1aa',
+                border: `1px solid ${isActive ? 'var(--color-overmind-orange)' : '#262634'}`,
+                padding: '6px 14px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {cat}
+            </button>
+          );
+        })}
       </div>
 
       <div className="denmu-team-grid">
-        {allMembers.map((member, idx) => (
+        {filteredMembers.map((member, idx) => (
           <div
             key={idx}
             className="denmu-team-card"
@@ -34,6 +82,20 @@ export default function TeamSection() {
           >
             <div className="denmu-team-name">{member.name}</div>
             <div className="denmu-team-role">{member.role}</div>
+            {member.category && (
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  color: 'var(--color-overmind-orange)',
+                  fontFamily: 'var(--font-mono)',
+                  marginTop: '4px',
+                  display: 'inline-block',
+                  letterSpacing: '0.05em'
+                }}
+              >
+                // {member.category.toUpperCase()}
+              </span>
+            )}
           </div>
         ))}
       </div>
