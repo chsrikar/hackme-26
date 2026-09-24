@@ -7,7 +7,7 @@ export default function FormatAndPrizes() {
     { label: "DATES", val: "25 & 26 September 2026", icon: <Calendar size={16} color="var(--color-overmind-orange)" /> },
     { label: "VENUE", val: "VISAT Engineering College", icon: <MapPin size={16} color="#38bdf8" /> },
     { label: "REGISTRATION", val: "₹50 per person", icon: <Award size={16} color="#fbbf24" /> },
-    { label: "TEAM SIZE", val: "3–4 Members (Fixed)", icon: <Users size={16} color="#a855f7" /> },
+    { label: "TEAM SIZE", val: "2-5 Members", icon: <Users size={16} color="#a855f7" /> },
     { label: "ELIGIBILITY", val: "Open to students from all colleges", icon: <Globe size={16} color="#10b981" /> }
   ];
 
